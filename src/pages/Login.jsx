@@ -1,0 +1,66 @@
+import React, { useContext } from 'react'
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { loginUser } from '../services/user';
+import { toast } from 'react-toastify';
+import { UserContext } from '../App';
+import config from '../services/config';
+import axios from 'axios';
+
+function Login() {
+    const { user, setUser } = useContext(UserContext)
+    const navigate = useNavigate()
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const signin = async () => {
+
+        try {
+            const result = await loginUser(email, password)
+            if (result.status == 'success') {
+                window.sessionStorage.setItem('token', result.data.token)
+                setUser({
+                    name: result.data.name,
+                    email: result.data.email,
+                    mobile: result.data.mobile
+                })
+                toast.success('Login Successful')
+
+                const headers = { token: window.sessionStorage.getItem("token") }
+                const response = await axios.get(config.BASE_URL + '/user/userprofile', { headers })
+                if (response.data.data.length == 1) {
+                    navigate("/home")
+                }else{
+                    navigate('/createProfile')
+                }
+            }
+            else
+                toast.error(result.error)
+        }
+        catch (ex) {
+            console.log(ex)
+        }
+    }
+
+    return (
+        <div className='container w-50'>
+            <div className="mb-3 mt-3">
+                <label for="inputEmail" className="form-label">Email address</label>
+                <input type="email" className="form-control" id="inputEmail" placeholder="name@example.com" onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div className='mb-3'>
+                <label for="inputPassword" className="form-label">Password</label>
+                <input type="password" id="inputPassword" className="form-control" placeholder='password' onChange={e => setPassword(e.target.value)} />
+            </div>
+            <div className='mb-3'>
+                <button className='btn btn-success' onClick={signin}>Signin</button>
+            </div>
+            <div>
+                <label> Don't have an account ?</label>
+                <Link to="/register"> Click Here</Link>
+            </div>
+        </div>
+    )
+}
+
+export default Login
