@@ -1,0 +1,118 @@
+    /* MAIN HOME CONTAINER */
+    .home-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #ff3d67, #ffa0b5);
+    padding: 20px;
+    box-sizing: border-box;
+    }
+
+    /* PROFILE CARD */
+    .profile-card {
+    width: 340px;
+    height: 500px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    animation: fadeIn 0.6s ease-in-out;
+    }
+
+    /* PROFILE PHOTO BOX */
+    .profile-photo {
+    height: 65%;
+    background: #e4e4e4;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #777;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* NAME LABEL */
+    .name-label {
+    font-size: 24px;
+    text-align: center;
+    font-weight: 700;
+    color: #333;
+    margin-top: 10px;
+    }
+
+    /* ACTION BUTTONS CONTAINER */
+    .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+    /* LEFT & RIGHT SWIPE BUTTONS */
+    .swipe-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.15);
+    }
+
+    .swipe-btn.left {
+    background: #e249a5;
+    color: #fff;
+    }
+
+    .swipe-btn.right {
+    background: #43d07a;
+    color: #fff;
+    }
+
+    .swipe-btn:hover {
+    transform: translateY(-3px);
+    }
+
+    /* CENTER ICONS (HEART + TICK) */
+    .icons {
+    display: flex;
+    flex-direction: column;
+    font-size: 28px;
+    gap: 10px;
+    }
+
+    .heart {
+    color: #ff4e80;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    }
+
+    .tick {
+    color: #2ecc71;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    }
+
+    .heart:hover,
+    .tick:hover {
+    transform: scale(1.2);
+    }
+
+    /* SMOOTH ANIMATION */
+    @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+    }

@@ -1,0 +1,115 @@
+    /* MAIN CONTAINER */
+    .settings-container {
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    font-family: "Poppins", sans-serif;
+    }
+
+    .settings-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #72ad60;
+    }
+
+    /* SECTION */
+    .section {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: 0.3s ease;
+    }
+
+    /* HEADER */
+    .section-header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #ffe6eb;
+    }
+
+    .section-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #d63357;
+    }
+
+    .section-header span {
+    font-size: 18px;
+    color: #d63357;
+    }
+
+    /* CONTENT */
+    .section-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    /* Slide down animation */
+    animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    }
+
+    /* BUTTONS */
+    .plan-btn,
+    .boost-btn,
+    .superlike-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #d24c5e;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+    width: 100%;
+    }
+
+    /* Hover */
+    .plan-btn:hover,
+    .boost-btn:hover,
+    .superlike-btn:hover {
+    background: #d63357;
+    transform: translateY(-2px);
+    }
+
+    /* Active click effect */
+    .plan-btn:active,
+    .boost-btn:active,
+    .superlike-btn:active {
+    transform: scale(0.95);
+    }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 480px) {
+    .settings-container {
+        width: 95%;
+    }
+
+    .section-header h2 {
+        font-size: 16px;
+    }
+
+    .plan-btn,
+    .boost-btn,
+    .superlike-btn {
+        font-size: 14px;
+    }
+    }
