@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import "../Styles/Sidebar.css";
+import { Link } from "react-router";
 
 
 function Sidebar() {
@@ -11,14 +11,13 @@ return (
 <p className="username">Name</p>
 </div>
 
-
 <div className="sidebar-menu">
-<Link to="/" className="menu-item">Home</Link>
-<Link to="/Message" className="menu-item">Message</Link>
-<Link to="/preferences" className="menu-item">Preferences</Link>
-<Link to="/subscribe" className="menu-item">Subscribe</Link>
-<Link to="/Edit Profile" className="menu-item">Edit Profile</Link>
-<Link to="/settings" className="menu-item">Settings</Link>
+<Link to="/home" className="menu-item">Home</Link>
+<Link to="/home/message" className="menu-item">Message</Link>
+<Link to="/home/preferences" className="menu-item">Preferences</Link>
+<Link to="/home/subscribe" className="menu-item">Subscribe</Link>
+<Link to="/home/EditProfile" className="menu-item">Edit Profile</Link>
+<Link to="/home/settings" className="menu-item">Settings</Link>
 </div>
 </div>
 );

@@ -25,12 +25,16 @@ function Login() {
                     mobile: result.data.mobile
                 })
                 toast.success('Login Successful')
-
                 const headers = { token: window.sessionStorage.getItem("token") }
                 const response = await axios.get(config.BASE_URL + '/user/userprofile', { headers })
                 if (response.data.data.length == 1) {
-                    navigate("/home")
-                }else{
+                    const response = await axios.get(config.BASE_URL + '/photos/userphotos', { headers })
+                    if (response.data.data.length == 6) {
+                        navigate("/home")
+                    } else {
+                        navigate('/addphotos')
+                    }
+                } else {
                     navigate('/createProfile')
                 }
             }

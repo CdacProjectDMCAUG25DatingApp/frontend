@@ -1,27 +1,20 @@
-    import React from "react";
-
-    export default function CenterCard() {
+export default function CenterCard() {
     return (
-        <div className="center">
-        <div className="card">
-            <div className="photo">Photo</div>
-
-            <div className="small-dp">DP</div>
-
-            <div className="name-box">Name</div>
-        </div>
-
-        <p className="profile-title">Profile</p>
-
-        <div className="action-buttons">
-            <button className="icon-btn">❤️</button>
-            <button className="icon-btn">✔</button>
-        </div>
-
-        <div className="swipe-buttons">
-            <button className="swipe-btn">Swipe Left</button>
-            <button className="swipe-btn">Swipe Right</button>
-        </div>
-        </div>
+        <>
+            <div className="home-container">
+                <div className="profile-card">
+                    <div className="profile-photo">Photo</div>
+                    <p className="name-label">Name</p>
+                    <div className="actions">
+                        <button className="swipe-btn left">Swipe Left</button>
+                        <div className="icons">
+                            <span className="heart">♡</span>
+                            <span className="tick">✔</span>
+                        </div>
+                        <button className="swipe-btn right">Swipe Right</button>
+                    </div>
+                </div>
+            </div>
+        </>
     );
-    }
+}
