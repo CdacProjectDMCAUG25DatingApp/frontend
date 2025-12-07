@@ -15,6 +15,8 @@ import Settings from "./Home Page Components/src/Pages/settings";
 import Matches from "./Home Page Components/src/Pages/Matches";
 import Likes from "./Home Page Components/src/Pages/Likes";
 import CenterCard from './Home Page Components/src/Components/CentreCard'
+import UserPreferences from './pages/UserPreferences'
+
 
 export const UserContext = createContext()
 function App() {
@@ -27,6 +29,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/createProfile' element={<CreateProfile />} />
           <Route path='/addphotos' element={<AddPhotos />} />
+          <Route path='/preferences' element={<UserPreferences />} />
           <Route path='/home' element={<Home />}>
             <Route path="" element={<CenterCard />} />
             <Route path="message" element={<Message />} />

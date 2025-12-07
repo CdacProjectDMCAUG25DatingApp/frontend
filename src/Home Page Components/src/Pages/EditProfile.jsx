@@ -112,7 +112,9 @@
                 </select>
 
                 <button className="save-btn">Save Lifestyle</button>
+                
             </div>
+            
             )}
         </div>
         </div>

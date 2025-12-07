@@ -67,7 +67,7 @@ function AddPhotos() {
                 console.log(response)
                 if (response.data.status == "success") {
                     toast.success("Profile Completed")
-                    navigate("/home")
+                    navigate("/userpreferences")
                 }else{
                     toast.error(response.error)
                 }

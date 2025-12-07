@@ -14,7 +14,6 @@ function Login() {
     const [password, setPassword] = useState('')
 
     const signin = async () => {
-
         try {
             const result = await loginUser(email, password)
             if (result.status == 'success') {
@@ -26,11 +25,16 @@ function Login() {
                 })
                 toast.success('Login Successful')
                 const headers = { token: window.sessionStorage.getItem("token") }
-                const response = await axios.get(config.BASE_URL + '/user/userprofile', { headers })
-                if (response.data.data.length == 1) {
-                    const response = await axios.get(config.BASE_URL + '/photos/userphotos', { headers })
-                    if (response.data.data.length == 6) {
-                        navigate("/home")
+                const responseProfile = await axios.get(config.BASE_URL + '/user/userprofile', { headers })
+                if (responseProfile.data.data.length == 1) {
+                    const responsePhotos = await axios.get(config.BASE_URL + '/photos/userphotos', { headers })
+                    if (responsePhotos.data.data.length == 6) {
+                        const responsePreferences = await axios.get(config.BASE_URL + '/user/userpreferences', { headers })
+                        if(responsePreferences.data.data.length == 1){
+                            navigate("/home")
+                        }else{
+                            navigate("/preferences")
+                        }
                     } else {
                         navigate('/addphotos')
                     }

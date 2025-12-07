@@ -27,6 +27,7 @@ function CreateProfile() {
     const [jobIndustryList, setJobIndustryList] = useState([]);
 
     useEffect(() => {
+        console.log(user)
         fetchAllLookups();
     }, []);
 
@@ -35,8 +36,9 @@ function CreateProfile() {
             token: window.sessionStorage.getItem('token')
         }
         try {
-
+            
             const [
+               
                 genderRes,
                 religionRes,
                 motherTongueRes,
@@ -49,10 +51,8 @@ function CreateProfile() {
                 axios.get(config.BASE_URL + "/api/mother-tongue", { headers }),
                 axios.get(config.BASE_URL + "/api/education", { headers }),
                 axios.get(config.BASE_URL + "/api/job-industry", { headers }),
-
             ]);
 
-            console.log(marital)
             setGenderList(genderRes.data.data);
             setReligionList(religionRes.data.data);
             setMotherTongueList(motherTongueRes.data.data);
