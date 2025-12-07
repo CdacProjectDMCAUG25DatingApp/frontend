@@ -21,7 +21,7 @@ function UserPreferences() {
     const [workout, setWorkout] = useState("");
     const [dietary, setDietary] = useState("");
     const [sleepingHabit, setSleepingHabit] = useState("");
-    const [Religion, setReligion] = useState("");
+    const [religion, setReligion] = useState("");
     const [personalityType, setPersonalityType] = useState("");
     const [pet, setPet] = useState("");
 
@@ -112,11 +112,11 @@ function UserPreferences() {
     async function submitProfile() {
         try {
             if (lookingFor == "" && openTo == "" && zodiac == "" && familyPlan == "" && education == "" && communicationStyle == "" && lovestyle == "" && drinking == "" && smoking == "" && workout == ""
-                && dietary == "" && sleepingHabit == "" && Religion == "" && personalityType == "" && pet == "") {
+                && dietary == "" && sleepingHabit == "" && religion == "" && personalityType == "" && pet == "") {
                 toast.warn("Fill All Fields")
             } else {
                 const response = await addUserPreferences(lookingFor, openTo, zodiac, familyPlan, education, communicationStyle, lovestyle, drinking, smoking, workout
-                    , dietary, sleepingHabit, Religion, personalityType, pet)
+                    , dietary, sleepingHabit, religion, personalityType, pet)
                 console.error(response);
                 if (response == null) {
                     toast.error("Server Down")
