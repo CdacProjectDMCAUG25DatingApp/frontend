@@ -9,6 +9,7 @@ export async function addUserProfile(gender, bio, religion, location, motherTong
         const headers = {
             token: window.sessionStorage.getItem('token')
         }
+
         const response = await axios.post(url, body, { headers })
         return response.data
     } catch (error) {

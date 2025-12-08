@@ -27,7 +27,6 @@ function CreateProfile() {
     const [jobIndustryList, setJobIndustryList] = useState([]);
 
     useEffect(() => {
-        console.log(user)
         fetchAllLookups();
     }, []);
 

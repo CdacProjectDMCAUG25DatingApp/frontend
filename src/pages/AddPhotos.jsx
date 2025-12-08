@@ -16,7 +16,7 @@ function AddPhotos() {
         img6: null
     });
 
-    useEffect(()=>{
+     useEffect(()=>{
         callAddPhotos()
     },[])
 
@@ -64,10 +64,9 @@ function AddPhotos() {
                     toast.error("Server Down")
                     return
                 }
-                console.log(response)
                 if (response.data.status == "success") {
                     toast.success("Profile Completed")
-                    navigate("/userpreferences")
+                    navigate("/preferences")
                 }else{
                     toast.error(response.error)
                 }
