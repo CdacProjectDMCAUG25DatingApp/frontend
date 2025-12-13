@@ -32,6 +32,7 @@ function App() {
           <Route path='/preferences' element={<UserPreferences />} />
           <Route path='/home' element={<Home />}>
             <Route path="" element={<CenterCard />} />
+            <Route path="viewProfile" element={<EditProfile />} />
             <Route path="message" element={<Message />} />
             <Route path="chat" element={<Chat />} />
              <Route path="Subscribe" element={<Subscribe />} />
