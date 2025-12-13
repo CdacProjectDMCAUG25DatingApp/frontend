@@ -17,7 +17,7 @@ export async function addPhotos(form) {
 
 export async function fetchPhotos() {
     try {
-        const response = await axios.get(config.BASE_URL + "/photos/fetchPhotos", { headers })
+        const response = await axios.get(config.BASE_URL + "/photos/userphotos", { headers })
         if (response.data.status) {
             return response.data.data
         }

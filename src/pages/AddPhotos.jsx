@@ -65,8 +65,13 @@ function AddPhotos() {
                     return
                 }
                 if (response.data.status == "success") {
-                    toast.success("Profile Completed")
-                    navigate("/preferences")
+                    toast.success("Photos Added")
+                    const responsePreferences = await axios.get(config.BASE_URL + '/user/userpreferences', { headers })
+                    if(responsePreferences.data.data.length == 1){
+                            navigate("/home")
+                        }else{
+                            navigate("/preferences")
+                        }
                 }else{
                     toast.error(response.error)
                 }

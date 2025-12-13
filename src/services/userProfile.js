@@ -17,3 +17,16 @@ export async function addUserProfile(gender, bio, religion, location, motherTong
     }
 
 }
+
+export async function getUserProfile(){
+    try {
+        const url = config.BASE_URL + '/user/userprofile'
+        const headers = {
+            token: window.sessionStorage.getItem('token')
+        }
+        const response = await axios.get(url, { headers })
+        return response.data.data[0]
+    } catch (error) {
+        toast.error(error)
+    }
+}

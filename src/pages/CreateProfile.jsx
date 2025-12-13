@@ -35,9 +35,9 @@ function CreateProfile() {
             token: window.sessionStorage.getItem('token')
         }
         try {
-            
+
             const [
-               
+
                 genderRes,
                 religionRes,
                 motherTongueRes,
@@ -68,28 +68,28 @@ function CreateProfile() {
         try {
             if (gender == "" && bio == "" && religion == "" && location == "" && motherTongue == "" && marital == "" && dob == "" && education == "" && jobTitle == "" && jobIndustry == "") {
                 toast.warn("Fill All Fields")
-            }else{
-            const response = await addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, jobTitle, jobIndustry)
-            console.error(response);
-            if (response == null) {
-                toast.error("Server Down")
-            }
-            if (response.status == "success") {
-                toast.success("Profile Completed")
-                navigate("/addphotos")
             } else {
-                if (response.error.errno == 1062) {
-                    toast.error("You Already have a profile")
+                const response = await addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, jobTitle, jobIndustry)
+                console.error(response);
+                if (response == null) {
+                    toast.error("Server Down")
                 }
-                else {
-                    toast.error(response.error.code)
+                if (response.status == "success") {
+                    toast.success("Profile Completed")
+                    navigate("/addphotos")
+                } else {
+                    if (response.error.errno == 1062) {
+                        toast.error("You Already have a profile")
+                    }
+                    else {
+                        toast.error(response.error.code)
+                    }
                 }
             }
-        }
         } catch (err) {
             console.error("addUserProfile error:", err);
         }
-    
+
     }
 
 
@@ -200,7 +200,7 @@ function CreateProfile() {
                     <label htmlFor="dateInput" className="col-form-label">Select DOB</label>
                 </div>
                 <div className="col-6">
-                    <input type="date" value={dob} className="form-control" id="dateInput" onChange={(e) => setdob(e.target.value)} />
+                    <input type="date" value={dob} className="form-control" id="dateInput" onChange={(e) => setdob(e.target.value.substring(0,10))} />
                 </div>
             </div>
 

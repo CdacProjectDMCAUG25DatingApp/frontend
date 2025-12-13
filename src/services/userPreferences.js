@@ -18,3 +18,7 @@ export async function addUserPreferences(lookingFor, openTo, zodiac, familyPlan,
     }
 
 }
+
+export async function getUserPreferences(){
+    
+}
