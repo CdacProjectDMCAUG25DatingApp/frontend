@@ -200,7 +200,7 @@ function CreateProfile() {
                     <label htmlFor="dateInput" className="col-form-label">Select DOB</label>
                 </div>
                 <div className="col-6">
-                    <input type="date" value={dob} className="form-control" id="dateInput" onChange={(e) => setdob(e.target.value.substring(0,10))} />
+                    <input type="date" value={dob} className="form-control" id="dateInput" onChange={(e) => setdob(e.target.value)} />
                 </div>
             </div>
 

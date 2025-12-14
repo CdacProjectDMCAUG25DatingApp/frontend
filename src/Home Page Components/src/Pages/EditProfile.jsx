@@ -45,6 +45,7 @@ export default function EditProfile() {
     //     })
 
     const [userProfile, setUserProfile] = useState({
+        bio:'',
         weight: 0,
         height: 0,
         gender: 0,
@@ -91,6 +92,7 @@ export default function EditProfile() {
         const response = await getUserProfile()
         console.log(response)
         const preferences = {
+            bio: response.bio,
             weight: response.weight,
             height: response.height,
             gender: response.gender,
@@ -217,6 +219,19 @@ export default function EditProfile() {
 
                     {/* CENTER FORM */}
                     <div className="col-md-6">
+                        <div className="row mb-4">
+                            <div className="col-12">
+                                <label className="form-label fw-semibold">Bio</label>
+                                <textarea
+                                    className="form-control"
+                                    rows="4"
+                                    placeholder="Write something about yourself..."
+                                    defaultValue={userProfile.bio}
+                                    style={{ resize: "none" }}
+                                ></textarea>
+                            </div>
+                        </div>
+
                         <div className="row g-3">
                             <div className="col-md-6">
                                 <label className="form-label">Weight (Kgs)</label>
@@ -323,6 +338,7 @@ export default function EditProfile() {
                             </div>
 
                             <div className="col-md-12">
+                                <label className="form-label">Education</label>
                                 <select className="form-select" value={userProfile.education} onChange={e => setEducation(e.target.value)}>
                                     <option value="">Select Education</option>
                                     {educationList.map((item) => (
