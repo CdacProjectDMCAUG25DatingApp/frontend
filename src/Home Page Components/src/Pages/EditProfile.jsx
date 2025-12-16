@@ -45,7 +45,7 @@ export default function EditProfile() {
     //     })
 
     const [userProfile, setUserProfile] = useState({
-        bio:'',
+        bio: '',
         weight: 0,
         height: 0,
         gender: 0,
@@ -71,42 +71,87 @@ export default function EditProfile() {
     const tempImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgpqMra_F5H5e0yEoXaj0-OJANd7DF-aDVJA&s"
 
     const [userImg, setUserImg] = useState({
-        userImg1: { imgName: tempImg, imgPrompt: '' },
-        userImg2: { imgName: tempImg, imgPrompt: '' },
-        userImg3: { imgName: tempImg, imgPrompt: '' },
-        userImg4: { imgName: tempImg, imgPrompt: '' },
-        userImg5: { imgName: tempImg, imgPrompt: '' },
-        userImg6: { imgName: tempImg, imgPrompt: '' }
+
+        userImg1: { imgName: null, imgPrompt: '' },
+        userImg2: { imgName: null, imgPrompt: '' },
+        userImg3: { imgName: null, imgPrompt: '' },
+        userImg4: { imgName: null, imgPrompt: '' },
+        userImg5: { imgName: null, imgPrompt: '' },
+        userImg6: { imgName: null, imgPrompt: '' }
     })
 
-
+ const callGetPhotos = async () => {
+            const response = await fetchPhotos()
+            
+            const userImg1 = { imgName: response[0]?.photo_url, imgPrompt: response[0]?.prompt }
+            const userImg2 = { imgName: response[1]?.photo_url, imgPrompt: response[1]?.prompt }
+            const userImg3 = { imgName: response[2]?.photo_url, imgPrompt: response[2]?.prompt }
+            const userImg4 = { imgName: response[3]?.photo_url, imgPrompt: response[3]?.prompt }
+            const userImg5 = { imgName: response[4]?.photo_url, imgPrompt: response[4]?.prompt }
+            const userImg6 = { imgName: response[5]?.photo_url, imgPrompt: response[5]?.prompt }
+            setUserImg({ userImg1, userImg2, userImg3, userImg4, userImg5, userImg6 })
+        }
 
     useEffect(() => {
+        const fetchAllLookups = async () => {
+            const headers = {
+                token: window.sessionStorage.getItem('token')
+            }
+            try {
+                const [
+                    genderRes,
+                    religionRes,
+                    motherTongueRes,
+                    educationRes,
+                    jobIndustryRes,
+                ] = await Promise.all([
+                    axios.get(config.BASE_URL + "/api/gender", { headers }),
+                    axios.get(config.BASE_URL + "/api/religion", { headers }),
+                    axios.get(config.BASE_URL + "/api/mother-tongue", { headers }),
+                    axios.get(config.BASE_URL + "/api/education", { headers }),
+                    axios.get(config.BASE_URL + "/api/job-industry", { headers }),
+                ]);
+
+                setGenderList(genderRes.data.data);
+                setReligionList(religionRes.data.data);
+                setMotherTongueList(motherTongueRes.data.data);
+                setEducationList(educationRes.data.data);
+                setJobIndustryList(jobIndustryRes.data.data);
+
+            } catch (error) {
+                console.error("Lookup fetch error:", error);
+            }
+        }
         fetchAllLookups()
+
+       
         callGetPhotos()
+
         // callFetchUserPreferences()
+        const callFetchUserProfile = async () => {
+            const response = await getUserProfile()
+            console.log(response)
+            const preferences = {
+                bio: response.bio,
+                weight: response.weight,
+                height: response.height,
+                gender: response.gender,
+                location: response.location,
+                religion: response.religion,
+                mother_tongue: response.mother_tongue,
+                marital_status: response.marital_status,
+                dob: response.dob,
+                education: response.education,
+                job_title: response.job_title,
+                job_industry_id: response.job_industry_id,
+            }
+            setUserProfile(preferences)
+        }
+        
         callFetchUserProfile()
     }, [])
 
-    const callFetchUserProfile = async () => {
-        const response = await getUserProfile()
-        console.log(response)
-        const preferences = {
-            bio: response.bio,
-            weight: response.weight,
-            height: response.height,
-            gender: response.gender,
-            location: response.location,
-            religion: response.religion,
-            mother_tongue: response.mother_tongue,
-            marital_status: response.marital_status,
-            dob: response.dob,
-            education: response.education,
-            job_title: response.job_title,
-            job_industry_id: response.job_industry_id,
-        }
-        setUserProfile(preferences)
-    }
+
 
     // const callFetchUserPreferences = async () =>{
     //     const response = await getUserPreferences()
@@ -129,16 +174,7 @@ export default function EditProfile() {
     //     }
     // }
 
-    const callGetPhotos = async () => {
-        const response = await fetchPhotos()
-        const userImg1 = { imgName: response[0]?.photo_url, imgPrompt: response[0]?.prompt }
-        const userImg2 = { imgName: response[1]?.photo_url, imgPrompt: response[1]?.prompt }
-        const userImg3 = { imgName: response[2]?.photo_url, imgPrompt: response[2]?.prompt }
-        const userImg4 = { imgName: response[3]?.photo_url, imgPrompt: response[3]?.prompt }
-        const userImg5 = { imgName: response[4]?.photo_url, imgPrompt: response[4]?.prompt }
-        const userImg6 = { imgName: response[5]?.photo_url, imgPrompt: response[5]?.prompt }
-        setUserImg({ userImg1, userImg2, userImg3, userImg4, userImg5, userImg6 })
-    }
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -161,35 +197,7 @@ export default function EditProfile() {
         }
     };
 
-    const fetchAllLookups = async () => {
-        const headers = {
-            token: window.sessionStorage.getItem('token')
-        }
-        try {
-            const [
-                genderRes,
-                religionRes,
-                motherTongueRes,
-                educationRes,
-                jobIndustryRes,
-            ] = await Promise.all([
-                axios.get(config.BASE_URL + "/api/gender", { headers }),
-                axios.get(config.BASE_URL + "/api/religion", { headers }),
-                axios.get(config.BASE_URL + "/api/mother-tongue", { headers }),
-                axios.get(config.BASE_URL + "/api/education", { headers }),
-                axios.get(config.BASE_URL + "/api/job-industry", { headers }),
-            ]);
 
-            setGenderList(genderRes.data.data);
-            setReligionList(religionRes.data.data);
-            setMotherTongueList(motherTongueRes.data.data);
-            setEducationList(educationRes.data.data);
-            setJobIndustryList(jobIndustryRes.data.data);
-
-        } catch (error) {
-            console.error("Lookup fetch error:", error);
-        }
-    }
 
 
     return (
@@ -201,8 +209,12 @@ export default function EditProfile() {
                         {[1, 2, 3].map((i) => (
                             <div key={i} className="text-center">
                                 <label className="border rounded d-flex align-items-center justify-content-center" style={{ height: 200, cursor: "pointer" }}>
+                                    {/* userImg[`userImg${i}`].imgName */}
+                                    {console.log(userImg[`userImg${i}`].imgName)}
+                                    
                                     <img
-                                        src={`http://localhost:4000/profilePhotos/${userImg[`userImg${i}`].imgName}`}
+                                    // http://localhost:4000/profilePhotos/1d394be2c89555407a243c7d4486fdec.jpg
+                                        src={ `http://localhost:4000/profilePhotos/${userImg[`userImg${i}`].imgName}`}
                                         className="w-100 h-100 object-fit-cover"
                                     />
                                     <input type="file"

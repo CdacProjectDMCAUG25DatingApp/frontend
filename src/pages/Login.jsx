@@ -10,8 +10,8 @@ import axios from 'axios';
 function Login() {
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('anil@gmail.com')
+    const [password, setPassword] = useState('anil')
 
     const signin = async () => {
         try {
