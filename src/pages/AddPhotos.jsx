@@ -16,11 +16,11 @@ function AddPhotos() {
         img6: null
     });
 
-     useEffect(()=>{
+    useEffect(() => {
         callAddPhotos()
-    },[])
+    }, [])
 
-    const callAddPhotos = async () =>{
+    const callAddPhotos = async () => {
         const response = await fetchPhotos()
         console.log(response)
     }
@@ -58,7 +58,7 @@ function AddPhotos() {
                 form.append("img4", img.img4)
                 form.append("img5", img.img5)
                 form.append("img6", img.img6)
-            
+
                 const response = await addPhotos(form)
                 if (response == null) {
                     toast.error("Server Down")
@@ -66,13 +66,17 @@ function AddPhotos() {
                 }
                 if (response.data.status == "success") {
                     toast.success("Photos Added")
-                    const responsePreferences = await axios.get(config.BASE_URL + '/user/userpreferences', { headers })
-                    if(responsePreferences.data.data.length == 1){
-                            navigate("/home")
-                        }else{
-                            navigate("/preferences")
+                    const responsePreferences = await axios.get(config.BASE_URL + '/user/userpreferences', {
+                        headers: {
+                            token: sessionStorage.getItem("token")
                         }
-                }else{
+                    })
+                    if (responsePreferences.data.data.length == 1) {
+                        navigate("/home")
+                    } else {
+                        navigate("/preferences")
+                    }
+                } else {
                     toast.error(response.error)
                 }
             }
@@ -86,7 +90,7 @@ function AddPhotos() {
         <div className='row g-3 align-items-center justify-content-center'>
             <div className="card p-3 col-4 m-3 g-3  align-items-center justify-content-center" style={{ width: "20rem" }}>
                 <img
-                    src={ img.img1 ? URL.createObjectURL(img.img1) : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgpqMra_F5H5e0yEoXaj0-OJANd7DF-aDVJA&s"}
+                    src={img.img1 ? URL.createObjectURL(img.img1) : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgpqMra_F5H5e0yEoXaj0-OJANd7DF-aDVJA&s"}
                     className="img-fluid rounded"
                     alt="preview"
                 />
