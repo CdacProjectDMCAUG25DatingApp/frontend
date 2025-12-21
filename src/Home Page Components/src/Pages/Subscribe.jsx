@@ -1,5 +1,4 @@
     import React, { useState } from "react";
-    import "../Styles/Subscribe.css";
 
     const Subscribe = () => {
     const [openSection, setOpenSection] = useState(null);

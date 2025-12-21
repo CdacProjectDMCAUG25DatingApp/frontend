@@ -1,5 +1,4 @@
     import React, { useState } from "react";
-    import "../Styles/Settings.css";
 
     const Settings = () => {
     const [openSection, setOpenSection] = useState(null);

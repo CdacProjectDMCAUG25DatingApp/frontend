@@ -3,8 +3,8 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import config from '../services/config';
-import { UserContext } from '../App';
-import { addUserPreferences } from '../services/userPreferences';
+import { UserContext } from '../app/App';
+import { addUserPreferences } from '../services/userpreferences';
 
 function UserPreferences() {
     const navigate = useNavigate()
@@ -24,6 +24,24 @@ function UserPreferences() {
     const [religion, setReligion] = useState("");
     const [personalityType, setPersonalityType] = useState("");
     const [pet, setPet] = useState("");
+
+    // const[userPreferences,setUserPreferences] = useState({
+    //     looking_for_id:0,
+    //     open_to_id:0,
+    //     zodiac_id:0,
+    //     education_id:0,
+    //     family_plan_id:0,
+    //     communication_style_id:0,
+    //     love_style_id:0,
+    //     drinking_id:0,
+    //     smoking_id:0,
+    //     workout_id:0,
+    //     dietary_id:0,
+    //     sleeping_habit_id:0,
+    //     religion_id:0,
+    //     personality_type_id:0,
+    //     pet_id:0,
+    //     })
 
     const [lookingForList, setLookingForList] = useState([]);
     const [openToList, setOpenToList] = useState([]);

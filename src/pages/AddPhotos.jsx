@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
-import { addPhotos, fetchPhotos } from '../services/addPhotos';
+import { addPhotos, fetchPhotos } from '../services/addphotos';
 import { useNavigate } from 'react-router';
 
 
@@ -94,7 +94,6 @@ function AddPhotos() {
                     className="img-fluid rounded"
                     alt="preview"
                 />
-
                 <input
                     type="file"
                     name="img1"

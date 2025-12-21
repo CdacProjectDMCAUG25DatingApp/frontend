@@ -1,5 +1,4 @@
     import React, { useState } from "react";
-    import "../Styles/Message.css";
 
 
     const Message = () => {

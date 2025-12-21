@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { addUserProfile } from '../services/userProfile';
+import { addUserProfile } from '../services/userprofile';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import config from '../services/config';
-import { UserContext } from '../App';
+import { UserContext } from '../app/App';
+
 
 function CreateProfile() {
     const navigate = useNavigate()
