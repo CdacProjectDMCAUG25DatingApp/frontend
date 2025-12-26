@@ -7,6 +7,7 @@ import { UserContext } from '../app/App';
 import config from '../services/config';
 import axios from 'axios';
 
+
 function Login() {
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate()
@@ -30,9 +31,9 @@ function Login() {
                     const responsePhotos = await axios.get(config.BASE_URL + '/photos/userphotos', { headers })
                     if (responsePhotos.data.data.length == 6) {
                         const responsePreferences = await axios.get(config.BASE_URL + '/user/userpreferences', { headers })
-                        if(responsePreferences.data.data.length == 1){
+                        if (responsePreferences.data.data.length == 1) {
                             navigate("/home")
-                        }else{
+                        } else {
                             navigate("/preferences")
                         }
                     } else {
@@ -51,22 +52,27 @@ function Login() {
     }
 
     return (
-        <div className='container w-50'>
-            <div className="mb-3 mt-3">
-                <label for="inputEmail" className="form-label">Email address</label>
-                <input type="email" className="form-control" id="inputEmail" placeholder="name@example.com" onChange={(e) => setEmail(e.target.value)} />
+        <div style={{ width: '100%', height: 750, position: 'relative' }}>
+            
+
+            <div className='container w-50'>
+                <div className="mb-3 mt-3">
+                    <label for="inputEmail" className="form-label">Email address</label>
+                    <input type="email" className="form-control" id="inputEmail" placeholder="name@example.com" onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div className='mb-3'>
+                    <label for="inputPassword" className="form-label">Password</label>
+                    <input type="password" id="inputPassword" className="form-control" placeholder='password' onChange={e => setPassword(e.target.value)} />
+                </div>
+                <div className='mb-3'>
+                    <button className='btn btn-success' onClick={signin}>Signin</button>
+                </div>
+                <div>
+                    <label> Don't have an account ?</label>
+                    <Link to="/register"> Click Here</Link>
+                </div>
             </div>
-            <div className='mb-3'>
-                <label for="inputPassword" className="form-label">Password</label>
-                <input type="password" id="inputPassword" className="form-control" placeholder='password' onChange={e => setPassword(e.target.value)} />
-            </div>
-            <div className='mb-3'>
-                <button className='btn btn-success' onClick={signin}>Signin</button>
-            </div>
-            <div>
-                <label> Don't have an account ?</label>
-                <Link to="/register"> Click Here</Link>
-            </div>
+        
         </div>
     )
 }

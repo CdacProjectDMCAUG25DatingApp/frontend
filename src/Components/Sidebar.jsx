@@ -10,8 +10,8 @@ const Sidebar = () => {
       </div>
 
       <nav className="sidebar-menu">
-        <NavLink to="/home" end className="menu-item">
-          Home
+        <NavLink to="/home/people" end className="menu-item">
+          People
         </NavLink>
         <NavLink to="/home/message" className="menu-item">
           Message
