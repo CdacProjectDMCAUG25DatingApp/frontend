@@ -7,7 +7,6 @@ import { UserContext } from '../app/App';
 import config from '../services/config';
 import axios from 'axios';
 
-
 function Login() {
     const { user, setUser } = useContext(UserContext)
     const navigate = useNavigate()

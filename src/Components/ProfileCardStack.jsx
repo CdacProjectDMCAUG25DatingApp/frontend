@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ProfileCardComponent from "./ProfileCardComponent";
+import MainCard from "./MainCard";
 
 
 const cards = [
@@ -40,7 +40,7 @@ const ProfileCardStack = () => {
   }
 
   return (
-    <ProfileCardComponent
+    <MainCard
       key={cards[index].id}
       image={cards[index].image}
       color={cards[index].color}
