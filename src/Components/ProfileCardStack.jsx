@@ -1,52 +1,39 @@
-import { useState } from "react";
-import MainCard from "./MainCard";
-
-
-const cards = [
-    {
-        id: 1,
-        image: 'https://img.icons8.com/color/452/GeeksforGeeks.png',
-        color: '#55ccff'
-    },
-    {
-        id: 2,
-        image: 'https://img.icons8.com/color/452/GeeksforGeeks.png',
-        color: '#e8e8e8'
-    },
-    {
-        id: 3,
-        image: 'https://img.icons8.com/color/452/GeeksforGeeks.png',
-        color: '#0a043c'
-    },
-    {
-        id: 4,
-        image: 'https://img.icons8.com/color/452/GeeksforGeeks.png',
-        color: 'black'
-    }
-];
+import { useEffect, useState } from "react"
+import MainCard from "./MainCard"
+import { serviceGetCandidate } from "../services/interactions"
 
 
 
 const ProfileCardStack = () => {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0)
+
+  const [candidates, setCandidates] = useState([])
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      const data = await serviceGetCandidate()
+      setCandidates(data)
+    }
+    fetchCandidates()
+  }, [])
 
   const handleSwipe = (direction) => {
-    console.log("Swiped:", direction, cards[index]);
-    setIndex((prev) => prev + 1);
-  };
-
-  if (index >= cards.length) {
-    return <h2>No more cards</h2>;
+    console.log("Swiped:", direction, candidates[index])
+    setIndex((prev) => prev + 1)
   }
 
+  if (index >= candidates.length) {
+    return <h2>No more cards</h2>
+  }
   return (
     <MainCard
-      key={cards[index].id}
-      image={cards[index].image}
-      color={cards[index].color}
+      key={candidates[index].token}
+      image={candidates[index].photos[0].photo_url}
+      candidate={candidates[index].candidateData}
+      score ={candidates[index].score}
+      photos ={candidates[index].photos}
       onSwipe={handleSwipe}
     />
-  );
-};
+  )
+}
 
-export default ProfileCardStack;
+export default ProfileCardStack

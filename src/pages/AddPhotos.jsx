@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { addPhotos, fetchPhotos } from '../services/addphotos';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
+import config from '../services/config';
 
 
 function AddPhotos() {

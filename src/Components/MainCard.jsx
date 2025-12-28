@@ -1,8 +1,10 @@
 import { motion, useMotionValue, useTransform, useAnimation } from "framer-motion";
 import "../Styles/MainCard.css";
 import RBCard from "./RBCard";
+import config from "../services/config";
 
-const MainCard = ({ image, color, onSwipe }) => {
+const MainCard = ({ image, onSwipe, candidate, score , photos }) => {
+  console.log(candidate,photos)
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-50, 50]);
   const opacity = useTransform(
@@ -32,28 +34,30 @@ return (
       } if (info.offset.x < 0) {
 
         // handleSwipeLeft();
-        onSwipe("left");
-        controls.start({ x: -300 });
+        onSwipe("left")
+        controls.start({ x: -300 })
       } else {
-        onSwipe("right");
+        onSwipe("right")
         // handleSwipeRight();
-        controls.start({ x: 300 });
+        controls.start({ x: 300 })
       }
     }}
     animate={controls}
   >
     <RBCard
-      name="Javi A. Torres"
-      title="Software Engineer"
+      name={candidate.user_name}
+      title={photos[0].prompt}
       handle="javicodes"
-      status="Online"
+      status="Online" 
       contactText="Contact Me"
-      avatarUrl="https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg?semt=ais_hybrid&w=740&q=80"
+      avatarUrl={ (config.BASE_URL+"/profilePhotos/"+image) || "https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg?semt=ais_hybrid&w=740&q=80"}
       showUserInfo={true}
       enableTilt={true}
       enableMobileTilt={false}
       onContactClick={() => console.log('Contact clicked')}
-    />
+    >
+
+    </RBCard>
   </motion.div>
 );
 };

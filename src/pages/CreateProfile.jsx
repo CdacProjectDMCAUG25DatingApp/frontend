@@ -66,6 +66,9 @@ function CreateProfile() {
 
 
     async function submitProfile() {
+        const headers = {
+            token: window.sessionStorage.getItem('token')
+        }
         try {
             if (gender == "" && bio == "" && religion == "" && location == "" && motherTongue == "" && marital == "" && dob == "" && education == "" && jobTitle == "" && jobIndustry == "") {
                 toast.warn("Fill All Fields")
@@ -77,7 +80,17 @@ function CreateProfile() {
                 }
                 if (response.status == "success") {
                     toast.success("Profile Completed")
-                    navigate("/addphotos")
+                    const responsePhotos = await axios.get(config.BASE_URL + '/photos/userphotos', { headers })
+                    if (responsePhotos.data.data.length == 6) {
+                        const responsePreferences = await axios.get(config.BASE_URL + '/user/userpreferences', { headers })
+                        if (responsePreferences.data.data.length == 1) {
+                            navigate("/home")
+                        } else {
+                            navigate("/preferences")
+                        }
+                    } else {
+                        navigate('/addphotos')
+                    }
                 } else {
                     if (response.error.errno == 1062) {
                         toast.error("You Already have a profile")

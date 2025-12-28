@@ -13,21 +13,22 @@ const MainLayout = () => {
           {/* Background */}
           <div className="ether-bg">
           <LiquidEther
-            colors={['#5227FF', '#FF9FFC', '#B19EEF']}
-            mouseForce={20}
-            cursorSize={100}
-            isViscous={false}
+            colors={['#e1b1a8', '#f2b5e2', '#e6e4ec']}
+            mouseForce={50}
+            cursorSize={25}
+            isViscous={true}
             viscous={30}
-            iterationsViscous={32}
-            iterationsPoisson={32}
+            iterationsViscous={16}
+            iterationsPoisson={16}
             resolution={0.5}
             isBounce={false}
-            autoDemo={true}
-            autoSpeed={0.5}
-            autoIntensity={2.2}
-            takeoverDuration={0.25}
-            autoResumeDelay={3000}
-            autoRampDuration={0.6}
+            autoDemo={false}
+            autoSpeed={0}
+            autoIntensity={0}
+            takeoverDuration={0}
+            autoResumeDelay={1000}
+            autoRampDuration={0}
+            pressure={20}
           />
           </div>
 
