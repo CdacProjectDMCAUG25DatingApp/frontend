@@ -5,7 +5,7 @@ import config from "./config"
 export async function addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, jobTitle, jobIndustry) {
     try {
         const url = config.BASE_URL + '/user/userprofile'
-        const body = { gender, bio, religion, location, motherTongue, marital, dob, education, jobTitle, jobIndustry }
+        const body = { gender, bio, religion, location, motherTongue, marital, dob:toSqlDate(dob), education, jobTitle, jobIndustry }
         const headers = {
             token: window.sessionStorage.getItem('token')
         }
@@ -17,6 +17,13 @@ export async function addUserProfile(gender, bio, religion, location, motherTong
     }
 
 }
+
+const toSqlDate = (date) => {
+    if (!date) return null;
+    const rawDate = new Date(date)
+    const sqlDate = rawDate.toLocaleDateString('en-CA')
+    return sqlDate
+};
 
 export async function getUserProfile(){
     try {

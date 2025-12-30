@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router';
 import axios from 'axios';
 import config from '../services/config';
 import { UserContext } from '../app/App';
+import { Calendar } from 'primereact/calendar';
+import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
+
 
 
 function CreateProfile() {
@@ -16,10 +19,10 @@ function CreateProfile() {
     const [location, setLocation] = useState("");
     const [motherTongue, setMotherTongue] = useState("");
     const [marital, setMarital] = useState("");
-    const [dob, setdob] = useState("");
+    const [dob, setDob] = useState("");
     const [education, setEducation] = useState("");
     const [jobIndustry, setJobIndustry] = useState("");
-    const [jobTitle, setJobTitle] = useState("");
+    const [tagLine, setTagLine] = useState("");
 
     const [genderList, setGenderList] = useState([]);
     const [religionList, setReligionList] = useState([]);
@@ -70,10 +73,10 @@ function CreateProfile() {
             token: window.sessionStorage.getItem('token')
         }
         try {
-            if (gender == "" && bio == "" && religion == "" && location == "" && motherTongue == "" && marital == "" && dob == "" && education == "" && jobTitle == "" && jobIndustry == "") {
+            if (gender == "" && bio == "" && religion == "" && location == "" && motherTongue == "" && marital == "" && dob == "" && education == "" && tagLine == "" && jobIndustry == "") {
                 toast.warn("Fill All Fields")
             } else {
-                const response = await addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, jobTitle, jobIndustry)
+                const response = await addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, tagLine, jobIndustry)
                 console.error(response);
                 if (response == null) {
                     toast.error("Server Down")
@@ -214,7 +217,19 @@ function CreateProfile() {
                     <label htmlFor="dateInput" className="col-form-label">Select DOB</label>
                 </div>
                 <div className="col-6">
-                    <input type="date" value={dob} className="form-control" id="dateInput" onChange={(e) => setdob(e.target.value)} />
+                    
+                    <Calendar 
+                    id="dob"
+                    value={dob}
+                    onChange={(e) => {console.log(e.value)
+                    return setDob(e.value)}}
+                    showIcon               // Adds a professional calendar icon
+                    iconPos="right"
+                    placeholder="Select Date"
+                    className="w-100"      // Bootstrap full-width class
+                    inputClassName="form-control" // Uses Bootstrap's own input styling
+                    showButtonBar          // Adds 'Today' and 'Clear' buttons for better UX
+                    touchUI={window.innerWidth < 768} />
                 </div>
             </div>
 
@@ -236,10 +251,10 @@ function CreateProfile() {
             </div>
             <div className="row g-3 align-items-center justify-content-center m-1">
                 <div className="col-6">
-                    <label className="col-form-label">Job Title</label>
+                    <label className="col-form-label">Tag Line</label>
                 </div>
                 <div className="col-6">
-                    <input type="text" className="form-control" onChange={e => setJobTitle(e.target.value)} />
+                    <input type="text" className="form-control" onChange={e => setTagLine(e.target.value)} />
                 </div>
             </div>
             <div className="row g-3 align-items-center justify-content-center m-1">
