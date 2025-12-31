@@ -5,7 +5,7 @@ import config from "../services/config";
 import { toast } from "react-toastify";
 import { fetchPhotos } from "../services/addphotos";
 import { getUserProfile } from "../services/userprofile";
-import ImageInputs from "../Components/ImageInputs";
+
 import MySelect from "../Components/MySelect";
 
 
@@ -140,19 +140,20 @@ export default function EditProfile() {
 
 
 
-    return (
+    return (<div>Hello</div> ||
         <div className="container-fluid  min-vh-100 p-4">
             <div className="container border rounded p-4">
                 <div className="row">
                     {/* LEFT IMAGES */}
                     <div className="col-md-3 d-flex flex-column gap-4">
                         {userImages.slice(0, 3).map((img) => (
-                            <ImageInputs
-                                key={img.id}
-                                image={img}
-                                onImageChange={handleImageChange}
-                                onPromptChange={handlePromptChange}
-                            />
+                            // <ImageInputs
+                            //     key={img.id}
+                            //     image={img}
+                            //     onImageChange={handleImageChange}
+                            //     onPromptChange={handlePromptChange}
+                            // />
+                            <div>hi</div>
                         ))}
                     </div>
 
@@ -308,12 +309,13 @@ export default function EditProfile() {
                     {/* RIGHT IMAGES */}
                     <div className="col-md-3 d-flex flex-column gap-4">
                         {userImages.slice(3, 6).map((img) => (
-                            <ImageInputs
-                                key={img.id}
-                                image={img}
-                                onImageChange={handleImageChange}
-                                onPromptChange={handlePromptChange}
-                            />
+                            // <ImageInputs
+                            //     key={img.id}
+                            //     image={img}
+                            //     onImageChange={handleImageChange}
+                            //     onPromptChange={handlePromptChange}
+                            // />
+                            <div>hi</div>
                         ))}
                     </div>
                 </div>

@@ -2,10 +2,10 @@ import axios from "axios"
 import { toast } from "react-toastify"
 import config from "./config"
 
-export async function addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, jobTitle, jobIndustry) {
+export async function addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, tagline, jobIndustry) {
     try {
         const url = config.BASE_URL + '/user/userprofile'
-        const body = { gender, bio, religion, location, motherTongue, marital, dob:toSqlDate(dob), education, jobTitle, jobIndustry }
+        const body = { gender, bio, religion, location, motherTongue, marital, dob:toSqlDate(dob), education, tagline, jobIndustry }
         const headers = {
             token: window.sessionStorage.getItem('token')
         }
