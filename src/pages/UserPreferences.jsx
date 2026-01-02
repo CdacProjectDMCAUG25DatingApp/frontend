@@ -24,6 +24,7 @@ function UserPreferences() {
     const [religion, setReligion] = useState("");
     const [personalityType, setPersonalityType] = useState("");
     const [pet, setPet] = useState("");
+    const [gender, setGender] = useState("");
 
     // const[userPreferences,setUserPreferences] = useState({
     //     looking_for_id:0,
@@ -58,6 +59,7 @@ function UserPreferences() {
     const [religionList, setReligionList] = useState([]);
     const [personalityTypeList, setPersonalityTypeList] = useState([]);
     const [petList, setPetList] = useState([]);
+    const [genderList, setGenderList] = useState([]);
 
     useEffect(() => {
         console.log(user)
@@ -86,6 +88,7 @@ function UserPreferences() {
                 religionRes,
                 personalityTypeRes,
                 petRes,
+                genderRes,
 
             ] = await Promise.all([
                 axios.get(config.BASE_URL + "/api/lookingfor", { headers }),
@@ -103,6 +106,7 @@ function UserPreferences() {
                 axios.get(config.BASE_URL + "/api/religion", { headers }),
                 axios.get(config.BASE_URL + "/api/personalityType", { headers }),
                 axios.get(config.BASE_URL + "/api/pet", { headers }),
+                axios.get(config.BASE_URL + "/api/gender", { headers }),
             ]);
 
             setLookingForList(lookingForRes.data.data);
@@ -120,6 +124,7 @@ function UserPreferences() {
             setReligionList(religionRes.data.data)
             setPersonalityTypeList(personalityTypeRes.data.data)
             setPetList(petRes.data.data)
+            setGenderList(genderRes.data.data);
 
         } catch (error) {
             console.error("Lookup fetch error:", error);
@@ -130,11 +135,11 @@ function UserPreferences() {
     async function submitProfile() {
         try {
             if (lookingFor == "" && openTo == "" && zodiac == "" && familyPlan == "" && education == "" && communicationStyle == "" && lovestyle == "" && drinking == "" && smoking == "" && workout == ""
-                && dietary == "" && sleepingHabit == "" && religion == "" && personalityType == "" && pet == "") {
+                && dietary == "" && sleepingHabit == "" && religion == "" && personalityType == "" && pet == "" && gender == "") {
                 toast.warn("Fill All Fields")
             } else {
                 const response = await addUserPreferences(lookingFor, openTo, zodiac, familyPlan, education, communicationStyle, lovestyle, drinking, smoking, workout
-                    , dietary, sleepingHabit, religion, personalityType, pet)
+                    , dietary, sleepingHabit, religion, personalityType, pet, gender)
                 console.error(response);
                 if (response == null) {
                     toast.error("Server Down")
@@ -157,7 +162,7 @@ function UserPreferences() {
     return (
         <div className='container'>
             <h1 className="text-center mt-4">Creating Profile</h1>
-            <div className="row g-3 align-items-center justify-content-center m-1">
+            {/* <div className="row g-3 align-items-center justify-content-center m-1">
                 <div className="col-6">
                     <label className="col-form-label">Name</label>
                 </div>
@@ -171,6 +176,21 @@ function UserPreferences() {
                 </div>
                 <div className="col-6">
                     <input className="form-control" type="text" placeholder={user.email} aria-label="Disabled input example" disabled />
+                </div>
+            </div> */}
+            <div className="row g-3 align-items-center justify-content-center m-1">
+                <div className="col-6">
+                    <label className="col-form-label">Preferred Gender</label>
+                </div>
+                <div className="col-6">
+                    <select className="form-select" onChange={e => setGender(e.target.value)}>
+                        <option value="">Select Gender</option>
+                        {genderList.map((item) => (
+                            <option key={item.gender_id} value={item.gender_id}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
             <div className="row g-3 align-items-center justify-content-center m-1">
