@@ -3,8 +3,8 @@ import "../Styles/MainCard.css";
 import RBCard from "./RBCard";
 import config from "../services/config";
 
-const MainCard = ({ image, onSwipe, candidate, score , photos }) => {
-  console.log(candidate,photos)
+const MainCard = ({onSwipe,userGender,candidate}) => {
+  console.log(candidate)
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-50, 50]);
   const opacity = useTransform(
@@ -45,12 +45,18 @@ return (
     animate={controls}
   >
     <RBCard
-      name={candidate.user_name}
-      title={photos[0].prompt}
-      handle="javicodes"
+      name={candidate.candidateData.user_name}
+      title={candidate.candidateData.tagline}
+      dob={candidate.candidateData.dob}
+      gender={candidate.candidateData.gender}
+      location_user={candidate.candidateData.location}
+      score={candidate.score}
+      match_interests_count={candidate.match_interests_count}
+      userGender={userGender}
+      handle= ""
       status="Online" 
       contactText="Contact Me"
-      avatarUrl={ (config.BASE_URL+"/profilePhotos/"+image) || "https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg?semt=ais_hybrid&w=740&q=80"}
+      avatarUrl={ (config.BASE_URL+"/profilePhotos/"+candidate.photos[0].photo_url) || "https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg?semt=ais_hybrid&w=740&q=80"}
       showUserInfo={true}
       enableTilt={true}
       enableMobileTilt={false}

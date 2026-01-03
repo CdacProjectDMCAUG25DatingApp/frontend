@@ -1,38 +1,50 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import preloadImg from "../../assets/preload.jpg";
 
 
-const Profile = ({ id, dataURLtoFile }) => {
-  const avatarUrl = useRef(
-    preloadImg
-  )
+const Profile = ({ id,
+  dataURLtoFile,
+  cardWidth = "356px",
+  imageWidth = "300px",
+  imageHeight = "500px",
+  imageurl }) => {
+
+  const [avatarUrl, setAvatarUrl] = useState(preloadImg);
   const [modalOpen, setModalOpen] = useState(false);
 
+  useEffect(() => {
+    if (imageurl && !imageurl.endsWith("/null")) {
+      setAvatarUrl(imageurl);
+    } else {
+      setAvatarUrl(preloadImg);
+    }
+  }, [imageurl]);
+
   const updateAvatar = (imgSrc, canvas) => {
-    avatarUrl.current = imgSrc;
+    setAvatarUrl(imgSrc);
     dataURLtoFile(id, canvas)
   };
 
   return (
-    <div className="card shadow-sm text-center" style={{ width: "356px", borderRadius: "15px" }}>
+    <div
+      className="card shadow-sm text-center"
+      style={{ width: cardWidth, borderRadius: "15px" }}
+    >
       <div className="card-body d-flex flex-column align-items-center">
+
         <div
           style={{
             position: "relative",
-            width: "300px",
-            height: "500px",
-            padding: "12px",          // ✅ padding preserved
+            width: imageWidth,
+            height: imageHeight,
+            padding: "12px",
           }}
         >
           {id === 0 && (
             <div
               className="position-absolute"
-              style={{
-                top: "18px",
-                right: "18px",
-                zIndex: 2,
-              }}
+              style={{ top: "18px", right: "18px", zIndex: 2 }}
             >
               <span
                 title="This is your profile card photo"
@@ -62,7 +74,7 @@ const Profile = ({ id, dataURLtoFile }) => {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "cover",     // ✅ maintains aspect ratio
+              objectFit: "cover",
               borderRadius: "12px",
               border: "2px solid #007bff",
               display: "block",
@@ -73,7 +85,6 @@ const Profile = ({ id, dataURLtoFile }) => {
         <button
           type="button"
           className="btn btn-outline-primary btn-lg w-75 mt-3"
-          title="Change photo"
           onClick={() => setModalOpen(true)}
         >
           Select Photo
@@ -87,7 +98,6 @@ const Profile = ({ id, dataURLtoFile }) => {
         )}
       </div>
     </div>
-
   );
 };
 
