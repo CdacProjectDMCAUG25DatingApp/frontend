@@ -154,7 +154,6 @@ function UserPreferences() {
         } catch (err) {
             console.error("addUserProfile error:", err);
         }
-
     }
 
 

@@ -25,9 +25,9 @@ const toSqlDate = (date) => {
     return sqlDate
 };
 
-export async function getUserProfile(){
+export async function getUserDetails(){
     try {
-        const url = config.BASE_URL + '/user/userprofile'
+        const url = config.BASE_URL + '/user/userdetails'
         const headers = {
             token: window.sessionStorage.getItem('token')
         }

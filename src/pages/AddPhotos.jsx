@@ -2,33 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { addPhotos, fetchPhotos } from '../services/addphotos'
 import { useNavigate } from 'react-router'
-import axios from 'axios'
-import config from '../services/config'
-import Profile from '../Components/ImageInput/Profile';
-
-
-
-
+import PhotoInput from '../Components/ImageInput/PhotoInput';
+import { utils } from '../utils';
 
 function AddPhotos() {
 
     const navigate = useNavigate()
     const [img, setImg] = useState({})
 
-
-
     useEffect(() => {
         const allocateImg = async () => {
             for (let i = 0; i <= 5; i++) {
-                const file = await urlToFile("src\assets\preload.png", i)
+                const file = await utils.urlToFile("src\assets\preload.png", i)
                 setImg(prevImg => ({ ...prevImg, [`img${i}`]: file }))
             }
         }
         allocateImg()
-        console.log(img)
     }, [])
-
-
 
     const upload = async () => {
         const response = await addPhotos(img)
@@ -46,57 +36,37 @@ function AddPhotos() {
 
     }
 
-    async function urlToFile(url, fileName) {
-        try {
-            // 1. Fetch the data from the URL
-            const response = await fetch(url);
+    return (
+        <div className="container py-5">
 
-            // 2. Convert the response into a Blob
-            const blob = await response.blob();
+            <h2 className="text-center text-light mb-5 fw-bold">
+                Upload Your Photos
+            </h2>
 
-            // 3. Create a File object from the Blob
-            // The type is automatically inherited from the Blob's MIME type
-            return new File([blob], `image${fileName}`, { type: blob.type });
-        } catch (error) {
-            console.error("Conversion failed:", error);
-        }
-    }
+            <div className="row g-4 justify-content-center">
+                {Array.from({ length: 6 }, (_, id) => (
+                    <div key={id} className="col-md-4 col-lg-3 text-center">
+                        <div
+                            className="card bg-dark border-light rounded-4 overflow-hidden mx-auto shadow"
+                            style={{ width: "300px", height: "500px" }}
+                        >
+                            <PhotoInput
+                                id={id}
+                                dataURLtoFile={utils.dataURLtoFile}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
 
-    async function dataURLtoFile(id, canvas) {
-        canvas.toBlob((blob) => {
-            const file = new File([blob], `image${id}.png`, { type: blob.type });
-            console.log(file)
-            setImg((prev) => ({
-                ...prev,
-                [`img${id}`]: file
-            }))
-            console.log(img)
-        })
-    }
+            <div className="text-center mt-5">
+                <button className="btn btn-primary px-5 py-2 btn-lg" onClick={upload}>
+                    Upload Photos
+                </button>
+            </div>
 
-
-    return (<div className="container py-5">
-        <div className="row g-4 justify-content-center">
-            {Array.from({ length: 6 }, (v, id) => (
-
-                <div key={id} className="col-md-4 d-flex justify-content-center">
-                    <Profile key={id} id={id} dataURLtoFile={dataURLtoFile} />
-                </div>
-            ))}
         </div>
-        <div className="row g-4 justify-content-center">
-            <button
-                type="button"
-                className="btn btn-outline-primary btn-lg w-75 mt-5"
-                title="Change photo"
-                onClick={() => upload()}
-            >
-                Upload
-            </button>
-        </div>
-    </div>
-
-    )
+    );
 }
 
-export default AddPhotos
+export default AddPhotos;

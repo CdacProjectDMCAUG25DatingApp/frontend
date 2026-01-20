@@ -1,39 +1,102 @@
-/* ===== APP LAYOUT ===== */
+/* =======================================
+   GLOBAL APP LAYOUT
+======================================= */
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden; /* prevent body scrolling */
   background: radial-gradient(circle at top, #111, #000);
 }
 
-/* ===== PAGE CONTENT ===== */
+/* =======================================
+   FIXED SIDEBAR (DESKTOP)
+======================================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: #0a0a0a;
+  padding: 20px;
+  color: #facc15;
+  border-right: 1px solid #27272a;
+  overflow-y: auto; /* sidebar scrolls internally if long */
+  z-index: 100;
+}
+
+/* =======================================
+   MAIN PAGE AREA (RIGHT SIDE)
+======================================= */
 .page-content {
+  margin-left: 260px; /* leave room for sidebar */
   flex: 1;
-  overflow-y: auto;
+  height: 100vh;
+  overflow: hidden; /* do NOT scroll here */
   display: flex;
   justify-content: center;
 }
 
-/* ===== INNER CONTENT CONSTRAINT ===== */
+/* Inner wrapper that contains background + outlet */
 .page-inner {
   position: relative;
   width: 100%;
-  max-width: 1100px;
-  min-height: 100vh; 
+  height: 100%;
+  overflow: hidden;
 }
 
-/* ===== MOBILE ===== */
+/* =======================================
+   BACKGROUND CANVAS (FIXED)
+======================================= */
+.ether-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* =======================================
+   OUTLET CONTENT (SCROLLABLE AREA)
+======================================= */
+.content-overlay {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  overflow-y: auto; /* 🔥 Only this scrolls */
+  padding: 20px;
+}
+
+/* Optional prettier scrollbar */
+.content-overlay::-webkit-scrollbar {
+  width: 6px;
+}
+.content-overlay::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+}
+
+/* =======================================
+   MOBILE: Sidebar becomes bottom bar
+======================================= */
 @media (max-width: 768px) {
-  .page-content {
-    padding: 16px;
-    padding-bottom: 90px; /* space for drawer */
+
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+    border-right: none;
+    border-top: 1px solid #27272a;
+    flex-direction: row;
+    overflow-y: hidden;
+    z-index: 1000;
   }
 
-  .page-inner {
-    max-width: 100%;
-    min-height: auto;
+  .page-content {
+    margin-left: 0;
+    padding-bottom: 80px; /* space for bottom bar */
   }
 }
-
-
-
-

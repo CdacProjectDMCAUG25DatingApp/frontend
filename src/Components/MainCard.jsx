@@ -4,7 +4,6 @@ import RBCard from "./RBCard";
 import config from "../services/config";
 
 const MainCard = ({onSwipe,userGender,candidate}) => {
-  console.log(candidate)
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-50, 50]);
   const opacity = useTransform(
@@ -45,6 +44,7 @@ return (
     animate={controls}
   >
     <RBCard
+      candidate = {candidate}
       name={candidate.candidateData.user_name}
       title={candidate.candidateData.tagline}
       dob={candidate.candidateData.dob}

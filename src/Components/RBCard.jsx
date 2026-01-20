@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import '../Styles/RBCard.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)';
 
@@ -25,6 +26,7 @@ const ProfileCardComponent = ({
   location_user,
   score,
   match_interests_count,
+  candidate,
   behindGlowEnabled = false,
   behindGlowColor,
   userGender,
@@ -42,6 +44,7 @@ const ProfileCardComponent = ({
   showUserInfo = true,
   onContactClick
 }) => {
+  const navigate = useNavigate();
   const wrapRef = useRef(null);
   const shellRef = useRef(null);
 
@@ -320,7 +323,17 @@ const ProfileCardComponent = ({
   );
 
   return (
-    <div ref={wrapRef} onClick={() => { console.log("") }} className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>
+    <div ref={wrapRef} onClick={() => {
+      navigate("/home/profileview",
+        {
+          state: {
+            dataObj: candidate.candidateData,
+            photos: candidate.photos,
+            editable: false
+          }
+        })
+    }}
+      className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>
       {behindGlowEnabled && <div className="pc-behind" />}
       <div ref={shellRef} className="pc-card-shell">
         <section className="pc-card">
@@ -343,7 +356,7 @@ const ProfileCardComponent = ({
                   <div className="pc-user-details">
                     <div className="pc-user-text">
                       <div className="pc-handle">{calculateAge(dob)} • {userGender} • {location_user}</div>
-                      <div className="pc-handle">Match Score {score} • {match_interests_count>1 ? `Shares ${match_interests_count} interests` : `Share ${match_interests_count} interest`}</div>
+                      <div className="pc-handle">Match Score {score} • {match_interests_count > 1 ? `Shares ${match_interests_count} interests` : `Share ${match_interests_count} interest`}</div>
                     </div>
                   </div>
                 </div>

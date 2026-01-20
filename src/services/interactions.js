@@ -10,6 +10,7 @@ export const serviceGetCandidate = async() => {
         return
     }
     if(response.data.status =='success'){
+        
         return response.data.data
     }
 }
