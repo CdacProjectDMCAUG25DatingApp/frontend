@@ -21,7 +21,7 @@ const MySelect = ({
 
       {noDropdown ? (
         <div className="form-control bg-dark text-white">
-          {value ?? "—"}
+          {value ?? ""}
         </div>
       ) : (
         <select

@@ -54,7 +54,6 @@ function Login() {
       setPreferences(prefRes.data.data[0] || {});
       setUserDetails(userDetailsRes.data.data[0]|| {});
 
-
       // navigation logic
       if (!profileRes.data.data.length) return navigate("/createprofile");
       if (photosRes.data.data.length !== 6) return navigate("/addphotos");
