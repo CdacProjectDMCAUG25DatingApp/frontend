@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import Login from "../pages/Login";
@@ -9,13 +9,16 @@ import AddPhotos from "../pages/AddPhotos";
 import UserPreferences from "../pages/UserPreferences";
 
 import Message from "../Home Page Components/src/Pages/Message";
-import Settings from "../Home Page Components/src/Pages/Settings";
+import Settings from "../pages/Settings";
 import Subscribe from "../Home Page Components/src/Pages/Subscribe";
 
 import MainLayout from "./MainLayout";
 import People from "../pages/People";
 import { ProfileView } from "../pages/ProfileView";
 import LikesAndMatches from "../pages/LikesAndMatches";
+
+import ProtectedRoute from "../pages/ProtectedRoute";
+import PublicRoute from "../pages/PublicRoute";
 
 export const UserContext = createContext();
 
@@ -39,26 +42,77 @@ function App() {
           preferences,
           setPreferences,
           userDetails,
-          setUserDetails
+          setUserDetails,
         }}
       >
         <Routes>
+
           {/* PUBLIC ROUTES */}
-          <Route path="*" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/createprofile" element={<CreateProfile />} />
-          <Route path="/addphotos" element={<AddPhotos />} />
-          <Route path="/preferences" element={<UserPreferences />} />
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/createprofile"
+            element={
+              <PublicRoute>
+                <CreateProfile />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/addphotos"
+            element={
+              <PublicRoute>
+                <AddPhotos />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/preferences"
+            element={
+              <PublicRoute>
+                <UserPreferences />
+              </PublicRoute>
+            }
+          />
 
           {/* PROTECTED ROUTES */}
-          <Route path="/home" element={<MainLayout />}>
-            <Route path="profileview" element={<ProfileView />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="people" element={<People />} />
+            <Route path="profileview" element={<ProfileView />} />
             <Route path="message" element={<Message />} />
-            <Route path="subscribe" element={<Subscribe />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="subscribe" element={<Subscribe />} />
             <Route path="likeandmatchespage" element={<LikesAndMatches />} />
           </Route>
+
+          {/* DEFAULT: If route doesn't exist → go home or login */}
+          <Route path="*" element={<Navigate to="/" />} />
+
         </Routes>
       </UserContext.Provider>
 

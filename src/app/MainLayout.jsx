@@ -67,7 +67,7 @@ const MainLayout = () => {
           </div>
 
           {/* Foreground content */}
-          <div className="content-overlay">
+          <div className="content-overlay" style={{width:"100%"}}>
             <Outlet />
           </div>
         </div>
