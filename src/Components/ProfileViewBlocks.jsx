@@ -18,13 +18,12 @@ export const ProfileViewBlock = ({
     const [profile, setProfile] = useState({});
     const [originalProfile, setOriginalProfile] = useState({});
     const [dirtyFields, setDirtyFields] = useState({});
-    console.log(originalProfile)
     const { photos: contextPhotos, setPhotos } = useContext(UserContext);
     const maritalStatusOptions = [{ id: 1, value: 1, name: "Yes" },
     { id: 0, value: 0, name: "No" },
     { id: 2, value: null, name: "Hide" },
     ];
-    console.log(profile)
+
     /* ================= INIT ================= */
     useEffect(() => {
         setProfile({
@@ -187,7 +186,6 @@ export const ProfileViewBlock = ({
                 <div className="col-lg-8">
                     <div className="card bg-dark text-white border-secondary rounded-4">
                         <div className="card-body p-4">
-
                             {Object.entries(profile)
                                 .filter(([key]) => key !== "image_prompt")
                                 .map(([key, value]) => {
@@ -198,21 +196,26 @@ export const ProfileViewBlock = ({
                                             <div key={key} className="mb-3">
                                                 <label className="text-secondary text-uppercase small">Date of Birth</label>
 
-                                                <Calendar
-                                                    id="dob"
-                                                    value={value ? new Date(value) : null}
-                                                    onChange={(e) =>
-                                                        editable && handleChange("dob", e.value)
-                                                    }
-                                                    showIcon
-                                                    iconPos="right"
-                                                    placeholder="Select Date"
-                                                    className="w-100"
-                                                    inputClassName="form-control bg-dark text-white"
-                                                    showButtonBar
-                                                    touchUI={window.innerWidth < 768}
-                                                    disabled={!editable}
-                                                />
+                                                {editable ? (
+                                                    /* When editing → show Calendar */
+                                                    <Calendar
+                                                        id="dob"
+                                                        value={value ? new Date(value) : null}
+                                                        onChange={(e) => handleChange("dob", e.value)}
+                                                        showIcon
+                                                        iconPos="right"
+                                                        placeholder="Select Date"
+                                                        className="w-100"
+                                                        inputClassName="form-control bg-dark text-white"
+                                                        showButtonBar
+                                                        touchUI={window.innerWidth < 768}
+                                                    />
+                                                ) : (
+                                                    /* When NOT editing → show formatted date */
+                                                    <p className="form-control bg-dark text-white">
+                                                        {value ? new Date(value).toLocaleDateString() : "Not set"}
+                                                    </p>
+                                                )}
                                             </div>
                                         );
                                     }
@@ -220,7 +223,7 @@ export const ProfileViewBlock = ({
                                     /* ================= MARITAL STATUS (Dropdown) ================= */
                                     if (key === "marital_status") {
                                         return (
-                                            <MySelect
+                                            value && <MySelect
                                                 key={key}
                                                 label="Marital Status"
                                                 value={value === null || value === undefined ? "" : Number(value)}

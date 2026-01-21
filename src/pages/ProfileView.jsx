@@ -7,8 +7,10 @@ import { UserContext } from "../app/App";
 import axios from "axios";
 import config from "../services/config";
 import MySelect from "../Components/MySelect";
+import { useNavigate } from "react-router";
 
 export const ProfileView = () => {
+  const navigate = useNavigate();
   const { state } = useLocation();
   const { dataObj, photos: routePhotos, editable } = state || {};
   const [genderList, setGenderList] = useState([]);
@@ -149,7 +151,8 @@ export const ProfileView = () => {
   // ================= BLOCK DATA =================
   const repeatedBlocks = [
     // ================= BLOCK 2 : PERSONAL DETAILS =================
-    { dob: finalData.dob,
+    {
+      dob: finalData.dob,
       marital_status: finalData.marital_status,
       location: finalData.location,
       mother_tongue: finalData.mother_tongue,
@@ -188,7 +191,13 @@ export const ProfileView = () => {
 
   return (
     <div className="container-fluid px-lg-5">
-
+      {/* BACK BUTTON */}
+      <button
+        className="btn btn-outline-light mb-3"
+        onClick={() => navigate(-1)}
+      >
+        ← Back
+      </button>
       {/* ================= HERO ================= */}
       <div className="card bg-dark text-white shadow-lg mb-5">
         <div className="card-body p-5">
@@ -232,7 +241,7 @@ export const ProfileView = () => {
                       {field}
                     </label>
                     <input
-                    type='number'
+                      type='number'
                       className="form-control bg-dark text-white"
                       value={profile[field] || ""}
                       disabled={!editable}
@@ -243,17 +252,17 @@ export const ProfileView = () => {
                   </div>
                 ))}
                 <div className="col-md-4">
-                    <MySelect
-                      label="Gender"
-                      value={profile.gender}
-                      options={genderList}
-                      noDropdown={!editable}
-                      onChange={(e) =>
-                        editable && handleChange("gender", e.target.value)
-                      }
-                    />
+                  <MySelect
+                    label="Gender"
+                    value={profile.gender}
+                    options={genderList}
+                    noDropdown={!editable}
+                    onChange={(e) =>
+                      editable && handleChange("gender", e.target.value)
+                    }
+                  />
 
-                  </div>
+                </div>
               </div>
 
               {/* IMAGE PROMPT */}

@@ -28,8 +28,9 @@ const Sidebar = () => {
         >
           Edit Profile
         </NavLink>
-
+        <NavLink to="/home/likeandmatchespage" className="menu-item">Likes/Matched</NavLink>
         <NavLink to="/home/settings" className="menu-item">Settings</NavLink>
+
       </nav>
     </aside>
   );

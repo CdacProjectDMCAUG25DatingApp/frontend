@@ -11,11 +11,11 @@ import UserPreferences from "../pages/UserPreferences";
 import Message from "../Home Page Components/src/Pages/Message";
 import Settings from "../Home Page Components/src/Pages/Settings";
 import Subscribe from "../Home Page Components/src/Pages/Subscribe";
-import MatchesAndLikes from "../Home Page Components/src/Pages/MatchesAndLikes";
 
 import MainLayout from "./MainLayout";
 import People from "../pages/People";
 import { ProfileView } from "../pages/ProfileView";
+import LikesAndMatches from "../pages/LikesAndMatches";
 
 export const UserContext = createContext();
 
@@ -57,7 +57,7 @@ function App() {
             <Route path="message" element={<Message />} />
             <Route path="subscribe" element={<Subscribe />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="matches" element={<MatchesAndLikes />} />
+            <Route path="likeandmatchespage" element={<LikesAndMatches />} />
           </Route>
         </Routes>
       </UserContext.Provider>
