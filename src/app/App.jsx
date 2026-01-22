@@ -8,7 +8,6 @@ import CreateProfile from "../pages/CreateProfile";
 import AddPhotos from "../pages/AddPhotos";
 import UserPreferences from "../pages/UserPreferences";
 
-import Message from "../Home Page Components/src/Pages/Message";
 import Settings from "../pages/Settings";
 import Subscribe from "../Home Page Components/src/Pages/Subscribe";
 
@@ -19,6 +18,8 @@ import LikesAndMatches from "../pages/LikesAndMatches";
 
 import ProtectedRoute from "../pages/ProtectedRoute";
 import PublicRoute from "../pages/PublicRoute";
+import ChatHome from "../pages/ChatHome";
+import Messages from "../pages/Messages";
 
 export const UserContext = createContext();
 
@@ -104,7 +105,8 @@ function App() {
           >
             <Route path="people" element={<People />} />
             <Route path="profileview" element={<ProfileView />} />
-            <Route path="message" element={<Message />} />
+            <Route path="messages" element={<Messages />} />
+            <Route path="chathome" element={<ChatHome />} />
             <Route path="settings" element={<Settings />} />
             <Route path="subscribe" element={<Subscribe />} />
             <Route path="likeandmatchespage" element={<LikesAndMatches />} />

@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../services/config";
+import UserLikeCard from "../Components/UserLikeCard";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { utils } from "../utils";
+import "../Styles/likesnmatches.css";
 
 export default function LikesAndMatches() {
   const [likes, setLikes] = useState([]);
   const [matches, setMatches] = useState([]);
-  const [likedPerson, setLikedPerson] = useState({})
+  const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
 
-  const headers = { token: sessionStorage.getItem("token") };
-
-  /* ================= LOAD DATA ================= */
   useEffect(() => {
     loadLikes();
     loadMatches();
@@ -20,9 +19,11 @@ export default function LikesAndMatches() {
 
   const loadLikes = async () => {
     try {
-      const res = await axios.get(`${config.BASE_URL}/likeesandmatches/likes/liked-you`, { headers });
+      const res = await axios.get(
+        `${config.BASE_URL}/likeesandmatches/likes/liked-you`,
+        { headers: { token } }
+      );
       setLikes(res.data.data || []);
-      console.log(res.data.data)
     } catch (err) {
       console.log("Error loading Likes", err);
     }
@@ -30,139 +31,173 @@ export default function LikesAndMatches() {
 
   const loadMatches = async () => {
     try {
-      const res = await axios.get(`${config.BASE_URL}/likeesandmatches/likes/matches`, { headers });
+      const res = await axios.get(
+        `${config.BASE_URL}/likeesandmatches/likes/matches`,
+        { headers: { token } }
+      );
       setMatches(res.data.data || []);
     } catch (err) {
       console.log("Error loading Matches", err);
     }
   };
 
-  /* ================= OPEN PROFILE ================= */
-  const openProfile = async (token) => {
+  // OPEN PROFILE VIEW
+  const openFullProfile = async (user) => {
     try {
-      // Fetch profile details
+      const headers = { token: user.token };
+
       const detailsRes = await axios.get(
         `${config.BASE_URL}/likeesandmatches/like/likeduserdetails`,
-        { headers: { token } }
+        { headers }
       );
-      const person = detailsRes.data.data;
 
-      // Fetch photos
       const photosRes = await axios.get(
         `${config.BASE_URL}/likeesandmatches/like/likeduserphotos`,
-        { headers: { token } }
+        { headers }
       );
-      let photos = photosRes.data.data || [];
-
-      // If no photos, insert a safe fallback
-      if (photos.length === 0) {
-        photos = [
-          {
-            photo_url: person.primary_photo || "",
-            prompt: "",
-            photo_id: null
-          }
-        ];
-      }
 
       navigate("/home/profileview", {
         state: {
-          dataObj: person,
-          photos: photos,
+          dataObj: detailsRes.data.data,
+          photos: photosRes.data.data,
           editable: false,
           back: "/likes-matches"
         }
       });
 
     } catch (err) {
-      console.error("Error loading full profile", err);
+      console.log("Failed loading full profile", err);
     }
   };
 
+  // LIKE BACK
+  const likeBack = async (candidateToken) => {
+    try {
+      const res = await axios.post(
+        `${config.BASE_URL}/likeesandmatches/likes/like`,
+        { token: candidateToken, is_super_like: 0 },
+        { headers: { token } }
+      );
 
+      toast.success("Liked Back!");
+
+      const liked_uid = res?.data?.data?.liked_uid;
+      removeCardAnimation(liked_uid, "likes");
+
+      if (res?.data?.data?.match === true) {
+        toast.success("It's a Match!");
+        const matchedPerson = likes.find(u => u.token === candidateToken);
+        setMatches(prev => [...prev, matchedPerson]);
+        setLikes(prev => prev.filter(u => u.token !== candidateToken));
+      }
+    } catch (err) {
+      toast.error("Like Back Failed");
+      console.log(err);
+    }
+  };
+
+  // IGNORE
+  const ignoreUser = async (candidateToken) => {
+    try {
+      const res = await axios.delete(
+        `${config.BASE_URL}/likeesandmatches/likes/ignore`,
+        {
+          headers: { token },
+          data: { token: candidateToken }
+        }
+      );
+
+      const ignored_uid = res?.data?.data?.uid;
+      toast.success("Ignored");
+      removeCardAnimation(ignored_uid, "likes");
+
+    } catch (err) {
+      toast.error("Ignore Failed");
+      console.log(err);
+    }
+  };
+
+  // REMOVE MATCH
+  const removeMatch = async (candidateToken) => {
+    try {
+      const res = await axios.delete(
+        `${config.BASE_URL}/likeesandmatches/matches/remove`,
+        {
+          headers: { token },
+          data: { token: candidateToken }
+        }
+      );
+
+      const removed_uid = res?.data?.data?.uid;
+      toast.success("Match Removed");
+      removeCardAnimation(removed_uid, "matches");
+
+    } catch (err) {
+      toast.error("Failed To Remove Match");
+      console.log(err);
+    }
+  };
+
+  const removeCardAnimation = (uid, list) => {
+    const elem = document.getElementById(`card-${uid}`);
+    if (!elem) return;
+
+    elem.classList.add("fade-out");
+
+    setTimeout(() => {
+      if (list === "likes") setLikes(prev => prev.filter(u => u.uid !== uid));
+      if (list === "matches") setMatches(prev => prev.filter(u => u.uid !== uid));
+    }, 250);
+  };
 
   return (
     <div className="container-fluid py-4">
       <h2 className="text-center mb-4">Likes & Matches</h2>
 
       <div className="row">
-        {/* ================= LEFT SIDE — PEOPLE WHO LIKED ME ================= */}
+
+        {/* LIKED YOU */}
         <div className="col-lg-6">
-          <h4 className="mb-3">People Who Liked You</h4>
+          <h4 className="mb-3 text-center">Liked You</h4>
 
-          <div className="card bg-dark text-white p-3">
-            {likes.length === 0 ? (
-              <p>No one has liked your profile yet.</p>
-            ) : (
-              likes.map((user) => (
-                <div
-                  key={user.token}
-                  className="d-flex align-items-center mb-3 p-2 border-bottom"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => openProfile(user.token)}
-                >
-                  <img
-                    src={user.photo_url}
-                    alt=""
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      marginRight: 15,
-                    }}
-                  />
-
-                  <div>
-                    <h6 className="m-0">{user.user_name}</h6>
-                    <small className="text-secondary">
-                      {user.tagline || ""}
-                    </small>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          {likes.length === 0 ? (
+            <p className="text-center">No likes yet.</p>
+          ) : (
+            likes.map(user => (
+              <div id={`card-${user.uid}`} key={user.uid} className="fade-card">
+                <UserLikeCard
+                  user={user}
+                  showLikeBack
+                  onLikeBack={likeBack}
+                  onIgnore={ignoreUser}
+                  onCardClick={openFullProfile}   // <<< CLICK HERE OPENS PROFILE
+                />
+              </div>
+            ))
+          )}
         </div>
 
-        {/* ================= RIGHT SIDE — MATCHES ================= */}
+        {/* MATCHES */}
         <div className="col-lg-6">
-          <h4 className="mb-3">Your Matches</h4>
+          <h4 className="mb-3 text-center">Matches</h4>
 
-          <div className="card bg-dark text-white p-3">
-            {matches.length === 0 ? (
-              <p>You have no matches yet.</p>
-            ) : (
-              matches.map((user) => (
-                <div
-                  key={user.uid}
-                  className="d-flex align-items-center mb-3 p-2 border-bottom"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => openProfile(user)}
-                >
-                  <img
-                    src={utils.urlConverter(user.photo_url)}
-                    alt=""
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      marginRight: 15,
-                    }}
-                  />
-
-                  <div>
-                    <h6 className="m-0">{user.user_name}</h6>
-                    <small className="text-secondary">
-                      matched at {user.matched_at?.slice(0, 10)}
-                    </small>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          {matches.length === 0 ? (
+            <p className="text-center">No matches yet.</p>
+          ) : (
+            matches.map(user => (
+              <div id={`card-${user.uid}`} key={user.uid} className="fade-card">
+                <UserLikeCard
+                  user={user}
+                  showMessage
+                  showRemove
+                  onRemove={() => removeMatch(user.token)}
+                  onCardClick={openFullProfile}   // <<< SAME HERE
+                />
+              </div>
+            ))
+          )}
         </div>
+
       </div>
     </div>
   );

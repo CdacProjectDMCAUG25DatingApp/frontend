@@ -14,7 +14,7 @@ const Sidebar = () => {
 
       <nav className="sidebar-menu">
         <NavLink to="/home/people" end className="menu-item">People</NavLink>
-        <NavLink to="/home/message" className="menu-item">Message</NavLink>
+        <NavLink to="/home/chathome" className="menu-item">Chat Home</NavLink>
         <NavLink to="/home/subscribe" className="menu-item">Subscribe</NavLink>
 
         {/* Send userDetails properly */}
