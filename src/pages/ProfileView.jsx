@@ -205,10 +205,8 @@ export const ProfileView = () => {
 
             {/* PHOTO */}
             <div className="col-lg-4 text-center">
-              <div
-                className="card bg-black border-light rounded-4 overflow-hidden mx-auto"
-                style={{ maxWidth: "320px", height: "480px" }}
-              >
+              <div className="card bg-dark border-light rounded-4 overflow-hidden mx-auto"
+                style={{ width: "300px", height: "500px" }}>
                 <PhotoInput
                   dataURLtoFile={utils.dataURLtoFile}
                   imageurl={utils.urlConverter(finalPhotos?.[0]?.photo_url)}

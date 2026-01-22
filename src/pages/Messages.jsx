@@ -4,6 +4,7 @@ import { socket, connectSocket } from "../socket";
 import axios from "axios";
 import config from "../services/config";
 import "../Styles/messages.css";
+import { utils } from "../utils";
 
 export default function Messages() {
   const { state } = useLocation();
@@ -11,7 +12,6 @@ export default function Messages() {
 
   const candidateToken = state?.candidateToken;
   const user = state?.user;
-
   const [messages, setMessages] = useState([]);
   const [inputMsg, setInputMsg] = useState("");
 
@@ -66,14 +66,14 @@ export default function Messages() {
   };
 
   return (
-    <div className="chat-page">
+    <div className="chat-page m-5">
 
       {/* ------------ HEADER ---------------- */}
       <div className="chat-header">
         <button className="back-btn" onClick={() => navigate(-1)}>❮</button>
 
         <img
-          src={config.USER_PHOTO_BASE + user.photo_url}
+          src={utils.urlConverter(user.photo_url)}
           className="chat-header-dp"
         />
 
@@ -92,7 +92,7 @@ export default function Messages() {
           >
             {msg.incoming && (
               <img
-                src={config.USER_PHOTO_BASE + user.photo_url}
+                src={utils.urlConverter(user.photo_url)}
                 className="bubble-dp"
               />
             )}
@@ -102,8 +102,7 @@ export default function Messages() {
             {!msg.incoming && (
               <img
                 src={
-                  config.USER_PHOTO_BASE +
-                  sessionStorage.getItem("photo")
+                  utils.urlConverter(localStorage.getItem("sidebar_dp"))
                 }
                 className="bubble-dp"
               />

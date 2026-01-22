@@ -13,7 +13,7 @@ export default function UserLikeCard({
   onRemove,
   onCardClick      // custom card click handler
 }) {
-
+  
   const calculateAge = (dob) => {
     const birth = new Date(dob);
     const now = new Date();

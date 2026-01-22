@@ -1,87 +1,116 @@
-/* ===== SIDEBAR BASE (DESKTOP) ===== */
+/* ===================== SIDEBAR CONTAINER ===================== */
 .sidebar {
-  position: fixed;          /* 🔥 FIXED ON DESKTOP */
+  position: fixed;
   top: 0;
   left: 0;
-  width: 260px;
+  width: 250px;
   height: 100vh;
-  background: #0a0a0a;
-  color: #facc15;
-  padding: 20px;
+  background: linear-gradient(180deg, #0d0d0d 0%, #111827 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  padding: 28px 20px;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #27272a;
-  overflow-y: auto;         /* scroll inside sidebar if needed */
-  z-index: 100;
+  overflow-y: auto;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+  z-index: 200;
+
+  /* Hide scrollbars */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* ===== HEADER ===== */
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===================== SIDEBAR HEADER ===================== */
 .sidebar-header {
-  text-align: center;
-  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 36px;
 }
 
+/* ===================== DP (Fallback Circle) ===================== */
 .dp-circle {
-  width: 72px;
-  height: 72px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   border: 2px solid #facc15;
+  background: #18181b;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+
+  font-size: 22px;
+  font-weight: 600;
+  color: #facc15;
+
+  box-shadow: 0 0 6px rgba(250, 204, 21, 0.45);
+}
+
+/* ===================== DP (Image) ===================== */
+.dp-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  border: 2px solid #facc15;
+  box-shadow: 0 0 6px rgba(250, 204, 21, 0.45);
+}
+
+/* ===================== USERNAME ===================== */
+.username {
+  color: #facc15;
+  font-size: 18px;
   font-weight: 600;
 }
 
-.username {
-  margin-top: 10px;
-  font-size: 18px;
-}
-
-/* ===== MENU ===== */
+/* ===================== SIDEBAR MENU ===================== */
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .menu-item {
-  padding: 12px;
-  border-radius: 8px;
-  text-decoration: none;
+  padding: 13px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
   color: #e5e7eb;
-  border: 1px solid #27272a;
-  transition: all 0.2s ease;
-  text-align: center;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
 .menu-item:hover {
-  background: #facc15;
-  color: #0a0a0a;
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+  transform: translateX(6px);
 }
 
-/* ACTIVE */
-.menu-item.active {
-  background: #facc15;
-  color: #0a0a0a;
-  font-weight: 600;
-}
-
-/* ===== MOBILE DRAWER ===== */
+/* ===================== MOBILE NAV ===================== */
 @media (max-width: 768px) {
   .sidebar {
-    position: fixed;        /* mobile: bottom fixed */
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
     width: 100%;
+    height: 70px;
+    padding: 8px 12px;
     flex-direction: row;
-    padding: 8px;
-    border-top: 1px solid #27272a;
+    bottom: 0;
+    top: auto;
     border-right: none;
-    z-index: 1000;
-    overflow-y: hidden;     /* avoid scroll on bottom bar */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .sidebar-header {
@@ -90,12 +119,14 @@
 
   .sidebar-menu {
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     width: 100%;
   }
 
   .menu-item {
-    padding: 10px;
-    font-size: 14px;
+    flex-direction: column;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 12px;
   }
 }

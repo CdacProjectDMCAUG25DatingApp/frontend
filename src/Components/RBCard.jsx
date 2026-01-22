@@ -42,7 +42,9 @@ const ProfileCardComponent = ({
   status = 'Online',
   contactText = 'Contact',
   showUserInfo = true,
-  onContactClick
+  onContactClick,
+  isDraggingRef,
+  isAnimatingRef,
 }) => {
   const navigate = useNavigate();
   const wrapRef = useRef(null);
@@ -323,17 +325,25 @@ const ProfileCardComponent = ({
   );
 
   return (
-    <div ref={wrapRef} onClick={() => {
-      navigate("/home/profileview",
-        {
+    <div
+      ref={wrapRef}
+      onClick={() => {
+        // BLOCK CLICK IF:
+        // dragged even 1px OR animation running
+        if (isDraggingRef?.current || isAnimatingRef?.current) return;
+
+        navigate("/home/profileview", {
           state: {
             dataObj: candidate.candidateData,
             photos: candidate.photos,
             editable: false
           }
-        })
-    }}
-      className={`pc-card-wrapper ${className}`.trim()} style={cardStyle}>
+        });
+      }}
+      className={`pc-card-wrapper ${className}`.trim()}
+      style={cardStyle}
+    >
+
       {behindGlowEnabled && <div className="pc-behind" />}
       <div ref={shellRef} className="pc-card-shell">
         <section className="pc-card">

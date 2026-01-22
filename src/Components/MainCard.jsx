@@ -2,72 +2,130 @@ import { motion, useMotionValue, useTransform, useAnimation } from "framer-motio
 import "../Styles/MainCard.css";
 import RBCard from "./RBCard";
 import config from "../services/config";
+import axios from "axios";
+import { useRef } from "react";
 
-const MainCard = ({onSwipe,userGender,candidate}) => {
+const MainCard = ({ onSwipe, userGender, candidate }) => {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-50, 50]);
-  const opacity = useTransform(
-    x,
-    [-200, -150, 0, 150, 200],
-    [0, 1, 1, 1, 0]
-  );
+  const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
 
   const controls = useAnimation();
 
+  // 🔥 STATE TO BLOCK CLICK
+  const isDragging = useRef(false);
+  const isAnimating = useRef(false);
+
   const style = {
-    flex : 1,
+    flex: 1,
     borderRadius: 10,
     height: "70svh",
     maxHeight: "450px",
-};
+  };
 
-return (
-  <motion.div
-    drag="x"
-    style={{ x, rotate, opacity, ...style }}
-    dragConstraints={{ left: -1000, right: 1000 }}
-    onDragEnd={(e, info) => {
-      if (Math.abs(info.offset.x) <= 150) {
-        controls.start({ x: 0 });
-        return;
-      } if (info.offset.x < 0) {
+  const handleSwipeLeft = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      await axios.post(
+        `${config.BASE_URL}/swipe/left`,
+        {
+          swiper_id: sessionStorage.getItem("token"),
+          swiped_token: candidate.token,
+        },
+        { headers: { token } }
+      );
+    } catch (err) {
+      console.error("Swipe left error:", err);
+    }
+  };
 
-        // handleSwipeLeft();
-        onSwipe("left")
-        controls.start({ x: -300 })
-      } else {
-        onSwipe("right")
-        // handleSwipeRight();
-        controls.start({ x: 300 })
-      }
-    }}
-    animate={controls}
-  >
-    <RBCard
-      candidate = {candidate}
-      name={candidate.candidateData.user_name}
-      title={candidate.candidateData.tagline}
-      dob={candidate.candidateData.dob}
-      gender={candidate.candidateData.gender}
-      location_user={candidate.candidateData.location}
-      score={candidate.score}
-      match_interests_count={candidate.match_interests_count}
-      userGender={userGender}
-      handle= ""
-      status="Online" 
-      contactText="Contact Me"
-      avatarUrl={ (config.BASE_URL+"/profilePhotos/"+candidate.photos[0].photo_url) || "https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg?semt=ais_hybrid&w=740&q=80"}
-      showUserInfo={true}
-      enableTilt={true}
-      enableMobileTilt={false}
-      onContactClick={() => console.log('Contact clicked')}
+  const handleSwipeRight = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      await axios.post(
+        `${config.BASE_URL}/swipe/right`,
+        {
+          swiper_id: sessionStorage.getItem("token"),
+          swiped_token: candidate.token,
+        },
+        { headers: { token } }
+      );
+    } catch (err) {
+      console.error("Swipe right error:", err);
+    }
+  };
+
+  return (
+    <motion.div
+      drag="x"
+      style={{ x, rotate, opacity, ...style }}
+      dragConstraints={{ left: -1000, right: 1000 }}
+      dragElastic={0.25}
+      onDragStart={() => {
+        isDragging.current = true;
+      }}
+
+      onDragEnd={(e, info) => {
+        // RELEASE DRAG
+        setTimeout(() => {
+          isDragging.current = false;
+        }, 150);
+
+        // Not enough swipe: restore card
+        if (Math.abs(info.offset.x) <= 100) {
+          isAnimating.current = true;
+          controls.start({ x: 0, opacity: 1, transition: { duration: 0.35 } })
+            .then(() => {
+              isAnimating.current = false;
+            });
+          return;
+        }
+
+        // LEFT SWIPE
+        if (info.offset.x < 0) {
+          isAnimating.current = true;
+          handleSwipeLeft();
+          onSwipe("left");
+          controls.start({
+            x: -350, opacity: 0, transition: { duration: 0.45 }
+          }).then(() => {
+            isAnimating.current = false;
+          });
+        }
+        // RIGHT SWIPE
+        else {
+          isAnimating.current = true;
+          handleSwipeRight();
+          onSwipe("right");
+          controls.start({
+            x: 350, opacity: 0, transition: { duration: 0.45 }
+          }).then(() => {
+            isAnimating.current = false;
+          });
+        }
+      }}
+
+      animate={controls}
     >
-
-    </RBCard>
-  </motion.div>
-);
+      <RBCard
+        candidate={candidate}
+        userGender={userGender}
+        name={candidate.candidateData.user_name}
+        title={candidate.candidateData.tagline}
+        dob={candidate.candidateData.dob}
+        gender={candidate.candidateData.gender}
+        location_user={candidate.candidateData.location}
+        score={candidate.score}
+        match_interests_count={candidate.match_interests_count}
+        isDraggingRef={isDragging}     
+        isAnimatingRef={isAnimating}
+        avatarUrl={config.BASE_URL + "/profilePhotos/" + candidate.photos[0].photo_url}
+        showUserInfo={true}
+        enableTilt={true}
+        enableMobileTilt={false}
+      />
+    </motion.div>
+  );
 };
-
-
 
 export default MainCard;
