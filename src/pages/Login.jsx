@@ -53,8 +53,8 @@ function Login() {
       setPhotos(photosRes.data.data || []);
       setPreferences(prefRes.data.data[0] || {});
       setUserDetails(userDetailsRes.data.data[0] || {});
-      localStorage.setItem("sidebar_name", user?.name || "");
-      localStorage.setItem("sidebar_dp", photos?.[0]?.photo_url || "");
+      localStorage.setItem("sidebar_name", userDetailsRes.data?.name || "");
+      localStorage.setItem("sidebar_dp", photosRes.data?.[0]?.photo_url || "");
 
       // navigation logic
       if (!profileRes.data.data.length) return navigate("/createprofile");

@@ -7,7 +7,6 @@ import MySelect from "../Components/MySelect";
 import { UserContext } from "../app/App";
 import { Calendar } from "primereact/calendar";
 
-
 export const ProfileViewBlock = ({
     dataObj,
     photos,
@@ -15,36 +14,31 @@ export const ProfileViewBlock = ({
     editable,
     index,
 }) => {
+    const { setPhotos, setUserDetails } = useContext(UserContext);
+
     const [profile, setProfile] = useState({});
     const [originalProfile, setOriginalProfile] = useState({});
     const [dirtyFields, setDirtyFields] = useState({});
-    const { photos: contextPhotos, setPhotos } = useContext(UserContext);
-    const maritalStatusOptions = [{ id: 1, value: 1, name: "Yes" },
-    { id: 0, value: 0, name: "No" },
-    { id: 2, value: null, name: "Hide" },
-    ];
 
     /* ================= INIT ================= */
     useEffect(() => {
-        setProfile({
+        const merged = {
             ...dataObj,
-            image_prompt: photos?.[index]?.prompt || ""
-        });
-        setOriginalProfile({
-            ...dataObj,
-            image_prompt: photos?.[index]?.prompt || ""
-        });
+            image_prompt: photos?.[index]?.prompt || "",
+        };
+        setProfile(merged);
+        setOriginalProfile(merged);
         setDirtyFields({});
     }, [dataObj, photos, index]);
 
-    /* ================= CHANGE ================= */
+    /* ================= CHANGE HANDLER ================= */
     const handleChange = (field, value) => {
-        setProfile(prev => ({ ...prev, [field]: value }));
+        setProfile((prev) => ({ ...prev, [field]: value }));
 
         if (originalProfile[field] !== value) {
-            setDirtyFields(prev => ({ ...prev, [field]: value }));
+            setDirtyFields((prev) => ({ ...prev, [field]: value }));
         } else {
-            setDirtyFields(prev => {
+            setDirtyFields((prev) => {
                 const copy = { ...prev };
                 delete copy[field];
                 return copy;
@@ -52,53 +46,94 @@ export const ProfileViewBlock = ({
         }
     };
 
-    /* ================= UPDATE ================= */
+    /* ================= UPDATE HANDLER ================= */
     const handleUpdate = async () => {
         if (!Object.keys(dirtyFields).length) return;
 
-        try {
-            // 🔹 update preferences
-            await axios.patch(
-                `${config.BASE_URL}/user/userdetails`,
-                dirtyFields,
-                { headers: { token: sessionStorage.getItem("token") } }
-            );
+        const token = sessionStorage.getItem("token");
 
-            // 🔹 update image prompt (only if changed)
+        try {
+            // Split fields into PROFILE TABLE vs PREFERENCES TABLE
+            const profileFields = [
+                "bio",
+                "height",
+                "weight",
+                "gender",
+                "tagline",
+                "dob",
+                "marital_status",
+                "location",
+                "mother_tongue",
+                "religion",
+                "education",
+                "job_industry_id",
+            ];
+
+            const profilePayload = {};
+            const preferencePayload = {};
+
+            Object.keys(dirtyFields).forEach((key) => {
+                if (profileFields.includes(key)) {
+                    profilePayload[key] = dirtyFields[key];
+                } else {
+                    preferencePayload[key] = dirtyFields[key];
+                }
+            });
+
+            // 🔥 Update PROFILE table
+            if (Object.keys(profilePayload).length > 0) {
+                await axios.patch(`${config.BASE_URL}/user/profile`, profilePayload, {
+                    headers: { token },
+                });
+            }
+
+            // 🔥 Update PREFERENCES table
+            if (Object.keys(preferencePayload).length > 0) {
+                await axios.patch(
+                    `${config.BASE_URL}/user/userdetails`,
+                    preferencePayload,
+                    { headers: { token } }
+                );
+            }
+
+            // 🔥 Update Image Prompt
             if (dirtyFields.image_prompt !== undefined) {
                 await axios.patch(
                     `${config.BASE_URL}/user/photo/prompt`,
                     {
                         photo_id: photos[index].photo_id,
-                        prompt: dirtyFields.image_prompt
+                        prompt: dirtyFields.image_prompt,
                     },
-                    { headers: { token: sessionStorage.getItem("token") } }
+                    { headers: { token } }
                 );
 
-                // 🔥 FIX: update local photo prompt so UI does not revert
-                setPhotos(prev => {
+                // update UI photo context
+                setPhotos((prev) => {
                     const copy = [...prev];
-                    copy[index] = { ...copy[index], prompt: dirtyFields.image_prompt };
+                    copy[index] = {
+                        ...copy[index],
+                        prompt: dirtyFields.image_prompt,
+                    };
                     return copy;
                 });
             }
 
+            // 🔥 Update userDetails in context
+            setUserDetails((prev) => ({
+                ...prev,
+                ...dirtyFields,
+            }));
 
             setOriginalProfile(profile);
             setDirtyFields({});
         } catch (err) {
-            console.log("Patch failed:", err);
+            console.log("Update failed:", err);
         }
     };
 
-    const handleCancel = () => {
-        setProfile(originalProfile);
-        setDirtyFields({});
-    };
+    /* ================= FETCH LOOKUPS ================= */
 
-    /* ================= LOOKUPS ================= */
     const [jobIndustryList, setJobIndustryList] = useState([]);
-    const [locationList, setLocationList] = useState([]);
     const [lookingForList, setLookingForList] = useState([]);
     const [loveStyleList, setLoveStyleList] = useState([]);
     const [motherTongueList, setMotherTongueList] = useState([]);
@@ -117,64 +152,73 @@ export const ProfileViewBlock = ({
     const [dietaryList, setDietaryList] = useState([]);
     const [genderList, setGenderList] = useState([]);
 
+    useEffect(() => {
+        const headers = { token: sessionStorage.getItem("token") };
 
-    /* ================= DROPDOWN CONFIG (FIXED) ================= */
+        axios.get(`${config.BASE_URL}/api/job-industry`, { headers }).then((r) => setJobIndustryList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/lookingfor`, { headers }).then((r) => setLookingForList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/lovestyle`, { headers }).then((r) => setLoveStyleList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/mother-tongue`, { headers }).then((r) => setMotherTongueList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/familyplan`, { headers }).then((r) => setFamilyPlanList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/drinking`, { headers }).then((r) => setDrinkingList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/education`, { headers }).then((r) => setEducationList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/communicationstyle`, { headers }).then((r) => setCommunicationStyleList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/opento`, { headers }).then((r) => setOpenToList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/personalitytype`, { headers }).then((r) => setPersonalityTypeList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/pet`, { headers }).then((r) => setPetList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/religion`, { headers }).then((r) => setReligionList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/sleepingHabit`, { headers }).then((r) => setSleepingHabitList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/workout`, { headers }).then((r) => setWorkoutList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/zodiac`, { headers }).then((r) => setZodiacList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/smoking`, { headers }).then((r) => setSmokingList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/dietary`, { headers }).then((r) => setDietaryList(r.data.data));
+        axios.get(`${config.BASE_URL}/api/gender`, { headers }).then((r) => setGenderList(r.data.data));
+    }, []);
+
+    /* ================= DROP-DOWN MAP ================= */
     const dropDownData = {
         job_industry: { label: "Job Industry", options: jobIndustryList },
-        location: { label: "Location", options: locationList },
         looking_for: { label: "Looking For", options: lookingForList },
         love_style: { label: "Love Style", options: loveStyleList },
         mother_tongue: { label: "Mother Tongue", options: motherTongueList },
         family_plan: { label: "Family Plan", options: familyPlanList },
         drinking: { label: "Drinking", options: drinkingList },
-        smoking: { label: "Smoking", options: smokingList },         // 🔥 FIXED
-        dietary: { label: "Dietary", options: dietaryList },         // 🔥 FIXED
+        smoking: { label: "Smoking", options: smokingList },
+        dietary: { label: "Dietary", options: dietaryList },
         education: { label: "Education", options: educationList },
-        communication_style: { label: "Communication Style", options: communicationStyleList },
+        communication_style: {
+            label: "Communication Style",
+            options: communicationStyleList,
+        },
         open_to: { label: "Open To", options: openToList },
-        preferred_gender: { label: "Preferred Gender", options: genderList },  // 🔥 FIXED
-        personality_type: { label: "Personality Type", options: personalityTypeList },
+        preferred_gender: { label: "Preferred Gender", options: genderList },
+        personality_type: {
+            label: "Personality Type",
+            options: personalityTypeList,
+        },
         pet: { label: "Pet", options: petList },
         religion: { label: "Religion", options: religionList },
-        sleeping_habit: { label: "Sleeping Habit", options: sleepingHabitList },
+        sleeping_habit: {
+            label: "Sleeping Habit",
+            options: sleepingHabitList,
+        },
         workout: { label: "Workout", options: workoutList },
         zodiac: { label: "Zodiac", options: zodiacList },
     };
 
-
-    /* ================= FETCH LOOKUPS ================= */
-    useEffect(() => {
-        const headers = { token: sessionStorage.getItem("token") };
-        axios.get(`${config.BASE_URL}/api/job-industry`, { headers }).then(r => setJobIndustryList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/lookingfor`, { headers }).then(r => setLookingForList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/lovestyle`, { headers }).then(r => setLoveStyleList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/mother-tongue`, { headers }).then(r => setMotherTongueList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/familyplan`, { headers }).then(r => setFamilyPlanList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/drinking`, { headers }).then(r => setDrinkingList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/education`, { headers }).then(r => setEducationList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/communicationstyle`, { headers }).then(r => setCommunicationStyleList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/opento`, { headers }).then(r => setOpenToList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/personalitytype`, { headers }).then(r => setPersonalityTypeList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/pet`, { headers }).then(r => setPetList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/religion`, { headers }).then(r => setReligionList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/sleepingHabit`, { headers }).then(r => setSleepingHabitList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/workout`, { headers }).then(r => setWorkoutList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/zodiac`, { headers }).then(r => setZodiacList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/smoking`, { headers }).then(r => setSmokingList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/dietary`, { headers }).then(r => setDietaryList(r.data.data));
-        axios.get(`${config.BASE_URL}/api/gender`, { headers }).then(r => setGenderList(r.data.data));
-
-    }, []);
-
     /* ================= UI ================= */
     return (
         <div className="container-fluid py-5 border-bottom border-secondary">
-            <div className={`row align-items-center g-5 ${reverse ? "flex-row-reverse" : ""}`}>
-
-                {/* IMAGE */}
+            <div
+                className={`row align-items-center g-5 ${reverse ? "flex-row-reverse" : ""
+                    }`}
+            >
+                {/* ==== IMAGE ==== */}
                 <div className="col-lg-4 text-center">
-                    <div className="card bg-dark border-light rounded-4 overflow-hidden mx-auto"
-                        style={{ width: "300px", height: "500px" }}>
+                    <div
+                        className="card bg-dark border-light rounded-4 overflow-hidden mx-auto"
+                        style={{ width: "300px", height: "500px" }}
+                    >
                         <PhotoInput
                             dataURLtoFile={utils.dataURLtoFile}
                             imageurl={utils.urlConverter(photos?.[index]?.photo_url)}
@@ -182,22 +226,22 @@ export const ProfileViewBlock = ({
                     </div>
                 </div>
 
-                {/* FIELDS */}
+                {/* ==== FIELDS ==== */}
                 <div className="col-lg-8">
                     <div className="card bg-dark text-white border-secondary rounded-4">
                         <div className="card-body p-4">
                             {Object.entries(profile)
                                 .filter(([key]) => key !== "image_prompt")
                                 .map(([key, value]) => {
-
-                                    /* ================= DOB (Calendar) ================= */
+                                    /* ===== DOB ===== */
                                     if (key === "dob") {
                                         return (
                                             <div key={key} className="mb-3">
-                                                <label className="text-secondary text-uppercase small">Date of Birth</label>
+                                                <label className="text-secondary text-uppercase small">
+                                                    Date of Birth
+                                                </label>
 
                                                 {editable ? (
-                                                    /* When editing → show Calendar */
                                                     <Calendar
                                                         id="dob"
                                                         value={value ? new Date(value) : null}
@@ -211,33 +255,39 @@ export const ProfileViewBlock = ({
                                                         touchUI={window.innerWidth < 768}
                                                     />
                                                 ) : (
-                                                    /* When NOT editing → show formatted date */
                                                     <p className="form-control bg-dark text-white">
-                                                        {value ? new Date(value).toLocaleDateString() : "Not set"}
+                                                        {value
+                                                            ? new Date(value).toLocaleDateString()
+                                                            : "Not set"}
                                                     </p>
                                                 )}
                                             </div>
                                         );
                                     }
 
-                                    /* ================= MARITAL STATUS (Dropdown) ================= */
+                                    /* ===== MARITAL STATUS ===== */
                                     if (key === "marital_status") {
+                                        const maritalOptions = [
+                                            { id: 1, name: "Yes" },
+                                            { id: 0, name: "No" },
+                                            { id: 2, name: "Hide" },
+                                        ];
+
                                         return (
-                                            value && <MySelect
+                                            <MySelect
                                                 key={key}
                                                 label="Marital Status"
-                                                value={value === null || value === undefined ? "" : Number(value)}
-                                                options={maritalStatusOptions}
+                                                value={value}
+                                                options={maritalOptions}
                                                 noDropdown={!editable}
                                                 onChange={(e) =>
-                                                    editable && handleChange("marital_status", Number(e.target.value))
+                                                    handleChange("marital_status", e.target.value)
                                                 }
                                             />
                                         );
                                     }
 
-
-                                    /* ================= NORMAL SELECT FIELDS ================= */
+                                    /* ===== SELECT FIELDS ===== */
                                     if (dropDownData[key]) {
                                         return (
                                             <MySelect
@@ -246,54 +296,52 @@ export const ProfileViewBlock = ({
                                                 value={value}
                                                 options={dropDownData[key].options}
                                                 noDropdown={!editable}
-                                                onChange={(e) =>
-                                                    editable && handleChange(key, e.target.value)
-                                                }
+                                                onChange={(e) => handleChange(key, e.target.value)}
                                             />
                                         );
                                     }
 
-                                    /* ================= NORMAL INPUTS ================= */
+                                    /* ===== NORMAL TEXT INPUT ===== */
                                     return (
                                         <div key={key} className="mb-3">
                                             <label className="text-secondary text-uppercase small">
                                                 {key.replace(/_/g, " ")}
                                             </label>
-
                                             <input
                                                 type="text"
                                                 className="form-control bg-dark text-white"
                                                 value={value || ""}
                                                 disabled={!editable}
-                                                onChange={(e) =>
-                                                    editable && handleChange(key, e.target.value)
-                                                }
+                                                onChange={(e) => handleChange(key, e.target.value)}
                                             />
                                         </div>
                                     );
                                 })}
 
-
-
-                            {/* IMAGE PROMPT */}
+                            {/* ==== IMAGE PROMPT FIELD ==== */}
                             {(editable || photos?.[index]?.prompt) && (
                                 <>
                                     <hr className="border-secondary mt-4" />
-                                    <h6 className="text-uppercase text-secondary">Image Prompt</h6>
+                                    <h6 className="text-uppercase text-secondary">
+                                        Image Prompt
+                                    </h6>
 
                                     <textarea
                                         className="form-control bg-dark text-white"
                                         value={profile.image_prompt || ""}
                                         disabled={!editable}
-                                        onChange={(e) =>
-                                            editable && handleChange("image_prompt", e.target.value)
-                                        }
+                                        onChange={(e) => handleChange("image_prompt", e.target.value)}
                                     />
                                 </>
                             )}
+
+                            {/* ==== SAVE / CANCEL ==== */}
                             {editable && Object.keys(dirtyFields).length > 0 && (
                                 <div className="text-end mt-4 d-flex justify-content-end gap-2">
-                                    <button className="btn btn-secondary" onClick={handleCancel}>
+                                    <button className="btn btn-secondary" onClick={() => {
+                                        setProfile(originalProfile);
+                                        setDirtyFields({});
+                                    }}>
                                         Cancel
                                     </button>
                                     <button className="btn btn-success" onClick={handleUpdate}>
@@ -301,13 +349,9 @@ export const ProfileViewBlock = ({
                                     </button>
                                 </div>
                             )}
-
-
-
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );

@@ -5,8 +5,7 @@ const MySelect = ({
   onChange,
   noDropdown = false,
 }) => {
-  // Prevent blank value before options arrive
-  if (!noDropdown && options.length === 0) {
+  if (!options || options.length === 0) {
     return (
       <div className="form-group mb-3">
         {label && <label className="form-label">{label}</label>}
@@ -15,25 +14,39 @@ const MySelect = ({
     );
   }
 
+  // Convert string NAME → numeric ID
+  const resolvedValue = (() => {
+    if (value === null || value === undefined || value === "") return "";
+
+    if (typeof value === "number") return value;
+
+    // value is a NAME → find matching id
+    const match = options.find((opt) => opt.name === value);
+    return match ? match.id : "";
+  })();
+
   return (
     <div className="form-group mb-3">
       {label && <label className="form-label">{label}</label>}
 
       {noDropdown ? (
         <div className="form-control bg-dark text-white">
-          {value ?? ""}
+          {value || ""}
         </div>
       ) : (
         <select
-          className="form-select custom-select"
-          value={value ?? ""}
-          onChange={onChange}
+          value={resolvedValue}
+          className="form-control bg-dark text-white"
+          onChange={(e) =>
+            onChange({
+              target: { value: Number(e.target.value) },
+            })
+          }
         >
-          {!value && <option value="">Select</option>}
-
-          {options.map((item) => (
-            <option key={item.id} value={item.name}>
-              {item.name}
+          {!resolvedValue && <option value="">Select</option>}
+          {options.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              {opt.name}
             </option>
           ))}
         </select>

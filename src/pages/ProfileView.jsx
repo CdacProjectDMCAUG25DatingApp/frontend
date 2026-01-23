@@ -70,52 +70,60 @@ export const ProfileView = () => {
   const handleUpdate = async () => {
     if (!Object.keys(dirty).length) return;
 
+    const preferenceMap = {
+      looking_for: "looking_for_id",
+      preferred_gender: "preferred_gender_id",
+      open_to: "open_to_id",
+      zodiac: "zodiac_id",
+      family_plan: "family_plan_id",
+      education: "education_id",
+      communication_style: "communication_style_id",
+      love_style: "love_style_id",
+      drinking: "drinking_id",
+      smoking: "smoking_id",
+      workout: "workout_id",
+      dietary: "dietary_id",
+      sleeping_habit: "sleeping_habit_id",
+      religion: "religion_id",
+      personality_type: "personality_type_id",
+      pet: "pet_id",
+    };
+
+    const profileFields = [
+      "bio", "height", "weight", "gender", "tagline",
+      "dob", "marital_status", "location",
+      "mother_tongue", "religion",
+      "education", "job_industry_id"
+    ];
+
     const profilePayload = {};
     const preferencePayload = {};
 
-    const profileFields = [
-      "bio",
-      "height",
-      "weight",
-      "gender",
-      "tagline",
-      "dob",
-      "marital_status",
-      "location",
-      "mother_tongue",
-      "religion",
-      "education",
-      "job_industry_id"
-    ];
-
-    Object.keys(dirty).forEach((key) => {
+    Object.entries(dirty).forEach(([key, value]) => {
       if (profileFields.includes(key)) {
-        profilePayload[key] = dirty[key];
-      } else if (key !== "image_prompt") {
-        preferencePayload[key] = dirty[key];
+        profilePayload[key] = value;
+      } else if (preferenceMap[key]) {
+        preferencePayload[preferenceMap[key]] = value;
       }
     });
 
+
     try {
       // 🔹 PATCH userprofile
+      // PATCH profile
       if (Object.keys(profilePayload).length) {
-        await axios.patch(
-          `${config.BASE_URL}/user/profile`,
-          profilePayload,
-          { headers: { token: sessionStorage.getItem("token") } }
-        );
-
-        setUserDetails((prev) => ({ ...prev, ...profilePayload }));
+        await axios.patch(`${config.BASE_URL}/user/profile`, profilePayload, {
+          headers: { token: sessionStorage.getItem("token") },
+        });
       }
 
-      // 🔹 PATCH preferences
+      // PATCH preferences
       if (Object.keys(preferencePayload).length) {
-        await axios.patch(
-          `${config.BASE_URL}/user/userdetails`,
-          preferencePayload,
-          { headers: { token: sessionStorage.getItem("token") } }
-        );
+        await axios.patch(`${config.BASE_URL}/user/userdetails`, preferencePayload, {
+          headers: { token: sessionStorage.getItem("token") },
+        });
       }
+
 
       // 🔹 PATCH image prompt
       if (dirty.image_prompt !== undefined) {
@@ -153,7 +161,6 @@ export const ProfileView = () => {
     // ================= BLOCK 2 : PERSONAL DETAILS =================
     {
       dob: finalData.dob,
-      marital_status: finalData.marital_status,
       location: finalData.location,
       mother_tongue: finalData.mother_tongue,
       religion: finalData.religion,

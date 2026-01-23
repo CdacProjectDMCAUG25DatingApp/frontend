@@ -6,7 +6,7 @@ import { utils } from "../utils";
 
 const Sidebar = () => {
   const { user, userDetails, photos } = useContext(UserContext);
-
+  
   const [sideInfo, setSideInfo] = useState({
     userName: "",
     userDP: ""

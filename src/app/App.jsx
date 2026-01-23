@@ -29,7 +29,7 @@ function App() {
   const [photos, setPhotos] = useState([]);
   const [preferences, setPreferences] = useState({});
   const [userDetails, setUserDetails] = useState({});
-
+  
   return (
     <>
       <UserContext.Provider
