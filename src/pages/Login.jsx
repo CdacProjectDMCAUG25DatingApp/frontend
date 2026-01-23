@@ -53,15 +53,15 @@ function Login() {
       setPhotos(photosRes.data.data || []);
       setPreferences(prefRes.data.data[0] || {});
       setUserDetails(userDetailsRes.data.data[0] || {});
-      localStorage.setItem("sidebar_name", userDetailsRes.data?.name || "");
-      localStorage.setItem("sidebar_dp", photosRes.data?.[0]?.photo_url || "");
+      sessionStorage.setItem("sidebar_name", userDetailsRes.data?.name || "");
+      sessionStorage.setItem("sidebar_dp", photosRes.data?.[0]?.photo_url || "");
 
       // navigation logic
       if (!profileRes.data.data.length) return navigate("/createprofile");
       if (photosRes.data.data.length !== 6) return navigate("/addphotos");
       if (!prefRes.data.data.length) return navigate("/preferences");
 
-      navigate("/home");
+      navigate("/home/people");
 
     } catch (ex) {
       console.log(ex);

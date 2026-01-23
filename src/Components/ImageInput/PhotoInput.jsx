@@ -4,7 +4,9 @@ import preloadImg from "../../assets/preload.jpg";
 
 const PhotoInput = ({
   id,
+  from = "",
   dataURLtoFile,
+  setImg,
   imageurl,
   imageWidth = 300,
   imageHeight = 500,
@@ -20,72 +22,39 @@ const PhotoInput = ({
     }
   }, [imageurl]);
 
-  const updateAvatar = (imgSrc, canvas) => {
-    setAvatarUrl(imgSrc);
-    dataURLtoFile(id, canvas);
+  const updateAvatar = (canvas) => {
+    const dataURL = canvas.toDataURL("image/jpeg", 0.9);
+    setAvatarUrl(dataURL);
+    dataURLtoFile(id, canvas, setImg);
   };
+
+  const isAddPhotos = from === "addphotos";
 
   return (
     <div
-      style={{
-        width: imageWidth,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
+      className={isAddPhotos ? "photo-input-addphotos" : "photo-input-default"}
+      style={{ width: "100%" }}
     >
-      {/* IMAGE BOX */}
       <div
         style={{
-          width: imageWidth,
+          width: "100%",
           height: imageHeight,
-          borderRadius: "14px",
+          borderRadius: isAddPhotos ? "16px" : "14px",
           overflow: "hidden",
-          border: "2px solid #007bff",
-          position: "relative",
           background: "#000",
+          border: isAddPhotos ? "none" : "2px solid #007bff",
+          position: "relative",
         }}
       >
-        {/* info icon */}
-        {id === 0 && (
-          <div
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              background: "#007bff",
-              width: "24px",
-              height: "24px",
-              borderRadius: "50%",
-              color: "#fff",
-              fontWeight: "600",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 2,
-            }}
-          >
-            i
-          </div>
-        )}
-
-        {/* IMAGE */}
         <img
           src={avatarUrl}
-          alt="Avatar"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </div>
 
-      {/* BUTTON UNDER IMAGE */}
       <button
-        type="button"
-        className="btn btn-outline-primary mt-3 w-100"
+        className="btn btn-outline-primary mt-3"
+        style={{ width: "100%" }}
         onClick={() => setModalOpen(true)}
       >
         Select Photo

@@ -61,6 +61,7 @@ function CreateProfile() {
             setMotherTongueList(motherTongueRes.data.data);
             setEducationList(educationRes.data.data);
             setJobIndustryList(jobIndustryRes.data.data);
+            console.log(genderRes)
 
         } catch (error) {
             console.error("Lookup fetch error:", error);
@@ -76,6 +77,7 @@ function CreateProfile() {
             if (gender == "" && bio == "" && religion == "" && location == "" && motherTongue == "" && marital == "" && dob == "" && education == "" && tagLine == "" && jobIndustry == "") {
                 toast.warn("Fill All Fields")
             } else {
+                console.log(gender, bio, religion, location, motherTongue, marital, dob, education, tagLine, jobIndustry)
                 const response = await addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, tagLine, jobIndustry)
                 console.error(response);
                 if (response == null) {
@@ -138,7 +140,7 @@ function CreateProfile() {
                     <select className="form-select" onChange={e => setGender(e.target.value)}>
                         <option value="">Select Gender</option>
                         {genderList.map((item) => (
-                            <option key={item.gender_id} value={item.gender_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -163,7 +165,7 @@ function CreateProfile() {
                     <select className="form-select" onChange={e => setReligion(e.target.value)}>
                         <option value="">Select Religion</option>
                         {religionList.map((item) => (
-                            <option key={item.religion_id} value={item.religion_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -186,7 +188,7 @@ function CreateProfile() {
                     <select className="form-select" onChange={e => setMotherTongue(e.target.value)}>
                         <option value="">Select Language</option>
                         {motherTongueList.map((item) => (
-                            <option key={item.language_id} value={item.language_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -242,7 +244,7 @@ function CreateProfile() {
                     <select className="form-select" onChange={e => setEducation(e.target.value)}>
                         <option value="">Select Education</option>
                         {educationList.map((item) => (
-                            <option key={item.education_id} value={item.education_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -265,7 +267,7 @@ function CreateProfile() {
                     <select className="form-select" value={jobIndustry} onChange={e => setJobIndustry(e.target.value)}>
                         <option value="">Select Industry</option>
                         {jobIndustryList.map((item) => (
-                            <option key={item.industry_id} value={item.industry_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}

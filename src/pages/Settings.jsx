@@ -11,6 +11,7 @@ export default function Settings() {
 
   const handleLogout = () => {
     sessionStorage.clear();
+
     navigate("/", { replace: true });
   };
 

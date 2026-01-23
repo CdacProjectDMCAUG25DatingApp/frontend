@@ -29,7 +29,7 @@ function App() {
   const [photos, setPhotos] = useState([]);
   const [preferences, setPreferences] = useState({});
   const [userDetails, setUserDetails] = useState({});
-  
+
   return (
     <>
       <UserContext.Provider
@@ -49,6 +49,7 @@ function App() {
         <Routes>
 
           {/* PUBLIC ROUTES */}
+          {/* PUBLIC ROUTES */}
           <Route
             path="/"
             element={
@@ -67,34 +68,35 @@ function App() {
             }
           />
 
+          {/* PROTECTED ROUTES (include onboarding screens) */}
           <Route
             path="/createprofile"
             element={
-              <PublicRoute>
+              <ProtectedRoute>
                 <CreateProfile />
-              </PublicRoute>
+              </ProtectedRoute>
             }
           />
 
           <Route
             path="/addphotos"
             element={
-              <PublicRoute>
+              <ProtectedRoute>
                 <AddPhotos />
-              </PublicRoute>
+              </ProtectedRoute>
             }
           />
 
           <Route
             path="/preferences"
             element={
-              <PublicRoute>
+              <ProtectedRoute>
                 <UserPreferences />
-              </PublicRoute>
+              </ProtectedRoute>
             }
           />
 
-          {/* PROTECTED ROUTES */}
+          {/* AFTER ONBOARDING -> HOME */}
           <Route
             path="/home"
             element={
@@ -111,6 +113,7 @@ function App() {
             <Route path="subscribe" element={<Subscribe />} />
             <Route path="likeandmatchespage" element={<LikesAndMatches />} />
           </Route>
+
 
           {/* DEFAULT: If route doesn't exist → go home or login */}
           <Route path="*" element={<Navigate to="/" />} />

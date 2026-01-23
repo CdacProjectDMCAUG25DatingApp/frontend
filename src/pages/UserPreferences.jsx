@@ -185,7 +185,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setGender(e.target.value)}>
                         <option value="">Select Gender</option>
                         {genderList.map((item) => (
-                            <option key={item.gender_id} value={item.gender_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -200,7 +200,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setLookingFor(e.target.value)}>
                         <option value="">Select Choice</option>
                         {lookingForList.map((item) => (
-                            <option key={item.looking_for_id} value={item.looking_for_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -216,7 +216,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setOpenTo(e.target.value)}>
                         <option value="">Select Choice</option>
                         {openToList.map((item) => (
-                            <option key={item.open_to_id} value={item.open_to_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -233,7 +233,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setZodiac(e.target.value)}>
                         <option value="">Select Zodiac</option>
                         {zodiacList.map((item) => (
-                            <option key={item.zodiac_id} value={item.zodiac_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -248,7 +248,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setFamilyPlan(e.target.value)}>
                         <option value="">Select Family Plans</option>
                         {familyPlanList.map((item) => (
-                            <option key={item.family_plan_id} value={item.family_plan_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -264,7 +264,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setEducation(e.target.value)}>
                         <option value="">Select Education</option>
                         {educationList.map((item) => (
-                            <option key={item.education_id} value={item.education_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -280,7 +280,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setCommunicationStyle(e.target.value)}>
                         <option value="">Select Communication Style</option>
                         {communicationStyleList.map((item) => (
-                            <option key={item.communication_style_id} value={item.communication_style_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -296,7 +296,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setLoveStyle(e.target.value)}>
                         <option value="">Select Love Style</option>
                         {loveStyleList.map((item) => (
-                            <option key={item.love_style_id} value={item.love_style_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -312,7 +312,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setDrinking(e.target.value)}>
                         <option value="">Select Drinking Habit Style</option>
                         {drinkingList.map((item) => (
-                            <option key={item.drinking_id} value={item.drinking_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -327,7 +327,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setSmoking(e.target.value)}>
                         <option value="">Select Smoking Habit</option>
                         {smokingList.map((item) => (
-                            <option key={item.smoking_id} value={item.smoking_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -342,7 +342,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setWorkout(e.target.value)}>
                         <option value="">Select Workout Habit</option>
                         {workoutList.map((item) => (
-                            <option key={item.workout_id} value={item.workout_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -357,7 +357,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setDietary(e.target.value)}>
                         <option value="">Select Dietry Habit</option>
                         {dietaryList.map((item) => (
-                            <option key={item.dietary_id} value={item.dietary_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -372,7 +372,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setSleepingHabit(e.target.value)}>
                         <option value="">Select Sleeping Habits</option>
                         {sleepingHabitList.map((item) => (
-                            <option key={item.sleeping_habit_id} value={item.sleeping_habit_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -387,7 +387,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setReligion(e.target.value)}>
                         <option value="">Select Religion</option>
                         {religionList.map((item) => (
-                            <option key={item.religion_id} value={item.religion_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -402,7 +402,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setPersonalityType(e.target.value)}>
                         <option value="">Select personality type</option>
                         {personalityTypeList.map((item) => (
-                            <option key={item.personality_type_id} value={item.personality_type_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -418,7 +418,7 @@ function UserPreferences() {
                     <select className="form-select" onChange={e => setPet(e.target.value)}>
                         <option value="">Select personality type</option>
                         {petList.map((item) => (
-                            <option key={item.pet_id} value={item.pet_id}>
+                            <option key={item.id} value={item.id}>
                                 {item.name}
                             </option>
                         ))}

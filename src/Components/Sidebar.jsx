@@ -14,15 +14,15 @@ const Sidebar = () => {
 
   useEffect(() => {
     // Load saved values
-    const savedName = localStorage.getItem("sidebar_name");
-    const savedDP = localStorage.getItem("sidebar_dp");
+    const savedName = sessionStorage.getItem("sidebar_name");
+    const savedDP = sessionStorage.getItem("sidebar_dp");
 
     const updatedName = user?.name || savedName || "";
     const updatedDP = photos?.[0]?.photo_url || savedDP || "";
 
-    // Save to localStorage whenever updated
-    if (updatedName) localStorage.setItem("sidebar_name", updatedName);
-    if (updatedDP) localStorage.setItem("sidebar_dp", updatedDP);
+    // Save to session Storage whenever updated
+    if (updatedName) sessionStorage.setItem("sidebar_name", updatedName);
+    if (updatedDP) sessionStorage.setItem("sidebar_dp", updatedDP);
 
     setSideInfo({
       userName: updatedName,

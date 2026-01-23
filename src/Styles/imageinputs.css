@@ -1,31 +1,107 @@
-body {
-  background-color: #111827;
-  color: #e5e7eb;
+/* =========================================================
+   GLOBAL PHOTO INPUT STYLES (safe everywhere)
+   ========================================================= */
+
+.photo-input-default {
+  /* Default look (used outside AddPhotos)
+     - No card
+     - No shadows
+     - No extra padding 
+  */
+  width: 100%;
 }
 
-.image-card {
-  height: 200px;
-  border-radius: 12px;
-  border: 1px dashed #111827;
-  background: #0a0a0a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
-.image-card:hover {
-  border-color: #facc15;
-  background: #0a0a0a;
-}
 
-.image-card img {
+/* IMAGE BOX (works for both use-cases safely) */
+.photo-input-default img,
+.photo-input-addphotos img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 12px;
+  display: block;
 }
+
+
+
+/* =========================================================
+   ADDPHOTOS — SPECIAL CARD UI
+   Only applied when from="addphotos"
+   ========================================================= */
+
+.photo-input-addphotos {
+  width: 100%;
+  background: #111827;
+  padding: 14px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* subtle hover lift */
+.photo-input-addphotos:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+
+
+/* =========================================================
+   PHOTO BOX INSIDE CARD
+   ========================================================= */
+
+.photo-input-addphotos .photo-box {
+  width: 100%;
+  height: 360px; /* Adjust as needed */
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid #1f2937;
+  position: relative;
+}
+
+
+
+/* =========================================================
+   INFO ICON (only for AddPhotos)
+   ========================================================= */
+
+.photo-input-addphotos .info-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 123, 255, 0.85);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+
+
+/* =========================================================
+   SELECT BUTTON
+   ========================================================= */
+
+.photo-input-addphotos .select-btn {
+  width: 100%;
+  border-radius: 12px !important;
+  padding: 12px !important;
+  font-weight: 600 !important;
+  margin-top: 14px;
+}
+
+
+
+/* =========================================================
+   INPUTS (global dark theme)
+   ========================================================= */
 
 .dark-input,
 .form-control,
@@ -42,3 +118,4 @@ body {
   box-shadow: none;
   color: #e5e7eb;
 }
+
