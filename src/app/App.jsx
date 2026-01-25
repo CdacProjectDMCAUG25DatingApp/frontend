@@ -9,7 +9,6 @@ import AddPhotos from "../pages/AddPhotos";
 import UserPreferences from "../pages/UserPreferences";
 
 import Settings from "../pages/Settings";
-import Subscribe from "../Home Page Components/src/Pages/Subscribe";
 
 import MainLayout from "./MainLayout";
 import People from "../pages/People";
@@ -110,7 +109,6 @@ function App() {
             <Route path="messages" element={<Messages />} />
             <Route path="chathome" element={<ChatHome />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="subscribe" element={<Subscribe />} />
             <Route path="likeandmatchespage" element={<LikesAndMatches />} />
           </Route>
 

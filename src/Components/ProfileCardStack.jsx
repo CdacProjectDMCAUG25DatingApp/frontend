@@ -1,39 +1,44 @@
-import { useEffect, useState } from "react"
-import MainCard from "./MainCard"
-import { serviceGetCandidate, serviceGetCandidatesAgain } from "../services/interactions"
+import { useEffect, useState } from "react";
+import MainCard from "./MainCard";
+import { serviceGetCandidate, serviceGetCandidatesAgain } from "../services/interactions";
 
 const ProfileCardStack = () => {
-  const [index, setIndex] = useState(0)
-  const [candidates, setCandidates] = useState([])
+  const savedIndex = Number(sessionStorage.getItem("swipeIndex") || 0);
+
+  const [index, setIndex] = useState(savedIndex);
+  const [candidates, setCandidates] = useState([]);
 
   useEffect(() => {
     const fetchCandidates = async () => {
-      let data = await serviceGetCandidate()
+      let data = await serviceGetCandidate();
 
       if (!data || data.length === 0) {
-        data = await serviceGetCandidatesAgain()
+        data = await serviceGetCandidatesAgain();
       }
-      setCandidates(data || [])
-    }
 
-    fetchCandidates()
-  }, [])
+      setCandidates(data);
+    };
 
-  const handleSwipe = async (direction) => {
-    const newIndex = index + 1
-    setIndex(newIndex)
+    fetchCandidates();
+  }, []);
 
-    // Load again when finished OR even on very first swipe (your condition)
+  const handleSwipe = async () => {
+    const newIndex = index + 1;
+
     if (newIndex >= candidates.length) {
-      const more = await serviceGetCandidatesAgain()
-      
-      setCandidates(more)
-      setIndex(0)
+      const more = await serviceGetCandidatesAgain();
+      setCandidates(more);
+
+      setIndex(0);
+      sessionStorage.setItem("swipeIndex", 0);
+    } else {
+      setIndex(newIndex);
+      sessionStorage.setItem("swipeIndex", newIndex);
     }
-  }
+  };
 
   if (!candidates.length || !candidates[index]) {
-    return <h2>Loading...</h2>
+    return <h2>Loading...</h2>;
   }
 
   return (
@@ -43,7 +48,7 @@ const ProfileCardStack = () => {
       userGender={candidates[index].candidateData.gender}
       onSwipe={handleSwipe}
     />
-  )
-}
+  );
+};
 
-export default ProfileCardStack
+export default ProfileCardStack;

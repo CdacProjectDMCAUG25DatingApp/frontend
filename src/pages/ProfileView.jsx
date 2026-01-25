@@ -201,7 +201,7 @@ export const ProfileView = () => {
       {/* BACK BUTTON */}
       <button
         className="btn btn-outline-light mb-3"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(-1, { state: { returnIndex: state?.cardIndex } })}
       >
         ← Back
       </button>
