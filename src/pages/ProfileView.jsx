@@ -289,13 +289,13 @@ export const ProfileView = () => {
 
 
       {/* ================= HERO ================= */}
-      <div className="card bg-dark text-white shadow-lg mb-5">
-        <div className="card-body p-5">
+      <div className="card text-white shadow-lg mb-5">
+        <div className="card-body p-5 ">
           <div className="row g-5">
 
             {/* PHOTO */}
             <div className="col-lg-4 text-center">
-              <div className="card bg-dark border-light rounded-4 overflow-hidden mx-auto"
+              <div className="card  border-light rounded-4 overflow-hidden mx-auto"
                 style={{ width: "300px", height: "500px" }}>
                 <PhotoInput
                   dataURLtoFile={utils.dataURLtoFile}
@@ -309,12 +309,12 @@ export const ProfileView = () => {
               <h1 className="fw-bold">{finalData.user_name}</h1>
               <p className="fst-italic text-secondary">{finalData.tagline}</p>
 
-              <hr className="border-secondary" />
+              <hr className="" />
 
               {/* BIO */}
               <h6 className="text-uppercase text-secondary">Bio</h6>
               <textarea
-                className="form-control bg-dark text-white mb-4"
+                className="form-control mb-4"
                 value={profile.bio || ""}
                 onChange={(e) => handleChange("bio", e.target.value)}
                 disabled={!editable}
@@ -330,7 +330,7 @@ export const ProfileView = () => {
                     </label>
                     <input
                       type='number'
-                      className="form-control bg-dark text-white"
+                      className="form-control"
                       value={profile[field] || ""}
                       disabled={!editable}
                       onChange={(e) =>
@@ -356,12 +356,12 @@ export const ProfileView = () => {
               {/* IMAGE PROMPT */}
               {(editable || profile.image_prompt) && (
                 <>
-                  <hr className="border-secondary mt-4" />
+                  <hr className=" mt-4" />
                   <h6 className="text-uppercase text-secondary">
                     Image Prompt
                   </h6>
                   <textarea
-                    className="form-control bg-dark text-white"
+                    className="form-control "
                     value={profile.image_prompt || ""}
                     onChange={(e) =>
                       editable &&
@@ -405,7 +405,7 @@ export const ProfileView = () => {
           style={{ display: "block", background: "rgba(0,0,0,0.7)" }}
         >
           <div className="modal-dialog">
-            <div className="modal-content bg-dark text-white">
+            <div className="modal-content ">
 
               <div className="modal-header">
                 <h5 className="modal-title">Report User</h5>
@@ -426,7 +426,7 @@ export const ProfileView = () => {
                 />
                 {reason === 99 && (
                   <textarea
-                    className="form-control bg-dark text-white"
+                    className="form-control"
                     placeholder="Enter custom reason..."
                     value={customReason}
                     onChange={(e) => setCustomReason(e.target.value)}

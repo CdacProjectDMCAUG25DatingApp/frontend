@@ -1,0 +1,164 @@
+    /* RESET */
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    /* MAIN WRAPPER */
+    .login-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background: #f4f7fb;
+    }
+
+    /* ================= LEFT SIDE (MARKETING) ================= */
+
+    .login-left.marketing {
+    flex: 1.2;
+    padding: 90px 100px;
+    background: linear-gradient(135deg, #eaf2ff, #f7ecff);
+    position: relative;
+    }
+
+    .top-text {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    margin-bottom: 18px;
+    display: block;
+    }
+
+    .hero-title {
+    font-size: 52px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #111827;
+    margin-bottom: 35px;
+    }
+
+    /* BUTTONS */
+    .hero-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    }
+
+    .primary-btn {
+    background: #0f172a;
+    color: white;
+    padding: 14px 26px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    }
+
+    .secondary-btn {
+    background: transparent;
+    border: 1px solid #9ca3af;
+    color: #111827;
+    padding: 14px 26px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 14px;
+    }
+
+    /* TRUST TEXT */
+    .trust-text {
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.6;
+    }
+
+    /* ================= RIGHT SIDE (LOGIN) ================= */
+
+    .login-right {
+    flex: 0.8;
+    background: #0b0b0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    }
+
+    /* LOGIN BOX */
+    .login-box {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    }
+
+    .login-box input {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 12px;
+    margin-bottom: 22px;
+    outline: none;
+    font-size: 14px;
+    }
+
+    .login-box input::placeholder {
+    color: #bdbdbd;
+    }
+
+    .login-box input:focus {
+    border-color: #ffffff;
+    }
+
+    /* SIGNIN BUTTON */
+    .login-box button {
+    background: white;
+    color: black;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.2s ease;
+    }
+
+    .login-box button:hover {
+    opacity: 0.85;
+    }
+
+    /* REGISTER TEXT */
+    .register-text {
+    margin-top: 30px;
+    font-size: 14px;
+    text-align: center;
+    }
+
+    .register-text a {
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 900px) {
+    .login-wrapper {
+        flex-direction: column;
+    }
+
+    .login-left.marketing {
+        padding: 50px 30px;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 36px;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .login-right {
+        padding: 40px 0;
+    }
+    }

@@ -1,18 +1,22 @@
 /* ===================== SIDEBAR CONTAINER ===================== */
+
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
+
   width: 250px;
   height: 100vh;
-  background: linear-gradient(180deg, #0d0d0d 0%, #111827 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
+
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+
   padding: 28px 20px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+
+  box-shadow: 6px 0 20px rgba(17, 24, 39, 0.08);
   z-index: 200;
 
   /* Hide scrollbars */
@@ -25,6 +29,7 @@
 }
 
 /* ===================== SIDEBAR HEADER ===================== */
+
 .sidebar-header {
   display: flex;
   flex-direction: column;
@@ -35,12 +40,14 @@
 }
 
 /* ===================== DP (Fallback Circle) ===================== */
+
 .dp-circle {
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  border: 2px solid #facc15;
-  background: #18181b;
+
+  border: 2px solid #6366f1;
+  background: #f9fafb;
 
   display: flex;
   align-items: center;
@@ -48,42 +55,46 @@
 
   font-size: 22px;
   font-weight: 600;
-  color: #facc15;
+  color: #6366f1;
 
-  box-shadow: 0 0 6px rgba(250, 204, 21, 0.45);
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25);
 }
 
 /* ===================== DP (Image) ===================== */
+
 .dp-img {
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   object-fit: cover;
 
-  border: 2px solid #facc15;
-  box-shadow: 0 0 6px rgba(250, 204, 21, 0.45);
+  border: 2px solid #6366f1;
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25);
 }
 
 /* ===================== USERNAME ===================== */
+
 .username {
-  color: #facc15;
+  color: #111827;
   font-size: 18px;
   font-weight: 600;
 }
 
 /* ===================== SIDEBAR MENU ===================== */
+
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .menu-item {
   padding: 13px 16px;
-  border-radius: 10px;
+  border-radius: 12px;
+
   font-size: 15px;
   font-weight: 500;
-  color: #e5e7eb;
+  color: #374151;
   text-decoration: none;
 
   display: flex;
@@ -95,22 +106,35 @@
 }
 
 .menu-item:hover {
-  background: rgba(250, 204, 21, 0.15);
-  color: #facc15;
+  background: #eef2ff;
+  color: #4338ca;
   transform: translateX(6px);
 }
 
+/* Active menu item (recommended) */
+.menu-item.active {
+  background: #e0e7ff;
+  color: #4338ca;
+  font-weight: 600;
+}
+
 /* ===================== MOBILE NAV ===================== */
+
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
     height: 70px;
+
     padding: 8px 12px;
     flex-direction: row;
+
     bottom: 0;
     top: auto;
+
     border-right: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #e5e7eb;
+
+    box-shadow: 0 -8px 20px rgba(17, 24, 39, 0.08);
   }
 
   .sidebar-header {
@@ -126,7 +150,8 @@
   .menu-item {
     flex-direction: column;
     padding: 6px 8px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 12px;
+    gap: 6px;
   }
 }

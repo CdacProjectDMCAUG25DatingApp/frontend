@@ -9,7 +9,7 @@ const MySelect = ({
     return (
       <div className="form-group mb-3">
         {label && <label className="form-label">{label}</label>}
-        <div className="form-control bg-dark text-white">Loading...</div>
+        <div className="form-control ">Loading...</div>
       </div>
     );
   }
@@ -30,13 +30,13 @@ const MySelect = ({
       {label && <label className="form-label">{label}</label>}
 
       {noDropdown ? (
-        <div className="form-control bg-dark text-white">
+        <div className="form-control">
           {value || ""}
         </div>
       ) : (
         <select
           value={resolvedValue}
-          className="form-control bg-dark text-white"
+          className="form-control"
           onChange={(e) =>
             onChange({
               target: { value: Number(e.target.value) },

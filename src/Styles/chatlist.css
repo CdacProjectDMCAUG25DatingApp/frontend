@@ -1,31 +1,42 @@
+/* ================= CHAT LIST ITEM ================= */
+
 .chat-list-item {
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid #333;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 10px;
   cursor: pointer;
-  background: #151515;
-  border-radius: 10px;
-  margin-bottom: 6px;
-  transition: 0.2s;
+
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+
+  transition: all 0.25s ease;
 }
 
 .chat-list-item:hover {
-  background: #1f1f1f;
+  background: #f4f7fb;
+  transform: translateY(-1px);
 }
 
+/* ================= AVATAR ================= */
+
 .chat-list-avatar {
-  width: 55px;
-  height: 55px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 12px;
-  border: 2px solid #444;
+  margin-right: 14px;
+  border: 2px solid #e5e7eb;
 }
+
+/* ================= CONTENT ================= */
 
 .chat-list-content {
   flex: 1;
 }
+
+/* ================= TOP ROW ================= */
 
 .chat-list-top {
   display: flex;
@@ -33,20 +44,41 @@
   align-items: center;
 }
 
+/* ================= NAME ================= */
+
 .chat-list-name {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: #111827;
 }
+
+/* ================= TIME ================= */
 
 .chat-list-time {
   font-size: 13px;
-  color: #bbb;
+  color: #6b7280;
 }
 
+/* ================= MESSAGE PREVIEW ================= */
+
 .chat-list-preview {
-  margin: 3px 0 0 0;
-  color: #aaa;
-  font-size: 15px;
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.4;
+}
+
+/* ================= OPTIONAL STATES ================= */
+
+/* Active / Selected chat */
+.chat-list-item.active {
+  background: #eaf2ff;
+  border-color: #c7d2fe;
+}
+
+/* Unread message */
+.chat-list-item.unread .chat-list-preview {
+  font-weight: 600;
+  color: #111827;
 }

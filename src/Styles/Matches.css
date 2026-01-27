@@ -1,0 +1,162 @@
+    /* ===================== MATCHES PAGE ===================== */
+
+    .matches-page {
+    padding: 30px 20px;
+    }
+
+    .matches-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #111827;
+    }
+
+    /* ===================== MATCH CARD ===================== */
+
+    .match-card {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto 18px auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+
+    border-radius: 20px;
+    padding: 18px 22px;
+
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 40px rgba(17, 24, 39, 0.08);
+
+    transition: all 0.25s ease;
+    }
+
+    .match-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 50px rgba(17, 24, 39, 0.12);
+    }
+
+    /* ===================== LEFT SIDE ===================== */
+
+    .match-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    }
+
+    /* PROFILE IMAGE / PLACEHOLDER */
+
+    .match-avatar,
+    .match-avatar-placeholder {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f9fafb;
+    border: 2px solid #6366f1;
+    }
+
+    .match-avatar {
+    object-fit: cover;
+    }
+
+    /* ===================== NAME + META ===================== */
+
+    .match-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    }
+
+    .match-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    }
+
+    .match-meta {
+    font-size: 14px;
+    color: #6b7280;
+    }
+
+    /* ===================== RIGHT SIDE ACTIONS ===================== */
+
+    .match-actions {
+    display: flex;
+    gap: 12px;
+    }
+
+    /* MESSAGE BUTTON */
+
+    .match-message-btn {
+    padding: 10px 18px;
+    border-radius: 30px;
+
+    background: #6366f1;
+    color: white;
+
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: 0.2s ease;
+    }
+
+    .match-message-btn:hover {
+    opacity: 0.9;
+    }
+
+    /* REMOVE BUTTON */
+
+    .match-remove-btn {
+    padding: 10px 18px;
+    border-radius: 30px;
+
+    background: transparent;
+    color: #ef4444;
+
+    border: 1px solid #ef4444;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: 0.2s ease;
+    }
+
+    .match-remove-btn:hover {
+    background: rgba(239, 68, 68, 0.08);
+    }
+
+    /* ===================== EMPTY STATE (OPTIONAL) ===================== */
+
+    .matches-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+    font-size: 15px;
+    }
+
+    /* ===================== RESPONSIVE ===================== */
+
+    @media (max-width: 600px) {
+    .match-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .match-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    }

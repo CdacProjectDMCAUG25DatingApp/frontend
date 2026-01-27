@@ -1,20 +1,37 @@
+/* ================= SOFT FADE + LIFT IN ================= */
+
 .fade-card {
-  animation: fadeIn 0.25s ease-in;
+  animation: softFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* ================= SOFT FADE OUT ================= */
 
 .fade-out {
-  animation: fadeOut 0.25s ease-out forwards;
+  animation: softFadeOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ================= KEYFRAMES ================= */
+
+@keyframes softFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes fadeOut {
-  from { opacity: 1; height: auto; }
+@keyframes softFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    height: auto;
+  }
   to {
     opacity: 0;
+    transform: translateY(6px);
     height: 0;
     margin: 0;
     padding: 0;

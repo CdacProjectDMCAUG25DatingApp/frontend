@@ -1,17 +1,144 @@
+    /* ================= RESET ================= */
+
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    /* ================= PROFILE WRAPPER ================= */
+
     .profile-wrapper {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        padding-top: 20px;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 30px 15px;
+    background: linear-gradient(135deg, #eaf2ff, #f7ecff);
     }
 
-    .profile-wrapper>.container-fluid {
-        width: 420px;
-        /* same width as screenshot 1 */
-        max-width: 95%;
-        border-radius: 30px;
-        background: #000;
+    /* ================= PROFILE CONTAINER ================= */
+
+    .profile-wrapper > .container-fluid {
+    width: 420px;
+    max-width: 100%;
+    border-radius: 30px;
+
+    background: #ffffff;
+    padding: 24px;
+
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 20px 40px rgba(17, 24, 39, 0.08);
+    }
+
+    /* ================= HEADINGS ================= */
+
+    .profile-wrapper h1,
+    .profile-wrapper h2,
+    .profile-wrapper h3 {
+    color: #111827;
+    font-weight: 600;
+    margin-bottom: 14px;
+    }
+
+    /* ================= LABELS ================= */
+
+    .profile-wrapper label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+    display: block;
+    }
+
+    /* ================= INPUTS ================= */
+
+    .profile-wrapper input,
+    .profile-wrapper textarea,
+    .profile-wrapper select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 16px;
+    color: #111827;
+    }
+
+    .profile-wrapper input::placeholder,
+    .profile-wrapper textarea::placeholder {
+    color: #9ca3af;
+    }
+
+    .profile-wrapper input:focus,
+    .profile-wrapper textarea:focus,
+    .profile-wrapper select:focus {
+    border-color: #6366f1;
+    background: #ffffff;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .profile-wrapper button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 30px;
+    border: none;
+    background: #0f172a;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s ease;
+    }
+
+    .profile-wrapper button:hover {
+    opacity: 0.9;
+    }
+
+    /* ================= SECTION CARDS ================= */
+
+    .profile-section {
+    background: #f9fafb;
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 18px;
+    border: 1px solid #e5e7eb;
+    }
+
+    /* ================= PROFILE IMAGE ================= */
+
+    .profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e5e7eb;
+    margin: 0 auto 20px;
+    display: block;
+    }
+
+    /* ================= HELPER TEXT ================= */
+
+    .profile-helper-text {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 10px;
+    text-align: center;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 480px) {
+    .profile-wrapper {
+        padding: 20px 10px;
+    }
+
+    .profile-wrapper > .container-fluid {
+        border-radius: 24px;
         padding: 20px;
-        border: 2px solid #444;
     }
-
+    }

@@ -208,7 +208,7 @@ export const ProfileViewBlock = ({
 
     /* ================= UI ================= */
     return (
-        <div className="container-fluid py-5 border-bottom border-secondary">
+        <div className="container-fluid py-5 border-bottom ">
             <div
                 className={`row align-items-center g-5 ${reverse ? "flex-row-reverse" : ""
                     }`}
@@ -216,7 +216,7 @@ export const ProfileViewBlock = ({
                 {/* ==== IMAGE ==== */}
                 <div className="col-lg-4 text-center">
                     <div
-                        className="card bg-dark border-light rounded-4 overflow-hidden mx-auto"
+                        className="card border-light rounded-4 overflow-hidden mx-auto"
                         style={{ width: "300px", height: "500px" }}
                     >
                         <PhotoInput
@@ -228,7 +228,7 @@ export const ProfileViewBlock = ({
 
                 {/* ==== FIELDS ==== */}
                 <div className="col-lg-8">
-                    <div className="card bg-dark text-white border-secondary rounded-4">
+                    <div className="card  rounded-4">
                         <div className="card-body p-4">
                             {Object.entries(profile)
                                 .filter(([key]) => key !== "image_prompt")
@@ -250,12 +250,12 @@ export const ProfileViewBlock = ({
                                                         iconPos="right"
                                                         placeholder="Select Date"
                                                         className="w-100"
-                                                        inputClassName="form-control bg-dark text-white"
+                                                        inputClassName="form-control "
                                                         showButtonBar
                                                         touchUI={window.innerWidth < 768}
                                                     />
                                                 ) : (
-                                                    <p className="form-control bg-dark text-white">
+                                                    <p className="form-control ">
                                                         {value
                                                             ? new Date(value).toLocaleDateString()
                                                             : "Not set"}
@@ -309,7 +309,7 @@ export const ProfileViewBlock = ({
                                             </label>
                                             <input
                                                 type="text"
-                                                className="form-control bg-dark text-white"
+                                                className="form-control "
                                                 value={value || ""}
                                                 disabled={!editable}
                                                 onChange={(e) => handleChange(key, e.target.value)}
@@ -321,13 +321,13 @@ export const ProfileViewBlock = ({
                             {/* ==== IMAGE PROMPT FIELD ==== */}
                             {(editable || photos?.[index]?.prompt) && (
                                 <>
-                                    <hr className="border-secondary mt-4" />
+                                    <hr className=" mt-4" />
                                     <h6 className="text-uppercase text-secondary">
                                         Image Prompt
                                     </h6>
 
                                     <textarea
-                                        className="form-control bg-dark text-white"
+                                        className="form-control"
                                         value={profile.image_prompt || ""}
                                         disabled={!editable}
                                         onChange={(e) => handleChange("image_prompt", e.target.value)}

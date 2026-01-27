@@ -1,0 +1,199 @@
+    /* =================================================
+    PROFILE VIEW BLOCK – LIGHT PREMIUM THEME
+    ================================================= */
+
+    /* Outer spacing already handled by container-fluid */
+    .profile-view-block {
+    width: 100%;
+    }
+
+    /* =================================================
+    IMAGE CARD (LEFT)
+    ================================================= */
+
+    .profile-image-card {
+    width: 300px;
+    height: 500px;
+
+    border-radius: 28px;
+    overflow: hidden;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+
+    box-shadow: 0 20px 45px rgba(17, 24, 39, 0.08);
+    }
+
+    /* PhotoInput inside */
+    .profile-image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
+
+    /* =================================================
+    DETAILS CARD (RIGHT)
+    ================================================= */
+
+    .profile-details-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(16px);
+
+    border-radius: 28px;
+    border: 1px solid #e5e7eb;
+
+    box-shadow: 0 24px 50px rgba(17, 24, 39, 0.08);
+    }
+
+    /* =================================================
+    CARD BODY
+    ================================================= */
+
+    .profile-details-card .card-body {
+    padding: 28px;
+    }
+
+    /* =================================================
+    LABELS
+    ================================================= */
+
+    .profile-details-card label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 6px;
+    display: block;
+    }
+
+    /* =================================================
+    INPUTS / TEXTAREA / SELECT
+    ================================================= */
+
+    .profile-details-card .form-control,
+    .profile-details-card textarea,
+    .profile-details-card select {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #111827;
+
+    transition: border 0.2s ease, background 0.2s ease;
+    }
+
+    .profile-details-card .form-control::placeholder,
+    .profile-details-card textarea::placeholder {
+    color: #9ca3af;
+    }
+
+    .profile-details-card .form-control:focus,
+    .profile-details-card textarea:focus,
+    .profile-details-card select:focus {
+    background: #ffffff;
+    border-color: #6366f1;
+    box-shadow: none;
+    outline: none;
+    }
+
+    /* Disabled fields */
+    .profile-details-card .form-control:disabled,
+    .profile-details-card textarea:disabled {
+    background: #f3f4f6;
+    color: #6b7280;
+    }
+
+    /* =================================================
+    PRIME REACT CALENDAR FIX
+    ================================================= */
+
+    .p-calendar .p-inputtext {
+    width: 100%;
+    border-radius: 14px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: #111827;
+    }
+
+    .p-calendar .p-inputtext:focus {
+    border-color: #6366f1;
+    box-shadow: none;
+    }
+
+    /* =================================================
+    IMAGE PROMPT SECTION
+    ================================================= */
+
+    .profile-image-prompt {
+    margin-top: 30px;
+    }
+
+    .profile-image-prompt h6 {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 10px;
+    }
+
+    /* =================================================
+    DIVIDER
+    ================================================= */
+
+    .profile-details-card hr {
+    border-color: #e5e7eb;
+    margin: 28px 0;
+    }
+
+    /* =================================================
+    ACTION BUTTONS
+    ================================================= */
+
+    .profile-actions {
+    margin-top: 28px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    }
+
+    .profile-actions .btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    }
+
+    .profile-actions .btn-secondary:hover {
+    background: #e5e7eb;
+    }
+
+    .profile-actions .btn-success {
+    background: #6366f1;
+    border: none;
+    }
+
+    .profile-actions .btn-success:hover {
+    opacity: 0.9;
+    }
+
+    /* =================================================
+    RESPONSIVE
+    ================================================= */
+
+    @media (max-width: 992px) {
+    .profile-image-card {
+        margin-bottom: 30px;
+    }
+    }
+
+    @media (max-width: 576px) {
+    .profile-image-card {
+        width: 260px;
+        height: 420px;
+    }
+
+    .profile-details-card .card-body {
+        padding: 22px;
+    }
+    }

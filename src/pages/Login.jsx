@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { UserContext } from '../app/App';
 import config from '../services/config';
 import axios from 'axios';
+import './Login.css';
 
 function Login() {
   const {
@@ -30,7 +31,6 @@ function Login() {
 
       sessionStorage.setItem("token", result.data.token);
 
-      // minimal auth user
       setUser({
         name: result.data.name,
         email: result.data.email,
@@ -41,22 +41,19 @@ function Login() {
 
       const headers = { token: sessionStorage.getItem("token") };
 
-      // fetch everything for logged-in user
-      const [profileRes, photosRes, prefRes, userDetailsRes] = await Promise.all([
-        axios.get(config.BASE_URL + "/user/userprofile", { headers }),
-        axios.get(config.BASE_URL + "/photos/userphotos", { headers }),
-        axios.get(config.BASE_URL + "/user/userpreferences", { headers }),
-        axios.get(config.BASE_URL + "/user/userdetails", { headers }),
-      ]);
+      const [profileRes, photosRes, prefRes, userDetailsRes] =
+        await Promise.all([
+          axios.get(config.BASE_URL + "/user/userprofile", { headers }),
+          axios.get(config.BASE_URL + "/photos/userphotos", { headers }),
+          axios.get(config.BASE_URL + "/user/userpreferences", { headers }),
+          axios.get(config.BASE_URL + "/user/userdetails", { headers }),
+        ]);
 
       setProfile(profileRes.data.data[0] || {});
       setPhotos(photosRes.data.data || []);
       setPreferences(prefRes.data.data[0] || {});
       setUserDetails(userDetailsRes.data.data[0] || {});
-      sessionStorage.setItem("sidebar_name", userDetailsRes.data?.name || "");
-      sessionStorage.setItem("sidebar_dp", photosRes.data?.[0]?.photo_url || "");
 
-      // navigation logic
       if (!profileRes.data.data.length) return navigate("/createprofile");
       if (photosRes.data.data.length !== 6) return navigate("/addphotos");
       if (!prefRes.data.data.length) return navigate("/preferences");
@@ -70,25 +67,48 @@ function Login() {
   };
 
   return (
-    <div style={{ width: '100%', height: 750 }}>
-      <div className='container w-50'>
-        <div className="mb-3 mt-3">
-          <label>Email address</label>
-          <input type="email" className="form-control"
-            onChange={(e) => setEmail(e.target.value)} />
+    <div className="login-wrapper">
+      {/* LEFT SIDE – MARKETING STYLE */}
+      <div className="login-left marketing">
+        <small className="top-text">Find Your Kind of Connection</small>
+
+        <h1 className="hero-title">
+          Meet new people.<br />
+          Make real connections.
+        </h1>
+
+        <div className="hero-buttons">
+          <button className="primary-btn">Get Started</button>
+          <button className="secondary-btn">Learn more</button>
         </div>
 
-        <div className="mb-3">
-          <label>Password</label>
-          <input type="password" className="form-control"
-            onChange={(e) => setPassword(e.target.value)} />
-        </div>
+        <p className="trust-text">
+          Safe, simple,<br />
+          and 100% free to start
+        </p>
+      </div>
 
-        <button className="btn btn-success" onClick={signin}>Signin</button>
+      {/* RIGHT SIDE – LOGIN */}
+      <div className="login-right">
+        <div className="login-box">
+          <input
+            type="email"
+            placeholder="email address :"
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <div>
-          <label>Don't have an account?</label>
-          <a href="/register"> Click Here</a>
+          <input
+            type="password"
+            placeholder="password :"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button onClick={signin}>Signin</button>
+
+          <p className="register-text">
+            don’t have an account <br />
+            <a href="/register">click here</a>
+          </p>
         </div>
       </div>
     </div>
