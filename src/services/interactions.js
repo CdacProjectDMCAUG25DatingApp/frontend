@@ -5,7 +5,6 @@ import { toast } from "react-toastify"
 
 export const serviceGetCandidate = async() => {
     const response = await axios.get(config.BASE_URL + '/interactions/getcandidates', { headers: {token : window.sessionStorage.getItem('token') }})
-          console.log(response)
     if(response.status == 'error'){
         toast.error("Something Went Wrong"+response.error)
         return

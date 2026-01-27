@@ -46,6 +46,7 @@ const ProfileCardComponent = ({
   isDraggingRef,
   isAnimatingRef,
 }) => {
+
   const navigate = useNavigate();
   const wrapRef = useRef(null);
   const shellRef = useRef(null);
@@ -336,7 +337,8 @@ const ProfileCardComponent = ({
           state: {
             dataObj: candidate.candidateData,
             photos: candidate.photos,
-            editable: false
+            editable: false,
+            token:candidate.token
           }
         });
       }}

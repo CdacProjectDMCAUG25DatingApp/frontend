@@ -12,7 +12,7 @@ import { useNavigate } from "react-router";
 export const ProfileView = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { dataObj, photos: routePhotos, editable } = state || {};
+  const { dataObj, photos: routePhotos, editable ,token} = state || {};
   const [genderList, setGenderList] = useState([]);
   const {
     userDetails,
@@ -20,6 +20,12 @@ export const ProfileView = () => {
     photos: contextPhotos,
     setPhotos
   } = useContext(UserContext);
+
+  const [reportVisible, setReportVisible] = useState(false);
+  const [reason, setReason] = useState(null);
+  const [customReason, setCustomReason] = useState("");
+  const [reportReasons, setReportReasons] = useState([]);
+
 
   // ================= SOURCE SELECTION =================
   const finalData = editable ? userDetails : dataObj;
@@ -50,6 +56,54 @@ export const ProfileView = () => {
 
     setDirty({});
   }, [finalData]); // ❗ DO NOT depend on finalPhotos (prevents reset)
+
+  useEffect(() => {
+    axios.get(`${config.BASE_URL}/api/report-reasons`, {
+      headers: { token: sessionStorage.getItem("token") }
+    }).then((r) => setReportReasons(r.data.data));
+  }, []);
+
+  const handleBlock = async () => {
+    try {
+      await axios.post(
+        `${config.BASE_URL}/settings/block`,
+        { blocked_id: token },
+        { headers: { token: sessionStorage.getItem("token") } }
+      );
+
+      alert("User Blocked");
+      navigate(-1);
+    } catch (err) {
+      console.error(err);
+      alert("Block failed");
+    }
+  };
+
+  const submitReport = async () => {
+
+    try {
+      await axios.post(
+        `${config.BASE_URL}/settings/report`,
+        {
+          reported_id: token,
+          reason_id: reason,
+          reason_custom: reason === 99 ? customReason : null,
+        },
+        { headers: { token: sessionStorage.getItem("token") } }
+      );
+
+      alert("User Reported");
+    } catch (err) {
+      alert("Report failed");
+    }
+
+    setReportVisible(false);
+    setReason(null);
+    setCustomReason("");
+  };
+
+
+
 
   // ================= CHANGE =================
   const handleChange = (field, value) => {
@@ -205,6 +259,35 @@ export const ProfileView = () => {
       >
         ← Back
       </button>
+
+      {/* TOP RIGHT MENU */}
+      <div className="d-flex justify-content-end mb-3">
+        <div className="dropdown">
+          <button
+            className="btn btn-outline-light dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+          >
+            ⋮
+          </button>
+
+          <ul className="dropdown-menu dropdown-menu-dark">
+            <li>
+              <button className="dropdown-item" onClick={() => setReportVisible(true)}>
+                Report
+              </button>
+            </li>
+
+            <li>
+              <button className="dropdown-item" onClick={handleBlock}>
+                Block
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
       {/* ================= HERO ================= */}
       <div className="card bg-dark text-white shadow-lg mb-5">
         <div className="card-body p-5">
@@ -316,6 +399,55 @@ export const ProfileView = () => {
           reverse={i % 2 !== 1}
         />
       ))}
+
+      {reportVisible && (
+        <div className="modal fade show"
+          style={{ display: "block", background: "rgba(0,0,0,0.7)" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content bg-dark text-white">
+
+              <div className="modal-header">
+                <h5 className="modal-title">Report User</h5>
+                <button className="btn-close btn-close-white"
+                  onClick={() => setReportVisible(false)}
+                />
+              </div>
+
+              <div className="modal-body">
+                <MySelect
+                  label="Reason"
+                  value={reason}
+                  options={reportReasons.map((r) => ({
+                    id: r.reason_id,
+                    name: r.name,
+                  }))}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+                {reason === 99 && (
+                  <textarea
+                    className="form-control bg-dark text-white"
+                    placeholder="Enter custom reason..."
+                    value={customReason}
+                    onChange={(e) => setCustomReason(e.target.value)}
+                  />
+                )}
+              </div>
+
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setReportVisible(false)}>
+                  Cancel
+                </button>
+                <button className="btn btn-danger" onClick={submitReport}>
+                  Submit Report
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

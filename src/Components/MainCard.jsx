@@ -5,7 +5,7 @@ import config from "../services/config";
 import axios from "axios";
 import { useRef } from "react";
 
-const MainCard = ({ onSwipe, userGender, candidate }) => {
+const MainCard = ({ onSwipe, userGender, candidate , token }) => {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-50, 50]);
   const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);

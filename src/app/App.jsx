@@ -19,6 +19,7 @@ import ProtectedRoute from "../pages/ProtectedRoute";
 import PublicRoute from "../pages/PublicRoute";
 import ChatHome from "../pages/ChatHome";
 import Messages from "../pages/Messages";
+import BlockedUsers from "../pages/BlockedUsers";
 
 export const UserContext = createContext();
 
@@ -110,8 +111,8 @@ function App() {
             <Route path="chathome" element={<ChatHome />} />
             <Route path="settings" element={<Settings />} />
             <Route path="likeandmatchespage" element={<LikesAndMatches />} />
+            <Route path="blocked-users" element={<BlockedUsers />} />
           </Route>
-
 
           {/* DEFAULT: If route doesn't exist → go home or login */}
           <Route path="*" element={<Navigate to="/" />} />

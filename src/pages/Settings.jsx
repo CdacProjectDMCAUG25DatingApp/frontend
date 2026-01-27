@@ -50,6 +50,15 @@ export default function Settings() {
             </button>
 
             <button
+              className="btn btn-dark text-white py-3 fs-5 border border-light rounded-4"
+              style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
+              onClick={() => navigate("/home/blocked-users")}
+            >
+              Blocked Users
+            </button>
+
+
+            <button
               className="btn py-3 fs-5 border border-danger rounded-4 text-danger"
               style={{ background: "rgba(255,0,0,0.1)" }}
               onClick={handleLogout}
