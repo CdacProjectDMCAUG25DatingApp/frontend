@@ -77,10 +77,6 @@ function Login() {
           Make real connections.
         </h1>
 
-        <div className="hero-buttons">
-          <button className="primary-btn">Get Started</button>
-          <button className="secondary-btn">Learn more</button>
-        </div>
 
         <p className="trust-text">
           Safe, simple,<br />
