@@ -4,7 +4,7 @@
 
     /* Outer spacing already handled by container-fluid */
     .profile-view-block {
-    width: 100%;
+        width: 100%;
     }
 
     /* =================================================
@@ -12,23 +12,23 @@
     ================================================= */
 
     .profile-image-card {
-    width: 300px;
-    height: 500px;
+        width: 300px;
+        height: 500px;
 
-    border-radius: 28px;
-    overflow: hidden;
+        border-radius: 28px;
+        overflow: hidden;
 
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
 
-    box-shadow: 0 20px 45px rgba(17, 24, 39, 0.08);
+        box-shadow: 0 20px 45px rgba(17, 24, 39, 0.08);
     }
 
     /* PhotoInput inside */
     .profile-image-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     /* =================================================
@@ -36,13 +36,13 @@
     ================================================= */
 
     .profile-details-card {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(16px);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(16px);
 
-    border-radius: 28px;
-    border: 1px solid #e5e7eb;
+        border-radius: 28px;
+        border: 1px solid #e5e7eb;
 
-    box-shadow: 0 24px 50px rgba(17, 24, 39, 0.08);
+        box-shadow: 0 24px 50px rgba(17, 24, 39, 0.08);
     }
 
     /* =================================================
@@ -50,7 +50,7 @@
     ================================================= */
 
     .profile-details-card .card-body {
-    padding: 28px;
+        padding: 28px;
     }
 
     /* =================================================
@@ -58,12 +58,12 @@
     ================================================= */
 
     .profile-details-card label {
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-    color: #6b7280;
-    margin-bottom: 6px;
-    display: block;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        font-weight: 600;
+        color: #6b7280;
+        margin-bottom: 6px;
+        display: block;
     }
 
     /* =================================================
@@ -73,36 +73,36 @@
     .profile-details-card .form-control,
     .profile-details-card textarea,
     .profile-details-card select {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
 
-    padding: 12px 14px;
-    font-size: 14px;
-    color: #111827;
+        padding: 12px 14px;
+        font-size: 14px;
+        color: #111827;
 
-    transition: border 0.2s ease, background 0.2s ease;
+        transition: border 0.2s ease, background 0.2s ease;
     }
 
     .profile-details-card .form-control::placeholder,
     .profile-details-card textarea::placeholder {
-    color: #9ca3af;
+        color: #9ca3af;
     }
 
     .profile-details-card .form-control:focus,
     .profile-details-card textarea:focus,
     .profile-details-card select:focus {
-    background: #ffffff;
-    border-color: #6366f1;
-    box-shadow: none;
-    outline: none;
+        background: #ffffff;
+        border-color: #6366f1;
+        box-shadow: none;
+        outline: none;
     }
 
     /* Disabled fields */
     .profile-details-card .form-control:disabled,
     .profile-details-card textarea:disabled {
-    background: #f3f4f6;
-    color: #6b7280;
+        background: #f3f4f6;
+        color: #6b7280;
     }
 
     /* =================================================
@@ -110,16 +110,16 @@
     ================================================= */
 
     .p-calendar .p-inputtext {
-    width: 100%;
-    border-radius: 14px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    color: #111827;
+        width: 100%;
+        border-radius: 14px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        color: #111827;
     }
 
     .p-calendar .p-inputtext:focus {
-    border-color: #6366f1;
-    box-shadow: none;
+        border-color: #6366f1;
+        box-shadow: none;
     }
 
     /* =================================================
@@ -127,15 +127,15 @@
     ================================================= */
 
     .profile-image-prompt {
-    margin-top: 30px;
+        margin-top: 30px;
     }
 
     .profile-image-prompt h6 {
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    font-weight: 700;
-    color: #6b7280;
-    margin-bottom: 10px;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        font-weight: 700;
+        color: #6b7280;
+        margin-bottom: 10px;
     }
 
     /* =================================================
@@ -143,8 +143,8 @@
     ================================================= */
 
     .profile-details-card hr {
-    border-color: #e5e7eb;
-    margin: 28px 0;
+        border-color: #e5e7eb;
+        margin: 28px 0;
     }
 
     /* =================================================
@@ -152,48 +152,77 @@
     ================================================= */
 
     .profile-actions {
-    margin-top: 28px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+        margin-top: 28px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
     }
 
     .profile-actions .btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #e5e7eb;
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #e5e7eb;
     }
 
     .profile-actions .btn-secondary:hover {
-    background: #e5e7eb;
+        background: #e5e7eb;
     }
 
     .profile-actions .btn-success {
-    background: #6366f1;
-    border: none;
+        background: #6366f1;
+        border: none;
     }
 
     .profile-actions .btn-success:hover {
-    opacity: 0.9;
+        opacity: 0.9;
     }
+
+    /* Input box */
+    .calendar-input-light input {
+        background: #fff !important;
+        color: #000 !important;
+        border: 1px solid #ccc !important;
+    }
+
+    /* Calendar popup */
+    .calendar-panel-light {
+        background: #fff !important;
+        color: #000 !important;
+        border-radius: 12px !important;
+    }
+
+    .calendar-panel-light .p-datepicker-header {
+        background: #f5f5f5 !important;
+        border: none !important;
+    }
+
+    .calendar-panel-light table td>span {
+        color: #000 !important;
+    }
+
+    .calendar-panel-light .p-highlight {
+        background: #007ad9 !important;
+        color: #fff !important;
+    }
+
 
     /* =================================================
     RESPONSIVE
     ================================================= */
 
     @media (max-width: 992px) {
-    .profile-image-card {
-        margin-bottom: 30px;
-    }
+        .profile-image-card {
+            margin-bottom: 30px;
+        }
     }
 
     @media (max-width: 576px) {
-    .profile-image-card {
-        width: 260px;
-        height: 420px;
-    }
+        .profile-image-card {
+            width: 260px;
+            height: 420px;
+        }
 
-    .profile-details-card .card-body {
-        padding: 22px;
-    }
+        .profile-details-card .card-body {
+            padding: 22px;
+        }
     }

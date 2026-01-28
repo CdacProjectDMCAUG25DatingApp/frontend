@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import '../Styles/RBCard.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import config from '../services/config';
 
 const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)';
 
@@ -328,20 +329,36 @@ const ProfileCardComponent = ({
   return (
     <div
       ref={wrapRef}
-      onClick={() => {
-        // BLOCK CLICK IF:
-        // dragged even 1px OR animation running
+      onClick={async () => {
         if (isDraggingRef?.current || isAnimatingRef?.current) return;
 
-        navigate("/home/profileview", {
-          state: {
-            dataObj: candidate.candidateData,
-            photos: candidate.photos,
-            editable: false,
-            token:candidate.token
-          }
-        });
+        try {
+          // 1. decode candidate UID via backend API
+          const full = await axios.get(
+            config.BASE_URL + "/interactions/getcandidate_full",
+            {
+              headers: {
+                token: sessionStorage.getItem("token"),
+                candidate_token: candidate.token
+              }
+            }
+          );
+
+          if (full.data.status !== "success") return;
+
+          const { profileData, photos } = full.data.data;
+          navigate("/home/profileview", {
+            state: {
+              dataObj: profileData,   // full profile with IDs
+              photos: photos,         // full photos list
+              editable: false
+            }
+          });
+        } catch (err) {
+          console.log(err);
+        }
       }}
+
       className={`pc-card-wrapper ${className}`.trim()}
       style={cardStyle}
     >

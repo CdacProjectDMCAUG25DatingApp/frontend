@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import preloadImg from "../../assets/preload.jpg";
+import axios from "axios";
+import config from "../../services/config";
+import { useDispatch, useSelector } from "react-redux";
+import { setPhotos } from "../../redux/photosSlice";
+import { utils } from './../../utils';
 
 const PhotoInput = ({
   id,
   from = "",
-  dataURLtoFile,
   setImg,
   imageurl,
   imageWidth = 300,
   imageHeight = 500,
+  photo_id,
+  index,
+  editable = false   // ⭐ NEW: control UI visibility
 }) => {
   const [avatarUrl, setAvatarUrl] = useState(preloadImg);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const photos = useSelector((s) => s.photos.data);
 
   useEffect(() => {
     if (imageurl && !imageurl.endsWith("/null")) {
@@ -22,12 +32,53 @@ const PhotoInput = ({
     }
   }, [imageurl]);
 
-  const updateAvatar = (canvas) => {
+  // -----------------------------
+  // Upload New Photo
+  // -----------------------------
+  const updateAvatar = async (canvas) => {
     const dataURL = canvas.toDataURL("image/jpeg", 0.9);
     setAvatarUrl(dataURL);
-    dataURLtoFile(id, canvas, setImg);
+
+    if (!photo_id) {
+      utils.dataURLtoFile(id, canvas, setImg);
+      return;
+    }
+
+    const file = await utils.canvasToFile(canvas, "replaced.jpg");
+
+    const formData = new FormData();
+    formData.append("photo", file);
+    formData.append("photo_id", photo_id);
+
+    try {
+      const res = await axios.put(
+        `${config.BASE_URL}/photos/replace`,
+        formData,
+        {
+          headers: {
+            token: sessionStorage.getItem("token"),
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (res.data.status === "success") {
+        const { new_url } = res.data.data;
+
+        dispatch(
+          setPhotos(
+            photos.map((p, i) =>
+              i === index ? { ...p, photo_url: new_url } : p
+            )
+          )
+        );
+      }
+    } catch (err) {
+      console.log("Photo replace failed:", err);
+    }
   };
 
+  // For add-photos
   const isAddPhotos = from === "addphotos";
 
   return (
@@ -46,19 +97,42 @@ const PhotoInput = ({
           position: "relative",
         }}
       >
+        {/* IMAGE */}
         <img
           src={avatarUrl}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
+
+        {/* ⭐ OVERLAY BUTTON (ONLY IF EDITABLE) */}
+        {editable && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              padding: "10px",
+              background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.6))",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <button
+              className="btn btn-sm btn-light"
+              style={{
+                borderRadius: "20px",
+                padding: "6px 18px",
+                fontWeight: "600",
+              }}
+              onClick={() => setModalOpen(true)}
+            >
+              Change Photo
+            </button>
+          </div>
+        )}
       </div>
 
-      <button
-        className="btn btn-outline-primary mt-3"
-        style={{ width: "100%" }}
-        onClick={() => setModalOpen(true)}
-      >
-        Select Photo
-      </button>
+      {/* OLD BUTTON REMOVED */}
+      {/* No external button anymore */}
 
       {modalOpen && (
         <Modal updateAvatar={updateAvatar} closeModal={() => setModalOpen(false)} />

@@ -3,6 +3,7 @@ export const utils = {
         return `http://localhost:4000/profilePhotos/${url}`;
     },
 
+    // Used only during AddPhotos flow (sets state)
     dataURLtoFile: (id, canvas, setImg) => {
         canvas.toBlob(
             (blob) => {
@@ -23,7 +24,25 @@ export const utils = {
             "image/jpeg",
             0.95
         );
+    },
 
+    // NEW: Used during Replace Photo flow (returns a file)
+    canvasToFile: (canvas, fileName = "image.jpg") => {
+        return new Promise((resolve, reject) => {
+            canvas.toBlob(
+                (blob) => {
+                    if (!blob) {
+                        reject("Blob conversion failed");
+                        return;
+                    }
+                    resolve(
+                        new File([blob], fileName, { type: "image/jpeg" })
+                    );
+                },
+                "image/jpeg",
+                0.95
+            );
+        });
     },
 
     urlToFile: async (url, fileName) => {

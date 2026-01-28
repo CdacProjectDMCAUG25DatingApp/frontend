@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -14,17 +14,32 @@ import { updateUserDetails } from "../redux/userDetailsThunks";
 import { setPhotos } from "../redux/photosSlice";
 import { setUserDetails } from "../redux/userDetailsSlice";
 
-export const ProfileView = ({ editable = false, dataObj = {}, photos = [] }) => {
+export const ProfileView = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
-  console.log(dataObj)
+  // -------------------------------
+  //  MERGE PROPS + NAVIGATION DATA
+  // -------------------------------
+  const navState = location.state || {};
 
-  if (!dataObj || !photos.length) return null;
+  const {
+    editable: propEditable,
+    dataObj: propDataObj,
+    photos: propPhotos
+  } = props || {};
 
-  // --------------------
-  //  Local State
-  // --------------------
+  const editable = navState.editable ?? propEditable ?? false;
+  const dataObj = navState.dataObj ?? propDataObj ?? null;
+  const photos = navState.photos ?? propPhotos ?? [];
+
+  // Guard
+  if (!dataObj || photos.length === 0) return null;
+
+  // -------------------------------
+  //  LOCAL STATE
+  // -------------------------------
   const [genderList, setGenderList] = useState([]);
   const [reportReasons, setReportReasons] = useState([]);
 
@@ -36,22 +51,22 @@ export const ProfileView = ({ editable = false, dataObj = {}, photos = [] }) => 
   const [reason, setReason] = useState(null);
   const [customReason, setCustomReason] = useState("");
 
-  // --------------------
-  //  Load Gender + Report Reasons
-  // --------------------
+  // -------------------------------
+  //  INITIAL LOAD
+  // -------------------------------
   useEffect(() => {
     const headers = { token: sessionStorage.getItem("token") };
 
     axios.get(`${config.BASE_URL}/api/gender`, { headers })
-      .then(res => setGenderList(res.data.data));
+      .then(r => setGenderList(r.data.data));
 
     axios.get(`${config.BASE_URL}/api/report-reasons`, { headers })
-      .then(res => setReportReasons(res.data.data));
+      .then(r => setReportReasons(r.data.data));
   }, []);
 
-  // --------------------
-  //  Initialize Profile State
-  // --------------------
+  // -------------------------------
+  //  INITIALIZE PROFILE
+  // -------------------------------
   useEffect(() => {
     const merged = {
       ...dataObj,
@@ -62,9 +77,9 @@ export const ProfileView = ({ editable = false, dataObj = {}, photos = [] }) => 
     setDirty({});
   }, [dataObj, photos]);
 
-  // --------------------
-  //  Change Handler
-  // --------------------
+  // -------------------------------
+  //  CHANGE HANDLER
+  // -------------------------------
   const handleChange = (field, value) => {
     setProfile(prev => ({ ...prev, [field]: value }));
 
@@ -79,9 +94,9 @@ export const ProfileView = ({ editable = false, dataObj = {}, photos = [] }) => 
     }
   };
 
-  // --------------------
-  //  Update Handler
-  // --------------------
+  // -------------------------------
+  //  SAVE HANDLER
+  // -------------------------------
   const handleUpdate = async () => {
     if (!Object.keys(dirty).length) return;
 
@@ -92,34 +107,35 @@ export const ProfileView = ({ editable = false, dataObj = {}, photos = [] }) => 
     delete updatePayload.image_prompt;
 
     try {
-      // Update profile/preference
+      // Update profile fields
       if (Object.keys(updatePayload).length) {
         await dispatch(updateUserDetails(updatePayload));
       }
 
-      // Update image prompt
+      // Update prompt
       if (promptValue !== undefined) {
         await axios.patch(
           `${config.BASE_URL}/photos/prompt`,
-          {
-            photo_id: photos[0].photo_id,
-            prompt: promptValue
-          },
+          { photo_id: photos[0].photo_id, prompt: promptValue },
           { headers }
         );
 
         dispatch(
           setPhotos(
-            photos.map((p, i) => (i === 0 ? { ...p, prompt: promptValue } : p))
+            photos.map((p, idx) =>
+              idx === 0 ? { ...p, prompt: promptValue } : p
+            )
           )
         );
       }
 
+      // Sync redux
       dispatch(setUserDetails({ ...dataObj, ...dirty }));
+
       setOriginal(profile);
       setDirty({});
     } catch (err) {
-      console.log("Update failed", err);
+      console.log(err);
     }
   };
 
@@ -128,52 +144,43 @@ export const ProfileView = ({ editable = false, dataObj = {}, photos = [] }) => 
     setDirty({});
   };
 
-  // --------------------
-  //  Blocks
-  // --------------------
-const blocks = [
-  // Block 1 - profile
-  {
-    dob: dataObj.dob,
-    location: dataObj.location,
-    mother_tongue: dataObj.mother_tongue,
-    religion: dataObj.religion,
-  },
+  // -------------------------------
+  //  GROUPED BLOCKS
+  // -------------------------------
+  const blocks = [
+    {
+      dob: dataObj.dob,
+      location: dataObj.location,
+      mother_tongue: dataObj.mother_tongue,
+      religion: dataObj.religion,
+    },
+    {
+      education: dataObj.education,
+      job_industry_id: dataObj.job_industry_id,
+      looking_for_id: dataObj.looking_for_id,
+      open_to_id: dataObj.open_to_id,
+    },
+    {
+      drinking_id: dataObj.drinking_id,
+      smoking_id: dataObj.smoking_id,
+      workout_id: dataObj.workout_id,
+      dietary_id: dataObj.dietary_id,
+      sleeping_habit_id: dataObj.sleeping_habit_id,
+    },
+    {
+      love_style_id: dataObj.love_style_id,
+      communication_style_id: dataObj.communication_style_id,
+      family_plan_id: dataObj.family_plan_id,
+      personality_type_id: dataObj.personality_type_id,
+      pet_id: dataObj.pet_id,
+      zodiac_id: dataObj.zodiac_id,
+      preferred_gender_id: dataObj.preferred_gender_id,
+    },
+  ];
 
-  // Block 2 - education/work/job/preferences
-  {
-    education: dataObj.education,
-    job_industry_id: dataObj.job_industry_id,
-    looking_for_id: dataObj.looking_for_id,
-    open_to_id: dataObj.open_to_id,
-  },
-
-  // Block 3 - lifestyle
-  {
-    drinking_id: dataObj.drinking_id,
-    smoking_id: dataObj.smoking_id,
-    workout_id: dataObj.workout_id,
-    dietary_id: dataObj.dietary_id,
-    sleeping_habit_id: dataObj.sleeping_habit_id,
-  },
-
-  // Block 4 - personality/preferences
-  {
-    love_style_id: dataObj.love_style_id,
-    communication_style_id: dataObj.communication_style_id,
-    family_plan_id: dataObj.family_plan_id,
-    personality_type_id: dataObj.personality_type_id,
-    pet_id: dataObj.pet_id,
-    zodiac_id: dataObj.zodiac_id,
-    preferred_gender_id: dataObj.preferred_gender_id,
-  },
-];
-
-
-
-  // --------------------
-  //  Submit Report
-  // --------------------
+  // -------------------------------
+  // REPORT
+  // -------------------------------
   const submitReport = async () => {
     if (!reason) return;
 
@@ -194,10 +201,12 @@ const blocks = [
     setCustomReason("");
   };
 
+  // -------------------------------
+  // UI
+  // -------------------------------
   return (
     <div className="container-fluid px-lg-5">
 
-      {/* Back */}
       <button
         className="btn btn-outline-light mb-3"
         onClick={() => navigate(-1)}
@@ -205,7 +214,6 @@ const blocks = [
         ← Back
       </button>
 
-      {/* Menu */}
       {!editable && (
         <div className="d-flex justify-content-end mb-3">
           <div className="dropdown">
@@ -213,56 +221,59 @@ const blocks = [
               ⋮
             </button>
             <ul className="dropdown-menu dropdown-menu-dark">
-              <li><button className="dropdown-item" onClick={() => setReportVisible(true)}>Report</button></li>
+              <li>
+                <button className="dropdown-item" onClick={() => setReportVisible(true)}>
+                  Report
+                </button>
+              </li>
             </ul>
           </div>
         </div>
       )}
 
-      {/* HERO */}
-      <div className="card text-white shadow-lg mb-5">
+      {/* TOP CARD */}
+      <div className="card shadow-lg mb-5">
         <div className="card-body p-5">
           <div className="row g-5">
 
-            {/* PHOTO COLUMN */}
             <div className="col-lg-4 text-center">
               <div className="card border-light rounded-4 overflow-hidden mx-auto"
                 style={{ width: "300px", height: "500px" }}>
                 <PhotoInput
-                  dataURLtoFile={utils.dataURLtoFile}
                   imageurl={utils.urlConverter(photos[0]?.photo_url)}
+                  photo_id={photos[0]?.photo_id}
+                  index={0}
+                  editable
                 />
+
               </div>
             </div>
 
-            {/* DETAILS COLUMN */}
             <div className="col-lg-8">
               <h1 className="fw-bold">{dataObj.user_name}</h1>
               <p className="text-secondary">{dataObj.tagline}</p>
 
               <hr />
 
-              {/* BIO */}
               <h6 className="text-uppercase text-secondary">Bio</h6>
               <textarea
                 className="form-control mb-4"
-                style={{ height: "130px" }}
                 value={profile.bio || ""}
                 disabled={!editable}
-                onChange={(e) => handleChange("bio", e.target.value)}
+                onChange={e => handleChange("bio", e.target.value)}
+                style={{ height: "130px" }}
               />
 
-              {/* HEIGHT / WEIGHT / GENDER */}
               <div className="row g-3">
                 {["height", "weight"].map(f => (
                   <div className="col-md-4" key={f}>
-                    <label className="text-secondary small">{f}</label>
+                    <label className="small text-secondary">{f}</label>
                     <input
                       type="number"
                       className="form-control"
                       value={profile[f] || ""}
                       disabled={!editable}
-                      onChange={(e) => handleChange(f, e.target.value)}
+                      onChange={e => handleChange(f, e.target.value)}
                     />
                   </div>
                 ))}
@@ -273,55 +284,58 @@ const blocks = [
                     value={profile.gender}
                     options={genderList}
                     noDropdown={!editable}
-                    onChange={(e) => handleChange("gender", e.target.value)}
+                    onChange={e => handleChange("gender", e.target.value)}
                   />
                 </div>
               </div>
 
-              {/* IMAGE PROMPT */}
               {(editable || profile.image_prompt) && (
                 <>
                   <hr className="mt-4" />
                   <h6 className="text-uppercase text-secondary">Image Prompt</h6>
-
                   <textarea
                     className="form-control"
                     value={profile.image_prompt || ""}
                     disabled={!editable}
-                    onChange={(e) => handleChange("image_prompt", e.target.value)}
+                    onChange={e => handleChange("image_prompt", e.target.value)}
                   />
                 </>
               )}
 
-              {/* BUTTONS */}
               {editable && Object.keys(dirty).length > 0 && (
                 <div className="mt-4 d-flex justify-content-end gap-3">
-                  <button className="btn btn-secondary" onClick={handleCancel}>Cancel</button>
-                  <button className="btn btn-success" onClick={handleUpdate}>Save</button>
+                  <button className="btn btn-secondary" onClick={handleCancel}>
+                    Cancel
+                  </button>
+                  <button className="btn btn-success" onClick={handleUpdate}>
+                    Save
+                  </button>
                 </div>
               )}
-
             </div>
+
           </div>
         </div>
       </div>
 
-      {/* PROFILE BLOCKS */}
-      {blocks.map((grp, i) => (
+      {/* BLOCKS */}
+      {blocks.map((grp, index) => (
         <ProfileViewBlock
-          key={i}
+          key={index}
           dataObj={grp}
           photos={photos}
           editable={editable}
-          index={Math.min(i + 1, photos.length - 1)}
-          reverse={i % 2 === 1}
+          index={Math.min(index + 1, photos.length - 1)}
+          reverse={index % 2 === 1}
         />
       ))}
 
       {/* REPORT MODAL */}
       {reportVisible && (
-        <div className="modal fade show"
-          style={{ display: "block", background: "rgba(0,0,0,0.7)" }}>
+        <div
+          className="modal fade show"
+          style={{ display: "block", background: "rgba(0,0,0,0.7)" }}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
 
@@ -335,7 +349,10 @@ const blocks = [
                 <MySelect
                   label="Reason"
                   value={reason}
-                  options={reportReasons.map(r => ({ id: r.reason_id, name: r.name }))}
+                  options={reportReasons.map(r => ({
+                    id: r.reason_id,
+                    name: r.name
+                  }))}
                   onChange={(e) => setReason(e.target.value)}
                 />
 
@@ -354,7 +371,8 @@ const blocks = [
                   onClick={() => setReportVisible(false)}>
                   Cancel
                 </button>
-                <button className="btn btn-danger" onClick={submitReport}>
+                <button className="btn btn-danger"
+                  onClick={submitReport}>
                   Submit Report
                 </button>
               </div>

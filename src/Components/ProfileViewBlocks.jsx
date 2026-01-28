@@ -11,7 +11,11 @@ import { setPhotos } from "../redux/photosSlice";
 import { setUserDetails } from "../redux/userDetailsSlice";
 import { updateUserDetails } from "../redux/userDetailsThunks";
 
-import { Calendar } from "primereact/calendar";
+
+import "react-datepicker/dist/react-datepicker.css";
+import ReactDatePicker from "react-datepicker";
+
+
 
 export const ProfileViewBlock = ({
   dataObj,
@@ -41,7 +45,7 @@ export const ProfileViewBlock = ({
     setProfile(merged);
     setOriginalProfile(merged);
     setDirtyFields({});
-  }, [dataObj, photos, index]);
+  }, [dataObj, index]);
 
   // --------------------------
   // HANDLE FIELD CHANGE
@@ -219,9 +223,8 @@ export const ProfileViewBlock = ({
   return (
     <div className="container-fluid py-5 border-bottom">
       <div
-        className={`row align-items-center g-5 ${
-          reverse ? "flex-row-reverse" : ""
-        }`}
+        className={`row align-items-center g-5 ${reverse ? "flex-row-reverse" : ""
+          }`}
       >
         {/* PHOTO */}
         <div className="col-lg-4 text-center">
@@ -230,9 +233,12 @@ export const ProfileViewBlock = ({
             style={{ width: "300px", height: "500px" }}
           >
             <PhotoInput
-              dataURLtoFile={utils.dataURLtoFile}
-              imageurl={utils.urlConverter(photos?.[index]?.photo_url)}
+              imageurl={utils.urlConverter(photos[index]?.photo_url)}
+              photo_id={photos[index]?.photo_id}
+              index={index}
+              editable
             />
+
           </div>
         </div>
 
@@ -250,12 +256,18 @@ export const ProfileViewBlock = ({
                           Date of Birth
                         </label>
                         {editable ? (
-                          <Calendar
-                            value={value ? new Date(value) : null}
-                            onChange={(e) => handleChange("dob", e.value)}
-                            showIcon
-                            className="w-100"
+                          <ReactDatePicker
+                            selected={profile.dob ? new Date(profile.dob) : null}
+                            onChange={(date) => handleChange("dob", date)}
+                            placeholderText="Select date of birth"
+                            dateFormat="dd MMM yyyy"
+                            showMonthDropdown
+                            showYearDropdown
+                            dropdownMode="select"
+                            maxDate={new Date()}
+                            className="form-control"
                           />
+
                         ) : (
                           <p className="form-control">
                             {value
