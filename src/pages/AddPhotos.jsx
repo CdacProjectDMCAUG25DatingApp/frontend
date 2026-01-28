@@ -1,100 +1,109 @@
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
-import { addPhotos } from '../services/addphotos'
-import { useNavigate } from 'react-router'
-
-import Profile from '../Components/ImageInput/PhotoInput';
-
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { addPhotos } from "../services/addphotos";
+import { useNavigate } from "react-router";
+import PhotoInput from "../Components/ImageInput/PhotoInput";
+import axios from "axios";
+import config from "../services/config";
+import { loadPhotos } from "../redux/userDetailsThunks";
+import { useDispatch } from "react-redux";
 
 function AddPhotos() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
-    const [img, setImg] = useState({})
+  const [img, setImg] = useState({});
 
+  useEffect(() => {
+    const preloadImages = async () => {
+      const preloadUrl = "/src/assets/preload.png";
 
+      for (let i = 0; i < 6; i++) {
+        const file = await urlToFile(preloadUrl, i);
+        setImg((prev) => ({ ...prev, [`img${i}`]: file }));
+      }
+    };
 
-    useEffect(() => {
-        const allocateImg = async () => {
-            for (let i = 0; i <= 5; i++) {
-                const file = await urlToFile("src\assets\preload.png", i)
-                setImg(prevImg => ({ ...prevImg, [`img${i}`]: file }))
-            }
-        }
-        allocateImg()
-        console.log(img)
-    }, [])
+    preloadImages();
+  }, []);
 
+  const urlToFile = async (url, id) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], `photo${id}.jpg`, { type: blob.type });
+  };
 
+  const dataURLtoFile = (id, canvas) => {
+    canvas.toBlob((blob) => {
+      const file = new File([blob], `photo${id}.jpg`, { type: blob.type });
 
-    const upload = async () => {
-        const response = await addPhotos(img)
-        if (response == null) {
-            toast.error("Server Down")
-            return
-        }
-        console.log(response)
-        if (response.data.status == "success") {
-            toast.success("Photos Added")
-            const prefRes = await axios.get(config.BASE_URL + "/user/userpreferences", { headers })
-            if (!prefRes.data.data.length) return navigate("/preferences");
-            navigate("/home/people");
-        } else {
-            toast.error(response.error)
-        }
+      setImg((prev) => ({
+        ...prev,
+        [`img${id}`]: file
+      }));
+    });
+  };
 
+  const upload = async () => {
+    // Ensure all 6 photos present
+    for (let i = 0; i < 6; i++) {
+      if (!img[`img${i}`]) {
+        toast.error("Please fill all 6 photos");
+        return;
+      }
     }
 
-    async function urlToFile(url, fileName) {
-        try {
-            // 1. Fetch the data from the URL
-            const response = await fetch(url);
+    const response = await addPhotos(img);
 
-            // 2. Convert the response into a Blob
-            const blob = await response.blob();
-
-            // 3. Create a File object from the Blob
-            // The type is automatically inherited from the Blob's MIME type
-            return new File([blob], `image${fileName}`, { type: blob.type });
-        } catch (error) {
-            console.error("Conversion failed:", error);
-        }
+    if (!response) {
+      toast.error("Server unavailable");
+      return;
     }
 
-    async function dataURLtoFile(id, canvas) {
-        canvas.toBlob((blob) => {
-            const file = new File([blob], `image${id}.png`, { type: blob.type });
-            console.log(file)
-            setImg((prev) => ({
-                ...prev,
-                [`img${id}`]: file
-            }))
-            console.log(img)
-        })
+    if (response.status === "success") {
+      toast.success("Photos Added!");
+
+      // Load photos to redux
+      await dispatch(loadPhotos());
+
+      // Continue onboarding
+      const token = sessionStorage.getItem("token");
+      const prefRes = await axios.get(config.BASE_URL + "/user/userdetails", {
+        headers: { token }
+      });
+
+      const details = prefRes.data.data[0];
+
+      if (!details.looking_for_id) return navigate("/preferences");
+      navigate("/home/people");
+    } else {
+      toast.error(response.error);
     }
+  };
 
+  return (
+    <div className="container py-5">
+      <h2 className="mb-4">Upload 6 Photos</h2>
 
-    return (<div className="container py-5">
-        <div className="row g-4 justify-content-center">
-            {Array.from({ length: 6 }, (v, id) => (
+      <div className="row g-4 justify-content-center">
+        {Array.from({ length: 6 }).map((_, id) => (
+          <div key={id} className="col-md-4 d-flex justify-content-center">
+            <PhotoInput id={id} dataURLtoFile={dataURLtoFile} />
+          </div>
+        ))}
+      </div>
 
-                <div key={id} className="col-md-4 d-flex justify-content-center">
-                    <Profile key={id} id={id} dataURLtoFile={dataURLtoFile} />
-                </div>
-            ))}
-        </div>
-        <div className="row g-4 justify-content-center">
-            <button
-                type="button"
-                className="btn btn-outline-primary btn-lg w-75 mt-5"
-                title="Change photo"
-                onClick={() => upload()}
-            >
-                Upload
-            </button>
-        </div>
+      <div className="row g-4 justify-content-center">
+        <button
+          type="button"
+          className="btn btn-outline-primary btn-lg w-75 mt-5"
+          onClick={upload}
+        >
+          Upload
+        </button>
+      </div>
     </div>
-
-    )
+  );
 }
 
-export default AddPhotos
+export default AddPhotos;

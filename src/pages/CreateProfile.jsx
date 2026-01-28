@@ -1,285 +1,63 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { addUserProfile } from '../services/userprofile';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
-import axios from 'axios';
-import config from '../services/config';
-import { UserContext } from '../app/App';
-import { Calendar } from 'primereact/calendar';
-import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
-
-
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { updateUserDetails } from "../redux/userDetailsThunks";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function CreateProfile() {
-    const navigate = useNavigate()
-    const { user, setUser } = useContext(UserContext)
-    const [gender, setGender] = useState("");
-    const [bio, setBio] = useState("");
-    const [religion, setReligion] = useState("");
-    const [location, setLocation] = useState("");
-    const [motherTongue, setMotherTongue] = useState("");
-    const [marital, setMarital] = useState("");
-    const [dob, setDob] = useState("");
-    const [education, setEducation] = useState("");
-    const [jobIndustry, setJobIndustry] = useState("");
-    const [tagLine, setTagLine] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const [genderList, setGenderList] = useState([]);
-    const [religionList, setReligionList] = useState([]);
-    const [motherTongueList, setMotherTongueList] = useState([]);
-    const [educationList, setEducationList] = useState([]);
-    const [jobIndustryList, setJobIndustryList] = useState([]);
+  const [form, setForm] = useState({
+    bio: "",
+    gender: "",
+    dob: "",
+    height: "",
+    weight: "",
+    tagline: "",
+    location: "",
+    religion: "",
+    education: "",
+    mother_tongue: "",
+    marital_status: "",
+    job_industry_id: ""
+  });
 
-    useEffect(() => {
-        fetchAllLookups();
-    }, []);
+  const onChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
-    const fetchAllLookups = async () => {
-        const headers = {
-            token: window.sessionStorage.getItem('token')
-        }
-        try {
-
-            const [
-
-                genderRes,
-                religionRes,
-                motherTongueRes,
-                educationRes,
-                jobIndustryRes,
-
-            ] = await Promise.all([
-                axios.get(config.BASE_URL + "/api/gender", { headers }),
-                axios.get(config.BASE_URL + "/api/religion", { headers }),
-                axios.get(config.BASE_URL + "/api/mother-tongue", { headers }),
-                axios.get(config.BASE_URL + "/api/education", { headers }),
-                axios.get(config.BASE_URL + "/api/job-industry", { headers }),
-            ]);
-
-            setGenderList(genderRes.data.data);
-            setReligionList(religionRes.data.data);
-            setMotherTongueList(motherTongueRes.data.data);
-            setEducationList(educationRes.data.data);
-            setJobIndustryList(jobIndustryRes.data.data);
-            console.log(genderRes)
-
-        } catch (error) {
-            console.error("Lookup fetch error:", error);
-        }
+  const save = async () => {
+    try {
+      await dispatch(updateUserDetails(form));
+      toast.success("Profile updated!");
+      navigate("/addphotos");
+    } catch (e) {
+      toast.error("Error updating profile");
     }
+  };
 
+  return (
+    <div className="container p-4">
+      <h2>Create Profile</h2>
 
-    async function submitProfile() {
-        const headers = {
-            token: window.sessionStorage.getItem('token')
-        }
-        try {
-            if (gender == "" && bio == "" && religion == "" && location == "" && motherTongue == "" && marital == "" && dob == "" && education == "" && tagLine == "" && jobIndustry == "") {
-                toast.warn("Fill All Fields")
-            } else {
-                console.log(gender, bio, religion, location, motherTongue, marital, dob, education, tagLine, jobIndustry)
-                const response = await addUserProfile(gender, bio, religion, location, motherTongue, marital, dob, education, tagLine, jobIndustry)
-                console.error(response);
-                if (response == null) {
-                    toast.error("Server Down")
-                }
-                if (response.status == "success") {
-                    toast.success("Profile Completed")
-                    const responsePhotos = await axios.get(config.BASE_URL + '/photos/userphotos', { headers })
-                    if (responsePhotos.data.data.length == 6) {
-                        const responsePreferences = await axios.get(config.BASE_URL + '/user/userpreferences', { headers })
-                        if (responsePreferences.data.data.length == 1) {
-                            navigate("/home")
-                        } else {
-                            navigate("/preferences")
-                        }
-                    } else {
-                        navigate('/addphotos')
-                    }
-                } else {
-                    if (response.error.errno == 1062) {
-                        toast.error("You Already have a profile")
-                    }
-                    else {
-                        toast.error(response.error.code)
-                    }
-                }
-            }
-        } catch (err) {
-            console.error("addUserProfile error:", err);
-        }
-
-    }
-
-
-
-    return (
-        <div className='container'>
-            <h1 className="text-center mt-4">Creating Profile</h1>
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Name</label>
-                </div>
-                <div className="col-6">
-                    <input className="form-control" type="text" placeholder={user.name} aria-label="Disabled input example" disabled />
-                </div>
-            </div>
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Email</label>
-                </div>
-                <div className="col-6">
-                    <input className="form-control" type="text" placeholder={user.email} aria-label="Disabled input example" disabled />
-                </div>
-            </div>
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Gender</label>
-                </div>
-                <div className="col-6">
-                    <select className="form-select" onChange={e => setGender(e.target.value)}>
-                        <option value="">Select Gender</option>
-                        {genderList.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Bio</label>
-                </div>
-                <div className="col-6">
-                    <input type="text" className="form-control" onChange={e => setBio(e.target.value)} />
-                </div>
-            </div>
-
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Religion</label>
-                </div>
-                <div className="col-6">
-                    <select className="form-select" onChange={e => setReligion(e.target.value)}>
-                        <option value="">Select Religion</option>
-                        {religionList.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Where You Live</label>
-                </div>
-                <div className="col-6">
-                    <input type="text" className="form-control" onChange={e => setLocation(e.target.value)} />
-                </div>
-            </div>
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Mother Tongue</label>
-                </div>
-                <div className="col-6">
-                    <select className="form-select" onChange={e => setMotherTongue(e.target.value)}>
-                        <option value="">Select Language</option>
-                        {motherTongueList.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-            <div className="row g-3 align-items-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Marital Status</label>
-                </div>
-                <div className="col-3">
-                    <div className="form-check">
-                        <input className="form-check-input" type="radio" name="marital" id="yes" value="1" onChange={(e) => setMarital(e.target.value)} />
-                        <label className="form-check-label" htmlFor="yes">Yes</label>
-                    </div>
-                </div>
-                <div className="col-3">
-                    <div className="form-check">
-                        <input className="form-check-input" type="radio" name="marital" id="no" value="0" onChange={(e) => setMarital(e.target.value)} />
-                        <label className="form-check-label" htmlFor="no">No</label>
-                    </div>
-                </div>
-            </div>
-
-
-            <div className="row g-3 align-items-center m-1">
-                <div className="col-6">
-                    <label htmlFor="dateInput" className="col-form-label">Select DOB</label>
-                </div>
-                <div className="col-6">
-                    
-                    <Calendar 
-                    id="dob"
-                    value={dob}
-                    onChange={(e) => {console.log(e.value)
-                    return setDob(e.value)}}
-                    showIcon               // Adds a professional calendar icon
-                    iconPos="right"
-                    placeholder="Select Date"
-                    className="w-100"      // Bootstrap full-width class
-                    inputClassName="form-control" // Uses Bootstrap's own input styling
-                    showButtonBar          // Adds 'Today' and 'Clear' buttons for better UX
-                    touchUI={window.innerWidth < 768} />
-                </div>
-            </div>
-
-
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Education</label>
-                </div>
-                <div className="col-6">
-                    <select className="form-select" onChange={e => setEducation(e.target.value)}>
-                        <option value="">Select Education</option>
-                        {educationList.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Tag Line</label>
-                </div>
-                <div className="col-6">
-                    <input type="text" className="form-control" onChange={e => setTagLine(e.target.value)} />
-                </div>
-            </div>
-            <div className="row g-3 align-items-center justify-content-center m-1">
-                <div className="col-6">
-                    <label className="col-form-label">Job Industry</label>
-                </div>
-                <div className="col-6">
-                    <select className="form-select" value={jobIndustry} onChange={e => setJobIndustry(e.target.value)}>
-                        <option value="">Select Industry</option>
-                        {jobIndustryList.map((item) => (
-                            <option key={item.id} value={item.id}>
-                                {item.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-            <button type="button" style={{ width: "140px", height: "45px" }} onClick={submitProfile} className="btn btn-primary row g-3 align-items-center justify-content-center m-1 ">Next</button>
+      {Object.keys(form).map((key) => (
+        <div className="mb-3" key={key}>
+          <label>{key}</label>
+          <input
+            type="text"
+            className="form-control"
+            value={form[key]}
+            onChange={(e) => onChange(key, e.target.value)}
+          />
         </div>
-    )
+      ))}
+
+      <button className="btn btn-primary" onClick={save}>
+        Save & Continue
+      </button>
+    </div>
+  );
 }
 
-
-
-
-export default CreateProfile
+export default CreateProfile;

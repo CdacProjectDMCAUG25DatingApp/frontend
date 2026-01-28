@@ -1,9 +1,12 @@
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-export default function PublicRoute({ children }) {
-  const token = sessionStorage.getItem("token");
+function PublicRoute({ children }) {
+  const token = useSelector((state) => state.user.token);
 
-  if (token) return <Navigate to="/home/people" replace />;
+  if (token) return <Navigate to="/home/people" />;
 
   return children;
 }
+
+export default PublicRoute;

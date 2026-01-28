@@ -1,9 +1,12 @@
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute({ children }) {
-  const token = sessionStorage.getItem("token");
+function ProtectedRoute({ children }) {
+  const token = useSelector((state) => state.user.token);
 
-  if (!token) return <Navigate to="/" replace />;
+  if (!token) return <Navigate to="/" />;
 
   return children;
 }
+
+export default ProtectedRoute;

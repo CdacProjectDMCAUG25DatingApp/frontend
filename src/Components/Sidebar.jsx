@@ -1,26 +1,26 @@
 import { NavLink } from "react-router-dom";
 import "../Styles/Sidebar.css";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../app/App";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { utils } from "../utils";
 
 const Sidebar = () => {
-  const { user, userDetails, photos } = useContext(UserContext);
-  
+  const user = useSelector((state) => state.user);
+  const details = useSelector((state) => state.userDetails.data);
+  const photos = useSelector((state) => state.photos.data);
+
   const [sideInfo, setSideInfo] = useState({
     userName: "",
     userDP: ""
   });
 
   useEffect(() => {
-    // Load saved values
     const savedName = sessionStorage.getItem("sidebar_name");
     const savedDP = sessionStorage.getItem("sidebar_dp");
 
     const updatedName = user?.name || savedName || "";
     const updatedDP = photos?.[0]?.photo_url || savedDP || "";
 
-    // Save to session Storage whenever updated
     if (updatedName) sessionStorage.setItem("sidebar_name", updatedName);
     if (updatedDP) sessionStorage.setItem("sidebar_dp", updatedDP);
 
@@ -35,16 +35,10 @@ const Sidebar = () => {
       <div className="sidebar-header">
 
         {sideInfo.userDP ? (
-          <img
-            src={utils.urlConverter(sideInfo.userDP)}
-            alt="dp"
-            className="dp-img"
-          />
+          <img src={utils.urlConverter(sideInfo.userDP)} alt="dp" className="dp-img" />
         ) : (
           <div className="dp-circle">
-            {sideInfo.userName
-              ? sideInfo.userName.charAt(0).toUpperCase()
-              : "D"}
+            {(sideInfo.userName || "D").charAt(0).toUpperCase()}
           </div>
         )}
 
@@ -55,11 +49,7 @@ const Sidebar = () => {
         <NavLink to="/home/people" className="menu-item">People</NavLink>
         <NavLink to="/home/chathome" className="menu-item">Chat Home</NavLink>
 
-        <NavLink
-          to="/home/profileview"
-          className="menu-item"
-          state={{ editable: true, dataObj: userDetails }}
-        >
+        <NavLink to="/home/profileview" className="menu-item" state={{ editable: true, dataObj: details }}>
           Edit Profile
         </NavLink>
 

@@ -1,10 +1,16 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../services/config";
 import { utils } from "../utils";
+
 import PhotoInput from "./ImageInput/PhotoInput";
 import MySelect from "../Components/MySelect";
-import { UserContext } from "../app/App";
+
+import { useSelector, useDispatch } from "react-redux";
+import { setPhotos } from "../redux/photosSlice";
+import { setUserDetails } from "../redux/userDetailsSlice";
+import { updateUserDetails } from "../redux/userDetailsThunks";
+
 import { Calendar } from "primereact/calendar";
 
 export const ProfileViewBlock = ({
@@ -14,24 +20,29 @@ export const ProfileViewBlock = ({
     editable,
     index,
 }) => {
-    const { setPhotos, setUserDetails } = useContext(UserContext);
+    const dispatch = useDispatch();
 
     const [profile, setProfile] = useState({});
     const [originalProfile, setOriginalProfile] = useState({});
     const [dirtyFields, setDirtyFields] = useState({});
 
-    /* ================= INIT ================= */
+    /* =====================================================
+       INIT LOAD
+    ===================================================== */
     useEffect(() => {
         const merged = {
             ...dataObj,
             image_prompt: photos?.[index]?.prompt || "",
         };
+
         setProfile(merged);
         setOriginalProfile(merged);
         setDirtyFields({});
     }, [dataObj, photos, index]);
 
-    /* ================= CHANGE HANDLER ================= */
+    /* =====================================================
+       HANDLE FIELD CHANGE
+    ===================================================== */
     const handleChange = (field, value) => {
         setProfile((prev) => ({ ...prev, [field]: value }));
 
@@ -46,92 +57,61 @@ export const ProfileViewBlock = ({
         }
     };
 
-    /* ================= UPDATE HANDLER ================= */
+    /* =====================================================
+       HANDLE UPDATE (PUT /userdetails + photo prompt)
+    ===================================================== */
     const handleUpdate = async () => {
         if (!Object.keys(dirtyFields).length) return;
 
         const token = sessionStorage.getItem("token");
+        const headers = { token };
 
         try {
-            // Split fields into PROFILE TABLE vs PREFERENCES TABLE
-            const profileFields = [
-                "bio",
-                "height",
-                "weight",
-                "gender",
-                "tagline",
-                "dob",
-                "marital_status",
-                "location",
-                "mother_tongue",
-                "religion",
-                "education",
-                "job_industry_id",
-            ];
-
-            const profilePayload = {};
-            const preferencePayload = {};
-
-            Object.keys(dirtyFields).forEach((key) => {
-                if (profileFields.includes(key)) {
-                    profilePayload[key] = dirtyFields[key];
-                } else {
-                    preferencePayload[key] = dirtyFields[key];
-                }
-            });
-
-            // 🔥 Update PROFILE table
-            if (Object.keys(profilePayload).length > 0) {
-                await axios.patch(`${config.BASE_URL}/user/profile`, profilePayload, {
-                    headers: { token },
-                });
-            }
-
-            // 🔥 Update PREFERENCES table
-            if (Object.keys(preferencePayload).length > 0) {
-                await axios.patch(
-                    `${config.BASE_URL}/user/userdetails`,
-                    preferencePayload,
-                    { headers: { token } }
-                );
-            }
-
-            // 🔥 Update Image Prompt
+            // ================================
+            // 1) Update image prompt (if changed)
+            // ================================
             if (dirtyFields.image_prompt !== undefined) {
                 await axios.patch(
-                    `${config.BASE_URL}/user/photo/prompt`,
+                    `${config.BASE_URL}/photos/prompt`,
                     {
                         photo_id: photos[index].photo_id,
                         prompt: dirtyFields.image_prompt,
                     },
-                    { headers: { token } }
+                    { headers }
                 );
 
-                // update UI photo context
-                setPhotos((prev) => {
-                    const copy = [...prev];
-                    copy[index] = {
-                        ...copy[index],
-                        prompt: dirtyFields.image_prompt,
-                    };
-                    return copy;
-                });
+                dispatch(
+                    setPhotos(
+                        photos.map((p, i) =>
+                            i === index ? { ...p, prompt: dirtyFields.image_prompt } : p
+                        )
+                    )
+                );
             }
 
-            // 🔥 Update userDetails in context
-            setUserDetails((prev) => ({
-                ...prev,
-                ...dirtyFields,
-            }));
+            // ================================
+            // 2) Update user details (Unified PUT)
+            // ================================
+            const fieldsToUpdate = { ...dirtyFields };
+            delete fieldsToUpdate.image_prompt; // prompt already handled
+
+            if (Object.keys(fieldsToUpdate).length > 0) {
+                await dispatch(updateUserDetails(fieldsToUpdate));
+            }
+
+            // Update UI copy
+            dispatch(setUserDetails({ ...dataObj, ...dirtyFields }));
 
             setOriginalProfile(profile);
             setDirtyFields({});
         } catch (err) {
-            console.log("Update failed:", err);
+            console.error("Update failed:", err);
         }
     };
 
-    /* ================= FETCH LOOKUPS ================= */
+    /* =====================================================
+       LOAD LOOKUP TABLES
+    ===================================================== */
 
     const [jobIndustryList, setJobIndustryList] = useState([]);
     const [lookingForList, setLookingForList] = useState([]);
@@ -175,45 +155,49 @@ export const ProfileViewBlock = ({
         axios.get(`${config.BASE_URL}/api/gender`, { headers }).then((r) => setGenderList(r.data.data));
     }, []);
 
-    /* ================= DROP-DOWN MAP ================= */
+    /* =====================================================
+       MAPPING FOR SELECT FIELDS
+    ===================================================== */
+
     const dropDownData = {
-        job_industry: { label: "Job Industry", options: jobIndustryList },
-        looking_for: { label: "Looking For", options: lookingForList },
-        love_style: { label: "Love Style", options: loveStyleList },
+        job_industry_id: { label: "Job Industry", options: jobIndustryList },
+        looking_for_id: { label: "Looking For", options: lookingForList },
+        love_style_id: { label: "Love Style", options: loveStyleList },
         mother_tongue: { label: "Mother Tongue", options: motherTongueList },
-        family_plan: { label: "Family Plan", options: familyPlanList },
-        drinking: { label: "Drinking", options: drinkingList },
-        smoking: { label: "Smoking", options: smokingList },
-        dietary: { label: "Dietary", options: dietaryList },
+        family_plan_id: { label: "Family Plan", options: familyPlanList },
+        drinking_id: { label: "Drinking", options: drinkingList },
+        smoking_id: { label: "Smoking", options: smokingList },
+        dietary_id: { label: "Dietary", options: dietaryList },
         education: { label: "Education", options: educationList },
-        communication_style: {
+        communication_style_id: {
             label: "Communication Style",
             options: communicationStyleList,
         },
-        open_to: { label: "Open To", options: openToList },
-        preferred_gender: { label: "Preferred Gender", options: genderList },
-        personality_type: {
+        open_to_id: { label: "Open To", options: openToList },
+        preferred_gender_id: { label: "Preferred Gender", options: genderList },
+        personality_type_id: {
             label: "Personality Type",
             options: personalityTypeList,
         },
-        pet: { label: "Pet", options: petList },
+        pet_id: { label: "Pet", options: petList },
         religion: { label: "Religion", options: religionList },
-        sleeping_habit: {
+        sleeping_habit_id: {
             label: "Sleeping Habit",
             options: sleepingHabitList,
         },
-        workout: { label: "Workout", options: workoutList },
-        zodiac: { label: "Zodiac", options: zodiacList },
+        workout_id: { label: "Workout", options: workoutList },
+        zodiac_id: { label: "Zodiac", options: zodiacList },
     };
 
-    /* ================= UI ================= */
+    /* =====================================================
+       UI
+    ===================================================== */
+
     return (
-        <div className="container-fluid py-5 border-bottom ">
-            <div
-                className={`row align-items-center g-5 ${reverse ? "flex-row-reverse" : ""
-                    }`}
-            >
-                {/* ==== IMAGE ==== */}
+        <div className="container-fluid py-5 border-bottom">
+            <div className={`row align-items-center g-5 ${reverse ? "flex-row-reverse" : ""}`}>
+                
+                {/* ================= IMAGE AREA ================= */}
                 <div className="col-lg-4 text-center">
                     <div
                         className="card border-light rounded-4 overflow-hidden mx-auto"
@@ -226,46 +210,39 @@ export const ProfileViewBlock = ({
                     </div>
                 </div>
 
-                {/* ==== FIELDS ==== */}
+                {/* ================= FIELDS AREA ================= */}
                 <div className="col-lg-8">
-                    <div className="card  rounded-4">
+                    <div className="card rounded-4">
                         <div className="card-body p-4">
+
+                            {/* LOOP THROUGH PROFILE FIELDS */}
                             {Object.entries(profile)
                                 .filter(([key]) => key !== "image_prompt")
                                 .map(([key, value]) => {
-                                    /* ===== DOB ===== */
+
+                                    // DOB FIELD
                                     if (key === "dob") {
                                         return (
                                             <div key={key} className="mb-3">
-                                                <label className="text-secondary text-uppercase small">
-                                                    Date of Birth
-                                                </label>
+                                                <label className="text-secondary small">Date of Birth</label>
 
                                                 {editable ? (
                                                     <Calendar
-                                                        id="dob"
                                                         value={value ? new Date(value) : null}
                                                         onChange={(e) => handleChange("dob", e.value)}
                                                         showIcon
-                                                        iconPos="right"
-                                                        placeholder="Select Date"
                                                         className="w-100"
-                                                        inputClassName="form-control "
-                                                        showButtonBar
-                                                        touchUI={window.innerWidth < 768}
                                                     />
                                                 ) : (
-                                                    <p className="form-control ">
-                                                        {value
-                                                            ? new Date(value).toLocaleDateString()
-                                                            : "Not set"}
+                                                    <p className="form-control">
+                                                        {value ? new Date(value).toLocaleDateString() : "Not set"}
                                                     </p>
                                                 )}
                                             </div>
                                         );
                                     }
 
-                                    /* ===== MARITAL STATUS ===== */
+                                    // MARITAL STATUS
                                     if (key === "marital_status") {
                                         const maritalOptions = [
                                             { id: 1, name: "Yes" },
@@ -280,14 +257,12 @@ export const ProfileViewBlock = ({
                                                 value={value}
                                                 options={maritalOptions}
                                                 noDropdown={!editable}
-                                                onChange={(e) =>
-                                                    handleChange("marital_status", e.target.value)
-                                                }
+                                                onChange={(e) => handleChange("marital_status", e.target.value)}
                                             />
                                         );
                                     }
 
-                                    /* ===== SELECT FIELDS ===== */
+                                    // SELECT FIELDS
                                     if (dropDownData[key]) {
                                         return (
                                             <MySelect
@@ -301,27 +276,28 @@ export const ProfileViewBlock = ({
                                         );
                                     }
 
-                                    /* ===== NORMAL TEXT INPUT ===== */
+                                    // DEFAULT TEXT INPUT
                                     return (
                                         <div key={key} className="mb-3">
-                                            <label className="text-secondary text-uppercase small">
+                                            <label className="text-secondary small">
                                                 {key.replace(/_/g, " ")}
                                             </label>
+
                                             <input
                                                 type="text"
-                                                className="form-control "
-                                                value={value || ""}
+                                                className="form-control"
                                                 disabled={!editable}
+                                                value={value || ""}
                                                 onChange={(e) => handleChange(key, e.target.value)}
                                             />
                                         </div>
                                     );
                                 })}
 
-                            {/* ==== IMAGE PROMPT FIELD ==== */}
+                            {/* ================= IMAGE PROMPT ================= */}
                             {(editable || photos?.[index]?.prompt) && (
                                 <>
-                                    <hr className=" mt-4" />
+                                    <hr className="mt-4" />
                                     <h6 className="text-uppercase text-secondary">
                                         Image Prompt
                                     </h6>
@@ -331,27 +307,33 @@ export const ProfileViewBlock = ({
                                         value={profile.image_prompt || ""}
                                         disabled={!editable}
                                         onChange={(e) => handleChange("image_prompt", e.target.value)}
-                                    />
+                                    ></textarea>
                                 </>
                             )}
 
-                            {/* ==== SAVE / CANCEL ==== */}
+                            {/* ================= SAVE BUTTON ================= */}
                             {editable && Object.keys(dirtyFields).length > 0 && (
                                 <div className="text-end mt-4 d-flex justify-content-end gap-2">
-                                    <button className="btn btn-secondary" onClick={() => {
-                                        setProfile(originalProfile);
-                                        setDirtyFields({});
-                                    }}>
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() => {
+                                            setProfile(originalProfile);
+                                            setDirtyFields({});
+                                        }}
+                                    >
                                         Cancel
                                     </button>
+
                                     <button className="btn btn-success" onClick={handleUpdate}>
                                         Update This Section
                                     </button>
                                 </div>
                             )}
+
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );
