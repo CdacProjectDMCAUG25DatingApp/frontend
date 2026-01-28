@@ -1,6 +1,7 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 import config from "../services/config";
 import { utils } from "../utils";
@@ -9,169 +10,116 @@ import PhotoInput from "../Components/ImageInput/PhotoInput";
 import MySelect from "../Components/MySelect";
 import { ProfileViewBlock } from "../Components/ProfileViewBlocks";
 
-// Redux
-import { useSelector, useDispatch } from "react-redux";
+import { updateUserDetails } from "../redux/userDetailsThunks";
 import { setPhotos } from "../redux/photosSlice";
 import { setUserDetails } from "../redux/userDetailsSlice";
-import { updateUserDetails } from "../redux/userDetailsThunks";
 
-export const ProfileView = () => {
+export const ProfileView = ({ editable = false, dataObj = {}, photos = [] }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { state } = useLocation();
-  const { dataObj, photos: routePhotos, editable, token } = state || {};
+  console.log(dataObj)
 
-  // Redux data (current logged-in user)
-  const reduxUserDetails = useSelector((s) => s.userDetails.data);
-  const reduxPhotos = useSelector((s) => s.photos.data);
+  if (!dataObj || !photos.length) return null;
 
-  // final source
-  const finalData = editable ? reduxUserDetails : dataObj;
-  const finalPhotos = editable ? reduxPhotos : routePhotos;
-
-  if (!finalData) return null;
-
-  // ================== COMPONENT STATES ==================
+  // --------------------
+  //  Local State
+  // --------------------
   const [genderList, setGenderList] = useState([]);
+  const [reportReasons, setReportReasons] = useState([]);
 
   const [profile, setProfile] = useState({});
   const [original, setOriginal] = useState({});
   const [dirty, setDirty] = useState({});
 
-  // Report
   const [reportVisible, setReportVisible] = useState(false);
   const [reason, setReason] = useState(null);
   const [customReason, setCustomReason] = useState("");
-  const [reportReasons, setReportReasons] = useState([]);
 
-  // ================== INITIAL LOAD ==================
+  // --------------------
+  //  Load Gender + Report Reasons
+  // --------------------
   useEffect(() => {
     const headers = { token: sessionStorage.getItem("token") };
 
-    axios.get(`${config.BASE_URL}/api/gender`, { headers }).then((r) =>
-      setGenderList(r.data.data)
-    );
+    axios.get(`${config.BASE_URL}/api/gender`, { headers })
+      .then(res => setGenderList(res.data.data));
 
-    // initial form load
+    axios.get(`${config.BASE_URL}/api/report-reasons`, { headers })
+      .then(res => setReportReasons(res.data.data));
+  }, []);
+
+  // --------------------
+  //  Initialize Profile State
+  // --------------------
+  useEffect(() => {
     const merged = {
-      ...finalData,
-      image_prompt: finalPhotos?.[0]?.prompt || "",
+      ...dataObj,
+      image_prompt: photos[0]?.prompt || ""
     };
-
     setProfile(merged);
     setOriginal(merged);
     setDirty({});
-  }, [finalData]); // DO NOT depend on finalPhotos → prevents infinite resets
+  }, [dataObj, photos]);
 
-  useEffect(() => {
-    axios
-      .get(`${config.BASE_URL}/api/report-reasons`, {
-        headers: { token: sessionStorage.getItem("token") },
-      })
-      .then((r) => setReportReasons(r.data.data));
-  }, []);
-
-  // ================== HANDLE CHANGE ==================
+  // --------------------
+  //  Change Handler
+  // --------------------
   const handleChange = (field, value) => {
-    setProfile((p) => ({ ...p, [field]: value }));
+    setProfile(prev => ({ ...prev, [field]: value }));
 
     if (original[field] !== value) {
-      setDirty((d) => ({ ...d, [field]: value }));
+      setDirty(prev => ({ ...prev, [field]: value }));
     } else {
-      setDirty((d) => {
-        const copy = { ...d };
+      setDirty(prev => {
+        const copy = { ...prev };
         delete copy[field];
         return copy;
       });
     }
   };
 
-  // ================== BLOCK USER ==================
-  const handleBlock = async () => {
-    try {
-      await axios.post(
-        `${config.BASE_URL}/settings/block`,
-        { blocked_id: token },
-        { headers: { token: sessionStorage.getItem("token") } }
-      );
-
-      alert("User Blocked");
-      navigate(-1);
-    } catch (err) {
-      alert("Block failed");
-    }
-  };
-
-  // ================== REPORT USER ==================
-  const submitReport = async () => {
-    try {
-      await axios.post(
-        `${config.BASE_URL}/settings/report`,
-        {
-          reported_id: token,
-          reason_id: reason,
-          reason_custom: reason === 99 ? customReason : null,
-        },
-        { headers: { token: sessionStorage.getItem("token") } }
-      );
-
-      alert("User Reported");
-    } catch (err) {
-      alert("Report failed");
-    }
-
-    setReportVisible(false);
-    setReason(null);
-    setCustomReason("");
-  };
-
-  // ================== UPDATE PROFILE ==================
+  // --------------------
+  //  Update Handler
+  // --------------------
   const handleUpdate = async () => {
     if (!Object.keys(dirty).length) return;
 
     const headers = { token: sessionStorage.getItem("token") };
 
-    const unifiedPayload = { ...dirty };
-
-    // Extract prompt separately
-    const promptValue = unifiedPayload.image_prompt;
-    delete unifiedPayload.image_prompt;
+    const updatePayload = { ...dirty };
+    const promptValue = updatePayload.image_prompt;
+    delete updatePayload.image_prompt;
 
     try {
-      // 1) Update user details via unified PUT (Redux thunk)
-      if (Object.keys(unifiedPayload).length > 0) {
-        await dispatch(updateUserDetails(unifiedPayload));
+      // Update profile/preference
+      if (Object.keys(updatePayload).length) {
+        await dispatch(updateUserDetails(updatePayload));
       }
 
-      // 2) Update prompt if changed
+      // Update image prompt
       if (promptValue !== undefined) {
         await axios.patch(
           `${config.BASE_URL}/photos/prompt`,
           {
-            photo_id: finalPhotos?.[0]?.photo_id,
-            prompt: promptValue,
+            photo_id: photos[0].photo_id,
+            prompt: promptValue
           },
           { headers }
         );
 
-        // update redux photos
         dispatch(
           setPhotos(
-            finalPhotos.map((p, i) =>
-              i === 0 ? { ...p, prompt: promptValue } : p
-            )
+            photos.map((p, i) => (i === 0 ? { ...p, prompt: promptValue } : p))
           )
         );
       }
 
-      // update Redux details
-      dispatch(setUserDetails({ ...finalData, ...dirty }));
-
+      dispatch(setUserDetails({ ...dataObj, ...dirty }));
       setOriginal(profile);
       setDirty({});
     } catch (err) {
-      console.error(err);
+      console.log("Update failed", err);
     }
   };
 
@@ -180,64 +128,117 @@ export const ProfileView = () => {
     setDirty({});
   };
 
-  // ================== PROFILE SECTIONS ==================
-  const repeatedBlocks = [
-    { dob: finalData.dob, location: finalData.location, mother_tongue: finalData.mother_tongue, religion: finalData.religion },
+  // --------------------
+  //  Blocks
+  // --------------------
+const blocks = [
+  // Block 1 - profile
+  {
+    dob: dataObj.dob,
+    location: dataObj.location,
+    mother_tongue: dataObj.mother_tongue,
+    religion: dataObj.religion,
+  },
 
-    { education: finalData.education, job_industry: finalData.job_industry, looking_for: finalData.looking_for, open_to: finalData.open_to },
+  // Block 2 - education/work/job/preferences
+  {
+    education: dataObj.education,
+    job_industry_id: dataObj.job_industry_id,
+    looking_for_id: dataObj.looking_for_id,
+    open_to_id: dataObj.open_to_id,
+  },
 
-    { drinking: finalData.drinking, smoking: finalData.smoking, workout: finalData.workout, dietary: finalData.dietary, sleeping_habit: finalData.sleeping_habit },
+  // Block 3 - lifestyle
+  {
+    drinking_id: dataObj.drinking_id,
+    smoking_id: dataObj.smoking_id,
+    workout_id: dataObj.workout_id,
+    dietary_id: dataObj.dietary_id,
+    sleeping_habit_id: dataObj.sleeping_habit_id,
+  },
 
-    { love_style: finalData.love_style, communication_style: finalData.communication_style, family_plan: finalData.family_plan, personality_type: finalData.personality_type, pet: finalData.pet, zodiac: finalData.zodiac, preferred_gender: finalData.preferred_gender },
-  ];
+  // Block 4 - personality/preferences
+  {
+    love_style_id: dataObj.love_style_id,
+    communication_style_id: dataObj.communication_style_id,
+    family_plan_id: dataObj.family_plan_id,
+    personality_type_id: dataObj.personality_type_id,
+    pet_id: dataObj.pet_id,
+    zodiac_id: dataObj.zodiac_id,
+    preferred_gender_id: dataObj.preferred_gender_id,
+  },
+];
 
-  // ================== UI ==================
+
+
+  // --------------------
+  //  Submit Report
+  // --------------------
+  const submitReport = async () => {
+    if (!reason) return;
+
+    const headers = { token: sessionStorage.getItem("token") };
+
+    await axios.post(
+      `${config.BASE_URL}/api/report-user`,
+      {
+        reason_id: reason,
+        custom_text: reason === 99 ? customReason : null,
+        target_user_id: dataObj.uid
+      },
+      { headers }
+    );
+
+    setReportVisible(false);
+    setReason(null);
+    setCustomReason("");
+  };
+
   return (
     <div className="container-fluid px-lg-5">
 
-      {/* BACK BUTTON */}
+      {/* Back */}
       <button
         className="btn btn-outline-light mb-3"
-        onClick={() =>
-          navigate(-1, { state: { returnIndex: state?.cardIndex } })
-        }
+        onClick={() => navigate(-1)}
       >
         ← Back
       </button>
 
-      {/* MENU */}
-      <div className="d-flex justify-content-end mb-3">
-        <div className="dropdown">
-          <button className="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            ⋮
-          </button>
-
-          <ul className="dropdown-menu dropdown-menu-dark">
-            <li><button className="dropdown-item" onClick={() => setReportVisible(true)}>Report</button></li>
-            <li><button className="dropdown-item" onClick={handleBlock}>Block</button></li>
-          </ul>
+      {/* Menu */}
+      {!editable && (
+        <div className="d-flex justify-content-end mb-3">
+          <div className="dropdown">
+            <button className="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
+              ⋮
+            </button>
+            <ul className="dropdown-menu dropdown-menu-dark">
+              <li><button className="dropdown-item" onClick={() => setReportVisible(true)}>Report</button></li>
+            </ul>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* ================== HERO CARD ================== */}
+      {/* HERO */}
       <div className="card text-white shadow-lg mb-5">
         <div className="card-body p-5">
           <div className="row g-5">
 
-            {/* PHOTO */}
+            {/* PHOTO COLUMN */}
             <div className="col-lg-4 text-center">
-              <div className="card border-light rounded-4 overflow-hidden mx-auto" style={{ width: "300px", height: "500px" }}>
+              <div className="card border-light rounded-4 overflow-hidden mx-auto"
+                style={{ width: "300px", height: "500px" }}>
                 <PhotoInput
                   dataURLtoFile={utils.dataURLtoFile}
-                  imageurl={utils.urlConverter(finalPhotos?.[0]?.photo_url)}
+                  imageurl={utils.urlConverter(photos[0]?.photo_url)}
                 />
               </div>
             </div>
 
-            {/* BASIC INFO */}
+            {/* DETAILS COLUMN */}
             <div className="col-lg-8">
-              <h1 className="fw-bold">{finalData.user_name}</h1>
-              <p className="fst-italic text-secondary">{finalData.tagline}</p>
+              <h1 className="fw-bold">{dataObj.user_name}</h1>
+              <p className="text-secondary">{dataObj.tagline}</p>
 
               <hr />
 
@@ -251,20 +252,17 @@ export const ProfileView = () => {
                 onChange={(e) => handleChange("bio", e.target.value)}
               />
 
-              {/* HEIGHT – WEIGHT – GENDER */}
+              {/* HEIGHT / WEIGHT / GENDER */}
               <div className="row g-3">
-                {["height", "weight"].map((field) => (
-                  <div className="col-md-4" key={field}>
-                    <label className="small text-secondary text-uppercase">
-                      {field}
-                    </label>
-
+                {["height", "weight"].map(f => (
+                  <div className="col-md-4" key={f}>
+                    <label className="text-secondary small">{f}</label>
                     <input
                       type="number"
                       className="form-control"
+                      value={profile[f] || ""}
                       disabled={!editable}
-                      value={profile[field] || ""}
-                      onChange={(e) => editable && handleChange(field, e.target.value)}
+                      onChange={(e) => handleChange(f, e.target.value)}
                     />
                   </div>
                 ))}
@@ -275,7 +273,7 @@ export const ProfileView = () => {
                     value={profile.gender}
                     options={genderList}
                     noDropdown={!editable}
-                    onChange={(e) => editable && handleChange("gender", e.target.value)}
+                    onChange={(e) => handleChange("gender", e.target.value)}
                   />
                 </div>
               </div>
@@ -291,54 +289,53 @@ export const ProfileView = () => {
                     value={profile.image_prompt || ""}
                     disabled={!editable}
                     onChange={(e) => handleChange("image_prompt", e.target.value)}
-                  ></textarea>
+                  />
                 </>
               )}
 
-              {/* UPDATE BUTTONS */}
+              {/* BUTTONS */}
               {editable && Object.keys(dirty).length > 0 && (
-                <div className="mt-4 d-flex justify-content-end gap-2">
-                  <button className="btn btn-secondary" onClick={handleCancel}>
-                    Cancel
-                  </button>
-                  <button className="btn btn-success" onClick={handleUpdate}>
-                    Update Profile
-                  </button>
+                <div className="mt-4 d-flex justify-content-end gap-3">
+                  <button className="btn btn-secondary" onClick={handleCancel}>Cancel</button>
+                  <button className="btn btn-success" onClick={handleUpdate}>Save</button>
                 </div>
               )}
+
             </div>
           </div>
         </div>
       </div>
 
-      {/* ================== SECTIONS (BLOCKS) ================== */}
-      {repeatedBlocks.map((fields, i) => (
+      {/* PROFILE BLOCKS */}
+      {blocks.map((grp, i) => (
         <ProfileViewBlock
           key={i}
-          dataObj={fields}
-          photos={finalPhotos}
+          dataObj={grp}
+          photos={photos}
           editable={editable}
-          index={Math.min(i + 1, finalPhotos.length - 1)}
-          reverse={i % 2 !== 1}
+          index={Math.min(i + 1, photos.length - 1)}
+          reverse={i % 2 === 1}
         />
       ))}
 
-      {/* ================== REPORT MODAL ================== */}
+      {/* REPORT MODAL */}
       {reportVisible && (
-        <div className="modal fade show" style={{ display: "block", background: "rgba(0,0,0,0.7)" }}>
+        <div className="modal fade show"
+          style={{ display: "block", background: "rgba(0,0,0,0.7)" }}>
           <div className="modal-dialog">
             <div className="modal-content">
 
               <div className="modal-header">
                 <h5 className="modal-title">Report User</h5>
-                <button className="btn-close btn-close-white" onClick={() => setReportVisible(false)} />
+                <button className="btn-close btn-close-white"
+                  onClick={() => setReportVisible(false)} />
               </div>
 
               <div className="modal-body">
                 <MySelect
                   label="Reason"
                   value={reason}
-                  options={reportReasons.map((r) => ({ id: r.reason_id, name: r.name }))}
+                  options={reportReasons.map(r => ({ id: r.reason_id, name: r.name }))}
                   onChange={(e) => setReason(e.target.value)}
                 />
 
@@ -353,7 +350,8 @@ export const ProfileView = () => {
               </div>
 
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setReportVisible(false)}>
+                <button className="btn btn-secondary"
+                  onClick={() => setReportVisible(false)}>
                   Cancel
                 </button>
                 <button className="btn btn-danger" onClick={submitReport}>
@@ -365,6 +363,7 @@ export const ProfileView = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

@@ -1,28 +1,28 @@
-const MySelect = ({
-  label,
-  value,
-  options = [],
-  onChange,
-  noDropdown = false,
-}) => {
+const MySelect = ({ label, value, options = [], onChange, noDropdown }) => {
+  
+  // If options not loaded yet
   if (!options || options.length === 0) {
     return (
       <div className="form-group mb-3">
         {label && <label className="form-label">{label}</label>}
-        <div className="form-control ">Loading...</div>
+        <div className="form-control">Loading…</div>
       </div>
     );
   }
 
-  // Convert string NAME → numeric ID
-  const resolvedValue = (() => {
+  // Always convert incoming VALUE → ID
+  const resolvedId = (() => {
     if (value === null || value === undefined || value === "") return "";
 
     if (typeof value === "number") return value;
 
-    // value is a NAME → find matching id
-    const match = options.find((opt) => opt.name === value);
-    return match ? match.id : "";
+    const found = options.find((o) => o.name === value);
+    return found ? found.id : "";
+  })();
+
+  const displayText = (() => {
+    const found = options.find((o) => o.id === resolvedId);
+    return found ? found.name : "Not set";
   })();
 
   return (
@@ -30,23 +30,21 @@ const MySelect = ({
       {label && <label className="form-label">{label}</label>}
 
       {noDropdown ? (
-        <div className="form-control">
-          {value || ""}
-        </div>
+        <div className="form-control">{displayText}</div>
       ) : (
         <select
-          value={resolvedValue}
           className="form-control"
+          value={resolvedId}
           onChange={(e) =>
             onChange({
               target: { value: Number(e.target.value) },
             })
           }
         >
-          {!resolvedValue && <option value="">Select</option>}
-          {options.map((opt) => (
-            <option key={opt.id} value={opt.id}>
-              {opt.name}
+          <option value="">Select</option>
+          {options.map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.name}
             </option>
           ))}
         </select>

@@ -6,7 +6,6 @@ import { utils } from "../utils";
 
 const Sidebar = () => {
   const user = useSelector((state) => state.user);
-  const details = useSelector((state) => state.userDetails.data);
   const photos = useSelector((state) => state.photos.data);
 
   const [sideInfo, setSideInfo] = useState({
@@ -15,14 +14,8 @@ const Sidebar = () => {
   });
 
   useEffect(() => {
-    const savedName = sessionStorage.getItem("sidebar_name");
-    const savedDP = sessionStorage.getItem("sidebar_dp");
-
-    const updatedName = user?.name || savedName || "";
-    const updatedDP = photos?.[0]?.photo_url || savedDP || "";
-
-    if (updatedName) sessionStorage.setItem("sidebar_name", updatedName);
-    if (updatedDP) sessionStorage.setItem("sidebar_dp", updatedDP);
+    const updatedName = user?.name || "";
+    const updatedDP = photos?.[0]?.photo_url || "";
 
     setSideInfo({
       userName: updatedName,
@@ -35,24 +28,24 @@ const Sidebar = () => {
       <div className="sidebar-header">
 
         {sideInfo.userDP ? (
-          <img src={utils.urlConverter(sideInfo.userDP)} alt="dp" className="dp-img" />
+          <img
+            src={utils.urlConverter(sideInfo.userDP)}
+            alt="dp"
+            className="dp-img"
+          />
         ) : (
           <div className="dp-circle">
-            {(sideInfo.userName || "D").charAt(0).toUpperCase()}
+            {(sideInfo.userName || "D")[0].toUpperCase()}
           </div>
         )}
 
-        <p className="username">{sideInfo.userName || "Name"}</p>
+        <p className="username">{sideInfo.userName}</p>
       </div>
 
       <nav className="sidebar-menu">
         <NavLink to="/home/people" className="menu-item">People</NavLink>
         <NavLink to="/home/chathome" className="menu-item">Chat Home</NavLink>
-
-        <NavLink to="/home/profileview" className="menu-item" state={{ editable: true, dataObj: details }}>
-          Edit Profile
-        </NavLink>
-
+        <NavLink to="/home/editprofile" className="menu-item">Edit Profile</NavLink>
         <NavLink to="/home/likeandmatchespage" className="menu-item">Likes/Matched</NavLink>
         <NavLink to="/home/settings" className="menu-item">Settings</NavLink>
       </nav>

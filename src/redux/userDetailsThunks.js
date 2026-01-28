@@ -10,7 +10,7 @@ export const loadUserDetails = () => async (dispatch) => {
   const headers = { token };
 
   const res = await axios.get(config.BASE_URL + "/user/userdetails", { headers });
-  dispatch(setUserDetails(res.data.data[0] || {}));
+  dispatch(setUserDetails(res.data.data || {}));
 };
 
 // UPDATE DETAILS (PROFILE + PREFERENCES in 1 API)
@@ -22,7 +22,7 @@ export const updateUserDetails = (fields) => async (dispatch) => {
 
   // Reload full details
   const res = await axios.get(config.BASE_URL + "/user/userdetails", { headers });
-  dispatch(setUserDetails(res.data.data[0] || {}));
+  dispatch(setUserDetails(res.data.data || {}));
 };
 
 // LOAD PHOTOS

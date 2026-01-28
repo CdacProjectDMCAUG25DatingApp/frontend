@@ -26,48 +26,31 @@ function Login() {
         return;
       }
 
-      const d = result.data;
+      const { token, userdetails, photos, onboarding, name, email: e, mobile } = result.data;
 
-      // Save token
-      sessionStorage.setItem("token", d.token);
+      sessionStorage.setItem("token", token);
 
-      // Save basic user
-      dispatch(setUser({
-        token: d.token,
-        name: d.name,
-        email: d.email,
-        mobile: d.mobile,
-      }));
+      // set basic user
+      dispatch(setUser({ token, name, email: e, mobile }));
 
-      // Save full userdetails
-      dispatch(setUserDetails(d.userdetails || {}));
-
-      // Save photos
-      dispatch(setPhotos(d.photos || []));
+      // set redux userDetails & photos
+      dispatch(setUserDetails(userdetails || {}));
+      dispatch(setPhotos(photos || []));
 
       toast.success("Login Successful");
 
-      // ONBOARDING REDIRECT FLOW
-      if (d.onboarding.needs_profile) {
-        return navigate("/createprofile");
-      }
+      // onboarding navigation
+      if (onboarding.needs_profile) return navigate("/createprofile");
+      if (onboarding.needs_photos) return navigate("/addphotos");
+      if (onboarding.needs_preferences) return navigate("/preferences");
 
-      if (d.onboarding.needs_photos) {
-        return navigate("/addphotos");
-      }
-
-      if (d.onboarding.needs_preferences) {
-        return navigate("/preferences");
-      }
-
-      // If everything is completed → go home
       navigate("/home/people");
-
-    } catch (ex) {
-      console.error(ex);
+    } catch (err) {
+      console.log(err);
       toast.error("Something went wrong");
     }
   };
+
 
   return (
     <div className="login-wrapper">
