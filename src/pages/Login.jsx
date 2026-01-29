@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
@@ -26,20 +26,17 @@ function Login() {
         return;
       }
 
-      const { token, userdetails, photos, onboarding, name, email: e, mobile } = result.data;
+      const { token, userdetails, photos, onboarding, name, email: e, mobile } =
+        result.data;
 
       sessionStorage.setItem("token", token);
 
-      // set basic user
       dispatch(setUser({ token, name, email: e, mobile }));
-
-      // set redux userDetails & photos
       dispatch(setUserDetails(userdetails || {}));
       dispatch(setPhotos(photos || []));
 
       toast.success("Login Successful");
 
-      // onboarding navigation
       if (onboarding.needs_profile) return navigate("/createprofile");
       if (onboarding.needs_photos) return navigate("/addphotos");
       if (onboarding.needs_preferences) return navigate("/preferences");
@@ -51,49 +48,51 @@ function Login() {
     }
   };
 
-
   return (
-    <div className="login-wrapper">
-
-      <div className="login-left marketing">
-        <small className="top-text">Find Your Kind of Connection</small>
-
-        <h1 className="hero-title">
-          Meet new people.<br />
-          Make real connections.
-        </h1>
-
-        <p className="trust-text">
-          Safe, simple,<br />
-          and 100% free to start
-        </p>
+    <div className="auth-container">
+      {/* LEFT PANEL */}
+      <div className="auth-left">
+        <h1>💗 LoveConnect</h1>
+        <p>Find your perfect match</p>
       </div>
 
-      <div className="login-right">
-        <div className="login-box">
+      {/* RIGHT PANEL */}
+      <div className="auth-right">
+        <div className="auth-card">
+          <h2>Sign In</h2>
 
+          <label>Email</label>
           <input
             type="email"
-            placeholder="email address :"
+            placeholder="Enter your email"
             onChange={(e) => setEmail(e.target.value)}
           />
 
+          <label>Password</label>
           <input
             type="password"
-            placeholder="password :"
+            placeholder="Enter your password"
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button onClick={signin}>Signin</button>
+          <div className="auth-options">
+            <label>
+              <input type="checkbox" /> Remember me
+            </label>
+            <span className="forgot">Forgot password?</span>
+          </div>
 
-          <p className="register-text">
-            don't have an account <br />
-            <a href="/register">click here</a>
+          <button className="auth-btn" onClick={signin}>
+            Sign In
+          </button>
+
+         
+
+          <p className="signup-text">
+            Don’t have an account? <a href="/register">Sign up</a>
           </p>
-
         </div>
       </div>
-
     </div>
   );
 }
