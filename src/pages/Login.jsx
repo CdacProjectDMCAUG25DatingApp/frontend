@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom"; 
 import { toast } from "react-toastify";
@@ -54,6 +54,11 @@ function Login() {
 
       toast.success("Login Successful");
 
+      if (onboarding.needs_profile) return navigate("/createprofile");
+      if (onboarding.needs_photos) return navigate("/addphotos");
+      if (onboarding.needs_preferences) return navigate("/preferences");
+
+      navigate("/home/people");
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong");
@@ -63,35 +68,47 @@ function Login() {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="login-left marketing">
-        <small className="top-text">Find Your Kind of Connection</small>
-        <h1 className="hero-title">Meet new people.<br />Make real connections.</h1>
-        <p className="trust-text">Safe, simple,<br />and 100% free to start</p>
+    <div className="auth-container">
+      {/* LEFT PANEL */}
+      <div className="auth-left">
+        <h1>💗 Cupido</h1>
+        <p>Find your perfect match</p>
       </div>
 
-      <div className="login-right">
-        <div className="login-box">
+      {/* RIGHT PANEL */}
+      <div className="auth-right">
+        <div className="auth-card">
+          <h2>Sign In</h2>
+
+          <label>Email</label>
           <input
             type="email"
-            placeholder="Email address"
-            value={email}
+            placeholder="Enter your email"
             onChange={(e) => setEmail(e.target.value)}
           />
+
+          <label>Password</label>
           <input
             type="password"
-            placeholder="Password"
-            value={password}
+            placeholder="Enter your password"
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button disabled={loading} onClick={signin}>
-            {loading ? "Signing in..." : "Signin"}
+          <div className="auth-options">
+            <label>
+              <input type="checkbox" /> Remember me
+            </label>
+            <span className="forgot">Forgot password?</span>
+          </div>
+
+          <button className="auth-btn" onClick={signin}>
+            Sign In
           </button>
 
-          <p className="register-text">
-            don't have an account <br />
-            <Link to="/register">click here</Link> 
+         
+
+          <p className="signup-text">
+            Don’t have an account? <a href="/register">Sign up</a>
           </p>
         </div>
       </div>

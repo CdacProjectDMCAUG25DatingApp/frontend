@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../services/config";
 import { utils } from "../utils";
+import { useNavigate } from "react-router";
 
 export default function BlockedUsers() {
     const [blockedList, setBlockedList] = useState([]);
-
+    const navigate = useNavigate()
     useEffect(() => {
         loadBlockedUsers();
     }, []);
@@ -32,6 +33,12 @@ export default function BlockedUsers() {
 
     return (
         <div className="container py-4">
+            <button
+                className="btn btn-outline-light mb-3"
+                onClick={() => navigate("/home/settings")}
+            >
+                ← Back
+            </button>
             <h2 className="fw-bold text-white mb-4">Blocked Users</h2>
 
             {blockedList.length === 0 && (

@@ -41,7 +41,7 @@ const MySelect = ({ label, value, options = [], onChange, noDropdown }) => {
             })
           }
         >
-          {!value && <option value="">Select</option>}
+        {!value && <option value="">Select</option>}
           {options.map((o) => (
             <option key={o.id} value={o.id}>
               {o.name}

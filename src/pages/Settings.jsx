@@ -1,9 +1,9 @@
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
 import { useState } from "react";
 import ChangePasswordModal from "../Components/ChangePasswordModal";
 import FeedbackModal from "../Components/FeedBack";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { logout } from "../redux/userSlice";
 
 export default function Settings() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -68,7 +68,6 @@ export default function Settings() {
             >
               Blocked Users
             </button>
-
 
             <button
               className="btn py-3 fs-5 border border-danger rounded-4 text-danger"
