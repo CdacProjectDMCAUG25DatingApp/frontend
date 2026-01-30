@@ -236,7 +236,7 @@ export const ProfileViewBlock = ({
               imageurl={utils.urlConverter(photos[index]?.photo_url)}
               photo_id={photos[index]?.photo_id}
               index={index}
-              editable
+              editable={editable}
             />
 
           </div>
@@ -265,7 +265,7 @@ export const ProfileViewBlock = ({
                             showYearDropdown
                             dropdownMode="select"
                             maxDate={new Date()}
-                            className="form-control"
+                            className="form-control ms-5"
                           />
 
                         ) : (

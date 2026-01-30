@@ -109,7 +109,7 @@ const MainCard = ({ onSwipe, userGender, candidate , token }) => {
     >
       <RBCard
         candidate={candidate}
-        userGender={userGender}
+        userGender={candidate.candidateData.gender}
         name={candidate.candidateData.user_name}
         title={candidate.candidateData.tagline}
         dob={candidate.candidateData.dob}

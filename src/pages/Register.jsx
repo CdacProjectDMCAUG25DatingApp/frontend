@@ -12,6 +12,7 @@ function Register() {
     const signup = async () => {
         //to-do  -> check for the validations if user have entered the data in the input fields
         const result = await registerUser(name, email, password, mobile)
+        console.log(result)
         if (result.status == 'success') {
             toast.success('Signup Successful')
             navigate('/')

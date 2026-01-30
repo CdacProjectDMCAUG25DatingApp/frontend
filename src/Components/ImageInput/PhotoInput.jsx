@@ -5,7 +5,7 @@ import axios from "axios";
 import config from "../../services/config";
 import { useDispatch, useSelector } from "react-redux";
 import { setPhotos } from "../../redux/photosSlice";
-import { utils } from './../../utils';
+import { utils } from "../../utils";
 
 const PhotoInput = ({
   id,
@@ -16,7 +16,8 @@ const PhotoInput = ({
   imageHeight = 500,
   photo_id,
   index,
-  editable = false   // ⭐ NEW: control UI visibility
+  editable = true,
+  isDP = false, // ⭐ NEW FLAG
 }) => {
   const [avatarUrl, setAvatarUrl] = useState(preloadImg);
   const [modalOpen, setModalOpen] = useState(false);
@@ -51,25 +52,19 @@ const PhotoInput = ({
     formData.append("photo_id", photo_id);
 
     try {
-      const res = await axios.put(
-        `${config.BASE_URL}/photos/replace`,
-        formData,
-        {
-          headers: {
-            token: sessionStorage.getItem("token"),
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await axios.put(`${config.BASE_URL}/photos/replace`, formData, {
+        headers: {
+          token: sessionStorage.getItem("token"),
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (res.data.status === "success") {
         const { new_url } = res.data.data;
 
         dispatch(
           setPhotos(
-            photos.map((p, i) =>
-              i === index ? { ...p, photo_url: new_url } : p
-            )
+            photos.map((p, i) => (i === index ? { ...p, photo_url: new_url } : p))
           )
         );
       }
@@ -78,7 +73,6 @@ const PhotoInput = ({
     }
   };
 
-  // For add-photos
   const isAddPhotos = from === "addphotos";
 
   return (
@@ -88,22 +82,26 @@ const PhotoInput = ({
     >
       <div
         style={{
-          width: "100%",
+          width: imageWidth,
           height: imageHeight,
-          borderRadius: isAddPhotos ? "16px" : "14px",
+          borderRadius: isDP ? "50%" : "14px", // ★ CIRCLE FOR DP
           overflow: "hidden",
           background: "#000",
           border: isAddPhotos ? "none" : "2px solid #007bff",
           position: "relative",
+          margin: "0 auto",
         }}
       >
-        {/* IMAGE */}
         <img
           src={avatarUrl}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: isDP ? "50%" : "0", // ★ Ensure circular crop
+          }}
         />
 
-        {/* ⭐ OVERLAY BUTTON (ONLY IF EDITABLE) */}
         {editable && (
           <div
             style={{
@@ -131,11 +129,8 @@ const PhotoInput = ({
         )}
       </div>
 
-      {/* OLD BUTTON REMOVED */}
-      {/* No external button anymore */}
-
       {modalOpen && (
-        <Modal updateAvatar={updateAvatar} closeModal={() => setModalOpen(false)} />
+        <Modal updateAvatar={updateAvatar} closeModal={() => setModalOpen(false)} isDP={isDP} />
       )}
     </div>
   );

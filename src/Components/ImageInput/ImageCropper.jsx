@@ -11,7 +11,7 @@ const MIN_DIMENSION_X = 60;
 const MIN_DIMENSION_Y = 100;
 const ASPECT_RATIO = MIN_DIMENSION_X / MIN_DIMENSION_Y;
 
-const ImageCropper = ({ closeModal, updateAvatar }) => {
+const ImageCropper = ({ closeModal, updateAvatar ,isDP=false}) => {
   const imgRef = useRef(null);
   const previewCanvasRef = useRef(null);
   const [imgSrc, setImgSrc] = useState("");
@@ -84,7 +84,8 @@ const ImageCropper = ({ closeModal, updateAvatar }) => {
             crop={crop}
             onChange={(c) => setCrop(c)}
             keepSelection
-            aspect={ASPECT_RATIO}
+            aspect={isDP ? 1 : ASPECT_RATIO}
+            circularCrop={isDP} 
           >
             <img
               ref={imgRef}

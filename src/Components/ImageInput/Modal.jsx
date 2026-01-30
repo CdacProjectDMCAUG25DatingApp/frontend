@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import ImageCropper from "./ImageCropper";
 
-const Modal = ({ updateAvatar, closeModal }) => {
+const Modal = ({ updateAvatar, closeModal,isDP }) => {
   useEffect(() => {
     document.body.classList.add("modal-open");
     return () => document.body.classList.remove("modal-open");
@@ -45,7 +45,7 @@ const Modal = ({ updateAvatar, closeModal }) => {
             </div>
 
             <div className="modal-body">
-              <ImageCropper updateAvatar={updateAvatar} closeModal={closeModal} />
+              <ImageCropper updateAvatar={updateAvatar} closeModal={closeModal}  isDP={isDP}/>
             </div>
           </div>
         </div>

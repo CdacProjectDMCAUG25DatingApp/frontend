@@ -178,23 +178,27 @@ export const ProfileView = (props) => {
     },
   ];
 
-  // -------------------------------
-  // REPORT
-  // -------------------------------
+  // SUBMIT REPORT
   const submitReport = async () => {
     if (!reason) return;
 
-    const headers = { token: sessionStorage.getItem("token") };
+    try {
+      const token = await config.getToken("token");
 
-    await axios.post(
-      `${config.BASE_URL}/api/report-user`,
-      {
-        reason_id: reason,
-        custom_text: reason === 99 ? customReason : null,
-        target_user_id: dataObj.uid
-      },
-      { headers }
-    );
+      await axios.post(
+        config.BASE_URL + "/settings/report",
+        {
+          reported_id: profileData?.token || finalData?.token,
+          reason_id: reason,
+          reason_custom: reason === 99 ? customReason : null,
+        },
+        { headers: { token } }
+      );
+
+      Toast.show({ type: "success", text1: "User Reported" });
+    } catch (err) {
+      Toast.show({ type: "error", text1: "Failed to report" });
+    }
 
     setReportVisible(false);
     setReason(null);
@@ -243,7 +247,7 @@ export const ProfileView = (props) => {
                   imageurl={utils.urlConverter(photos[0]?.photo_url)}
                   photo_id={photos[0]?.photo_id}
                   index={0}
-                  editable
+                  editable={editable}
                 />
 
               </div>
@@ -326,7 +330,7 @@ export const ProfileView = (props) => {
           photos={photos}
           editable={editable}
           index={Math.min(index + 1, photos.length - 1)}
-          reverse={index % 2 === 1}
+          reverse={index % 2 !== 1}
         />
       ))}
 

@@ -45,7 +45,7 @@ const ProfileCardStack = () => {
     <MainCard
       key={candidates[index].token}
       candidate={candidates[index]}
-      userGender={candidates[index].candidateData.gender}
+      userGender={candidates[index].gender}
       onSwipe={handleSwipe}
     />
   );

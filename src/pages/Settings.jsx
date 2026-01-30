@@ -2,19 +2,31 @@ import { useState } from "react";
 import ChangePasswordModal from "../Components/ChangePasswordModal";
 import FeedbackModal from "../Components/FeedBack";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
 
 export default function Settings() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    sessionStorage.clear();
+    try {
+      // 1. Reset Redux State (Triggers PublicRoute/ProtectedRoute updates)
+      dispatch(logout());
 
-    navigate("/", { replace: true });
+      // 2. Clear browser storage
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // 3. Kick them to the entry page
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
-
   return (
     <div className="container py-5">
 

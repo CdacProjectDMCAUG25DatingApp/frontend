@@ -39,13 +39,12 @@ function AddPhotos() {
 
       setImg((prev) => ({
         ...prev,
-        [`img${id}`]: file
+        [`img${id}`]: file,
       }));
     });
   };
 
   const upload = async () => {
-    // Ensure all 6 photos present
     for (let i = 0; i < 6; i++) {
       if (!img[`img${i}`]) {
         toast.error("Please fill all 6 photos");
@@ -63,32 +62,59 @@ function AddPhotos() {
     if (response.status === "success") {
       toast.success("Photos Added!");
 
-      // Load photos to redux
       await dispatch(loadPhotos());
 
-      // Continue onboarding
       const token = sessionStorage.getItem("token");
+
       const prefRes = await axios.get(config.BASE_URL + "/user/userdetails", {
         headers: { token }
       });
 
-      const details = prefRes.data.data[0];
+      // SAFE PARSE
+      const raw = prefRes.data?.data;
+      const details = Array.isArray(raw) ? raw[0] : raw;
 
-      if (!details.looking_for_id) return navigate("/preferences");
+      // Proceed
+      if (!details || !details.looking_for_id) {
+        return navigate("/preferences");
+      }
+
       navigate("/home/people");
+
     } else {
       toast.error(response.error);
     }
   };
 
+  const labels = [
+    "Profile Picture (DP)",
+    "Card Image",
+    "Profile View Image 1",
+    "Profile View Image 2",
+    "Profile View Image 3",
+    "Profile View Image 4",
+  ];
+
   return (
     <div className="container py-5">
-      <h2 className="mb-4">Upload 6 Photos</h2>
+      <h2 className="mb-4">Upload Your Photos</h2>
 
       <div className="row g-4 justify-content-center">
         {Array.from({ length: 6 }).map((_, id) => (
-          <div key={id} className="col-md-4 d-flex justify-content-center">
-            <PhotoInput id={id} dataURLtoFile={dataURLtoFile} />
+          <div key={id} className="col-md-4 d-flex flex-column align-items-center">
+
+            <p className="text-light fw-bold mb-2">{labels[id]}</p>
+
+            <PhotoInput
+              id={id}
+              setImg={setImg}
+              from="addphotos"
+              dataURLtoFile={dataURLtoFile}
+              imageWidth={id === 0 ? 250 : 300}      // DP circle
+              imageHeight={id === 0 ? 250 : 500}     // Others 300x500
+              isDP={id === 0}                        // circle flag
+            />
+
           </div>
         ))}
       </div>
