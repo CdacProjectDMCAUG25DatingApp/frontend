@@ -27,7 +27,7 @@
         <div className="auth-container">
         {/* LEFT PANEL */}
         <div className="auth-left">
-            <h1>💗 LoveConnect</h1>
+            <h1>💗 Cupido</h1>
             <p>Create your account</p>
         </div>
 

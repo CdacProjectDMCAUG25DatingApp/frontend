@@ -1,3 +1,5 @@
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
 import { useState } from "react";
 import ChangePasswordModal from "../Components/ChangePasswordModal";
 import FeedbackModal from "../Components/FeedBack";
@@ -9,10 +11,22 @@ export default function Settings() {
 
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    sessionStorage.clear();
+const dispatch = useDispatch();
 
-    navigate("/", { replace: true });
+  const handleLogout = () => {
+    try {
+      // 1. Reset Redux State (Triggers PublicRoute/ProtectedRoute updates)
+      dispatch(logout());
+
+      // 2. Clear browser storage
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // 3. Kick them to the entry page
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -56,7 +70,6 @@ export default function Settings() {
             >
               Blocked Users
             </button>
-
 
             <button
               className="btn py-3 fs-5 border border-danger rounded-4 text-danger"

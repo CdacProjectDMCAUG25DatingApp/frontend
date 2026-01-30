@@ -236,7 +236,7 @@ export const ProfileViewBlock = ({
               imageurl={utils.urlConverter(photos[index]?.photo_url)}
               photo_id={photos[index]?.photo_id}
               index={index}
-              editable
+              editable={editable}
             />
 
           </div>
