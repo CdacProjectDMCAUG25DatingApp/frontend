@@ -391,10 +391,10 @@ const ProfileCardComponent = ({
                 </div>
               )}
             </div>
-            <div className="pc-content">
-              <div className="pc-details">
-                <h3>{name}</h3>
-                <p>{title}</p>
+            <div className="pc-content position-absolute top-0 start-50 translate-middle-x mt-2" style={{ zIndex: 20 }}>
+              <div className="pc-details text-center">
+                <h3 className="mb-0 fw-semibold text-white">{name}</h3>
+                <p className="mb-0 text-white-50 small">{title}</p>
               </div>
             </div>
           </div>

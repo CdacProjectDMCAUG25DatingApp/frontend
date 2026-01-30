@@ -28,7 +28,6 @@ const ProfileCardStack = () => {
     if (newIndex >= candidates.length) {
       const more = await serviceGetCandidatesAgain();
       setCandidates(more);
-
       setIndex(0);
       sessionStorage.setItem("swipeIndex", 0);
     } else {
