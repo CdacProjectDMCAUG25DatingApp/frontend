@@ -3,24 +3,27 @@ import axios from "axios";
 import config from "../services/config";
 
 import { useDispatch } from "react-redux";
-import { updateUserDetails } from "../redux/userDetailsThunks";
+import { loadUserDetails} from "../redux/userDetailsThunks";
 
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import MySelect from "../components/MySelect"; // <-- use same select as ProfileView
+import MySelect from "../components/MySelect";
+import { setOnboarding } from "../redux/userSlice";
+
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { utils } from "../utils";
 
 function CreateProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // -----------------------------------
   // FORM STATE
-  // -----------------------------------
   const [form, setForm] = useState({
     bio: "",
     gender: "",
-    dob: "",
+    dob: null,               // IMPORTANT: store Date object
     height: "",
     weight: "",
     tagline: "",
@@ -36,9 +39,7 @@ function CreateProfile() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  // -----------------------------------
-  // LOOKUP STATE
-  // -----------------------------------
+  // LOOKUPS
   const [lookups, setLookups] = useState({
     gender: [],
     religion: [],
@@ -47,9 +48,7 @@ function CreateProfile() {
     jobIndustry: [],
   });
 
-  // -----------------------------------
   // FETCH LOOKUPS
-  // -----------------------------------
   useEffect(() => {
     (async () => {
       const token = sessionStorage.getItem("token");
@@ -84,16 +83,31 @@ function CreateProfile() {
   }, []);
 
   // -----------------------------------
-  // SAVE FORM
+  // SAVE PROFILE
   // -----------------------------------
   const save = async () => {
     try {
       const token = sessionStorage.getItem("token");
       const headers = { token };
-      await axios.post(config.BASE_URL + "/user/profile", form, { headers })
-      toast.success("Profile created!");
-      navigate("/addphotos");
-    } catch (e) {
+
+      // Convert DOB to SQL format
+      const payload = {
+        ...form,
+        dob: form.dob ? utils.toSqlDate(form.dob) : null,
+      };
+
+      const res = await axios.post(config.BASE_URL + "/user/profile", payload, { headers });
+      console.log(res.data)
+      if (res.data.status === "success") {
+        dispatch(loadUserDetails());
+        dispatch(setOnboarding({ needs_profile: false }));
+        toast.success(res.data.data);
+        navigate("/addphotos");
+      } else {
+        toast.error(res.data.error);
+      }
+    } catch (err) {
+      console.log(err);
       toast.error("Error saving profile");
     }
   };
@@ -123,7 +137,7 @@ function CreateProfile() {
 
       <div className="row">
         <div className="col">
-          <label>Height(cm)</label>
+          <label>Height (cm)</label>
           <input
             type="number"
             className="form-control"
@@ -133,12 +147,33 @@ function CreateProfile() {
         </div>
 
         <div className="col">
-          <label>Weight(kg)</label>
+          <label>Weight (kg)</label>
           <input
             type="number"
             className="form-control"
             value={form.weight}
             onChange={(e) => onChange("weight", e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* DOB */}
+      <div className="row g-3 align-items-center m-1">
+        <div className="col-2">
+          <label className="col-form-label">Select DOB</label>
+        </div>
+
+        <div className="col-6">
+          <ReactDatePicker
+            selected={form.dob}
+            onChange={(date) => onChange("dob", date)}
+            placeholderText="Select date of birth"
+            dateFormat="dd MMM yyyy"
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            maxDate={new Date()}
+            className="form-control"
           />
         </div>
       </div>
@@ -152,8 +187,7 @@ function CreateProfile() {
         />
       </div>
 
-      {/* ---- SELECT FIELDS ---- */}
-
+      {/* SELECT FIELDS */}
       <MySelect
         label="Gender"
         value={form.gender}
@@ -179,18 +213,21 @@ function CreateProfile() {
         label="Mother Tongue"
         value={form.mother_tongue_id}
         options={lookups.motherTongue}
-        onChange={(val) => onChange("mother_tongue_id", Number(val.target.value))}
+        onChange={(val) =>
+          onChange("mother_tongue_id", Number(val.target.value))
+        }
       />
 
       <MySelect
         label="Job Industry"
         value={form.job_industry_id}
         options={lookups.jobIndustry}
-        onChange={(val) => onChange("job_industry_id", Number(val.target.value))}
+        onChange={(val) =>
+          onChange("job_industry_id", Number(val.target.value))
+        }
       />
 
-
-      {/* Save Button */}
+      {/* SAVE */}
       <button className="btn btn-primary mt-4" onClick={save}>
         Save & Continue
       </button>

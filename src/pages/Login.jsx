@@ -7,7 +7,7 @@ import { setUser } from "../redux/userSlice";
 import { setUserDetails } from "../redux/userDetailsSlice";
 import { setPhotos } from "../redux/photosSlice";
 import { loginUser } from "../services/user";
-import "./Login.css";
+import "../Styles/Login.css";
 
 function Login() {
   const dispatch = useDispatch();
@@ -68,47 +68,43 @@ function Login() {
   };
 
   return (
-    <div className="auth-container">
-      {/* LEFT PANEL */}
-      <div className="auth-left">
-        <h1>💗 Cupido</h1>
-        <p>Find your perfect match</p>
+    <div className="login-wrapper">
+      {/* LEFT SIDE – MARKETING STYLE */}
+      <div className="login-left marketing">
+        <small className="top-text">Find Your Kind of Connection</small>
+
+        <h1 className="hero-title">
+          Meet new people.<br />
+          Make real connections.
+        </h1>
+
+
+        <p className="trust-text">
+          Safe, simple,<br />
+          and 100% free to start
+        </p>
       </div>
 
-      {/* RIGHT PANEL */}
-      <div className="auth-right">
-        <div className="auth-card">
-          <h2>Sign In</h2>
-
-          <label>Email</label>
+      {/* RIGHT SIDE – LOGIN */}
+      <div className="login-right">
+        <div className="login-box">
           <input
             type="email"
-            placeholder="Enter your email"
+            placeholder="email address :"
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <label>Password</label>
           <input
             type="password"
-            placeholder="Enter your password"
+            placeholder="password :"
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <div className="auth-options">
-            <label>
-              <input type="checkbox" /> Remember me
-            </label>
-            <span className="forgot">Forgot password?</span>
-          </div>
+          <button onClick={signin}>Signin</button>
 
-          <button className="auth-btn" onClick={signin}>
-            Sign In
-          </button>
-
-         
-
-          <p className="signup-text">
-            Don’t have an account? <a href="/register">Sign up</a>
+          <p className="register-text">
+            don’t have an account <br />
+            <Link to="/register">click here</Link>
           </p>
         </div>
       </div>

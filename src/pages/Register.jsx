@@ -2,7 +2,7 @@
     import { Link, useNavigate } from "react-router";
     import { registerUser } from "../services/user";
     import { toast } from "react-toastify";
-    import "./Login.css"; // reuse same styles
+    import "../Styles/Login.css";
 
     function Register() {
     const navigate = useNavigate();
@@ -24,59 +24,62 @@
     };
 
     return (
-        <div className="auth-container">
-        {/* LEFT PANEL */}
-        <div className="auth-left">
-            <h1>💗 Cupido</h1>
-            <p>Create your account</p>
-        </div>
+        <div className="login-wrapper">
 
-        {/* RIGHT PANEL */}
-        <div className="auth-right">
-            <div className="auth-card">
-            <h2>Sign Up</h2>
+  {/* LEFT SIDE – SAME AS LOGIN */}
+  <div className="login-left marketing">
+    <small className="top-text">Create Your Account</small>
 
-            <label>Name</label>
-            <input
-                type="text"
-                placeholder="Enter your name"
-                onChange={(e) => setName(e.target.value)}
-            />
+    <h1 className="hero-title">
+      Join our community.<br />
+      Start connecting today.
+    </h1>
 
-            <label>Email</label>
-            <input
-                type="email"
-                placeholder="Enter your email"
-                onChange={(e) => setEmail(e.target.value)}
-            />
+    <p className="trust-text">
+      Safe, quick,<br />
+      and totally free
+    </p>
+  </div>
 
-            <label>Password</label>
-            <input
-                type="password"
-                placeholder="Create a password"
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <small className="form-hint">
-                Password must be 8–20 characters and contain letters and numbers.
-            </small>
+  {/* RIGHT SIDE – REGISTER FORM */}
+  <div className="login-right">
+    <div className="login-box">
 
-            <label>Phone</label>
-            <input
-                type="tel"
-                placeholder="Enter your phone number"
-                onChange={(e) => setMobile(e.target.value)}
-            />
+      <input
+        type="text"
+        placeholder="full name :"
+        onChange={(e) => setName(e.target.value)}
+      />
 
-            <button className="auth-btn" onClick={signup}>
-                Sign Up
-            </button>
+      <input
+        type="email"
+        placeholder="email address :"
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-            <p className="signup-text">
-                Already have an account? <Link to="/">Sign in</Link>
-            </p>
-            </div>
-        </div>
-        </div>
+      <input
+        type="password"
+        placeholder="password :"
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <input
+        type="tel"
+        placeholder="phone number :"
+        onChange={(e) => setMobile(e.target.value)}
+      />
+
+      <button onClick={signup}>Signup</button>
+
+      <p className="register-text">
+        already have an account <br />
+        <Link to="/">click here</Link>
+      </p>
+    </div>
+  </div>
+
+</div>
+
     );
     }
 

@@ -233,7 +233,7 @@ export const ProfileViewBlock = ({
             style={{ width: "300px", height: "500px" }}
           >
             <PhotoInput
-              imageurl={utils.urlConverter(photos[index]?.photo_url)}
+              imageurl={utils.urlConverter(photos[index+1]?.photo_url)}
               photo_id={photos[index]?.photo_id}
               index={index}
               editable={editable}

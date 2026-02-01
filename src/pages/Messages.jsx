@@ -5,6 +5,7 @@ import axios from "axios";
 import config from "../services/config";
 import "../Styles/messages.css";
 import { utils } from "../utils";
+import { useSelector } from "react-redux";
 
 export default function Messages() {
   const { state } = useLocation();
@@ -12,6 +13,7 @@ export default function Messages() {
 
   const candidateToken = state?.candidateToken;
   const user = state?.user;
+  const dp = useSelector((state) => state.photos.data?.[0]?.photo_url || "");
   const [messages, setMessages] = useState([]);
   const [inputMsg, setInputMsg] = useState("");
 
@@ -21,6 +23,7 @@ export default function Messages() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 
   useEffect(() => {
+    
     connectSocket();
     loadHistory();
 
@@ -86,9 +89,8 @@ export default function Messages() {
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`chat-bubble-row ${
-              msg.incoming ? "incoming" : "outgoing"
-            }`}
+            className={`chat-bubble-row ${msg.incoming ? "incoming" : "outgoing"
+              }`}
           >
             {msg.incoming && (
               <img
@@ -102,7 +104,7 @@ export default function Messages() {
             {!msg.incoming && (
               <img
                 src={
-                  utils.urlConverter(localStorage.getItem("sidebar_dp"))
+                  utils.urlConverter(dp)
                 }
                 className="bubble-dp"
               />

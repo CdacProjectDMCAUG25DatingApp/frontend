@@ -7,6 +7,7 @@ import axios from "axios";
 import config from "../services/config";
 import { loadPhotos } from "../redux/userDetailsThunks";
 import { useDispatch } from "react-redux";
+import { setOnboarding } from "../redux/userSlice";
 
 function AddPhotos() {
   const dispatch = useDispatch();
@@ -61,8 +62,8 @@ function AddPhotos() {
 
     if (response.status === "success") {
       toast.success("Photos Added!");
-
       await dispatch(loadPhotos());
+      dispatch(setOnboarding({ needs_photos: false }));
 
       const token = sessionStorage.getItem("token");
 

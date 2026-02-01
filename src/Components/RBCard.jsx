@@ -220,19 +220,6 @@ const ProfileCardComponent = ({
     leaveRafRef.current = requestAnimationFrame(checkSettle);
   }, [tiltEngine]);
 
-  function calculateAge(dob) {
-    const birthDate = new Date(dob);
-    const today = new Date();
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
-
   const handleDeviceOrientation = useCallback(
     event => {
       const shell = shellRef.current;
@@ -384,7 +371,7 @@ const ProfileCardComponent = ({
                 <div className="pc-user-info">
                   <div className="pc-user-details">
                     <div className="pc-user-text">
-                      <div className="pc-handle">{calculateAge(dob)} • {userGender} • {location_user}</div>
+                      <div className="pc-handle">{dob} • {userGender} • {location_user}</div>
                       <div className="pc-handle">Match Score {score} • {match_interests_count > 1 ? `Shares ${match_interests_count} interests` : `Share ${match_interests_count} interest`}</div>
                     </div>
                   </div>

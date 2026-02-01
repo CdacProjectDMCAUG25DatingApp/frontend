@@ -54,4 +54,8 @@ export const utils = {
             console.error("Conversion failed:", error);
         }
     },
+    toSqlDate: (dateObj) => {
+        if (!dateObj) return null;
+        return dateObj.toISOString().split("T")[0];
+    }
 };

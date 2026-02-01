@@ -6,13 +6,13 @@ import axios from "axios";
 import { useRef } from "react";
 
 const MainCard = ({ onSwipe, candidate}) => {
+  console.log(candidate)
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-50, 50]);
   const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
 
   const controls = useAnimation();
 
-  // 🔥 STATE TO BLOCK CLICK
   const isDragging = useRef(false);
   const isAnimating = useRef(false);
 
@@ -109,17 +109,17 @@ const MainCard = ({ onSwipe, candidate}) => {
     >
       <RBCard
         candidate={candidate}
-        userGender={candidate.candidateData.gender}
-        name={candidate.candidateData.user_name}
-        title={candidate.candidateData.tagline}
-        dob={candidate.candidateData.dob}
-        gender={candidate.candidateData.gender}
-        location_user={candidate.candidateData.location}
+        userGender={candidate.gender}
+        name={candidate.user_name}
+        title={candidate.tagline}
+        dob={candidate.age}
+        gender={candidate.gender}
+        location_user={candidate.location}
         score={candidate.score}
         match_interests_count={candidate.match_interests_count}
         isDraggingRef={isDragging}     
         isAnimatingRef={isAnimating}
-        avatarUrl={config.BASE_URL + "/profilePhotos/" + candidate.photos[0].photo_url}
+        avatarUrl={config.BASE_URL + "/profilePhotos/" + candidate.photo}
         showUserInfo={true}
         enableTilt={true}
         enableMobileTilt={false}

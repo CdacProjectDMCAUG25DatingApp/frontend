@@ -63,7 +63,7 @@ export default function UserLikeCard({
           </button>
         )}
 
-        {showMessage && (
+        {/* {showMessage && (
           <button
             className="btn btn-outline-info btn-sm"
             onClick={(e) => {
@@ -72,7 +72,7 @@ export default function UserLikeCard({
             }}>
             Message
           </button>
-        )}
+        )} */}
 
         {onIgnore && (
           <button
