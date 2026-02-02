@@ -244,8 +244,8 @@ export const ProfileView = (props) => {
               <div className="card border-light rounded-4 overflow-hidden mx-auto"
                 style={{ width: "300px", height: "500px" }}>
                 <PhotoInput
-                  imageurl={utils.urlConverter(photos[0]?.photo_url)}
-                  photo_id={photos[0]?.photo_id}
+                  imageurl={utils.urlConverter(photos[1]?.photo_url)}
+                  photo_id={photos[1]?.photo_id}
                   index={0}
                   editable={editable}
                 />

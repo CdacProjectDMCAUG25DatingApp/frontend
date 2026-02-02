@@ -39,7 +39,7 @@ export const ProfileViewBlock = ({
   useEffect(() => {
     const merged = {
       ...dataObj,
-      image_prompt: photos?.[index]?.prompt || "",
+      image_prompt: photos?.[index+1]?.prompt || "",
     };
 
     setProfile(merged);
@@ -234,8 +234,8 @@ export const ProfileViewBlock = ({
           >
             <PhotoInput
               imageurl={utils.urlConverter(photos[index+1]?.photo_url)}
-              photo_id={photos[index]?.photo_id}
-              index={index}
+              photo_id={photos[index+1]?.photo_id}
+              index={index+1}
               editable={editable}
             />
 
