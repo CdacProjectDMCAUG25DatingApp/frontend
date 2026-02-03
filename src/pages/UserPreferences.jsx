@@ -138,7 +138,7 @@ function UserPreferences() {
       const token = sessionStorage.getItem("token");
       const headers = { token };
 
-      await axios.post(config.BASE_URL + "/user/preferences", pref, { headers });
+      await axios.post(config.BASE_URL + "/user/userpreferences", pref, { headers });
 
       // Update onboarding flags in Redux
       dispatch(setUser({

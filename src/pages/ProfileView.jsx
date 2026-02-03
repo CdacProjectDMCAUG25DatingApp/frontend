@@ -9,6 +9,7 @@ import { utils } from "../utils";
 import PhotoInput from "../Components/ImageInput/PhotoInput";
 import MySelect from "../Components/MySelect";
 import { ProfileViewBlock } from "../Components/ProfileViewBlocks";
+import { toast } from "react-toastify";
 
 import { updateUserDetails } from "../redux/userDetailsThunks";
 import { setPhotos } from "../redux/photosSlice";
@@ -116,7 +117,7 @@ export const ProfileView = (props) => {
       if (promptValue !== undefined) {
         await axios.patch(
           `${config.BASE_URL}/photos/prompt`,
-          { photo_id: photos[0].photo_id, prompt: promptValue },
+          { photo_id: photos[1].photo_id, prompt: promptValue },
           { headers }
         );
 
@@ -180,30 +181,62 @@ export const ProfileView = (props) => {
 
   // SUBMIT REPORT
   const submitReport = async () => {
-    if (!reason) return;
-
     try {
-      const token = await config.getToken("token");
-
+    
+      const token = sessionStorage.getItem("token");
       await axios.post(
         config.BASE_URL + "/settings/report",
         {
-          reported_id: profileData?.token || finalData?.token,
+          reported_id: dataObj.token,
           reason_id: reason,
-          reason_custom: reason === 99 ? customReason : null,
+          reason_custom: reason == 99 ? customReason : null,
         },
         { headers: { token } }
       );
 
-      Toast.show({ type: "success", text1: "User Reported" });
+      toast.success( "User Reported" );
     } catch (err) {
-      Toast.show({ type: "error", text1: "Failed to report" });
+      console.log(err)
+      toast.error("Failed to report");
     }
 
     setReportVisible(false);
     setReason(null);
     setCustomReason("");
   };
+
+  // BLOCK USER
+  const handleBlock = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const headers = { token };
+
+      // --- The profile token of the user being viewed ---
+      const targetToken = dataObj.token;
+
+      if (!targetToken) {
+        alert("Invalid profile");
+        return;
+      }
+
+      const res = await axios.post(
+        config.BASE_URL + "/settings/block",
+        { blocked_id: targetToken },
+        { headers }
+      );
+
+      if (res.data.status === "success") {
+        alert("User Blocked Successfully");
+        navigate(-1); // go back after blocking
+      } else {
+        alert(res.data.error || "Failed to block");
+      }
+    } catch (err) {
+      console.log("BLOCK ERROR =>", err);
+      alert("Failed to block user");
+    }
+  };
+
 
   // -------------------------------
   // UI
@@ -218,22 +251,31 @@ export const ProfileView = (props) => {
         ← Back
       </button>
 
+      {/* TOP RIGHT OPTIONS */}
       {!editable && (
         <div className="d-flex justify-content-end mb-3">
           <div className="dropdown">
             <button className="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
               ⋮
             </button>
+
             <ul className="dropdown-menu dropdown-menu-dark">
               <li>
                 <button className="dropdown-item" onClick={() => setReportVisible(true)}>
                   Report
                 </button>
               </li>
+
+              <li>
+                <button className="dropdown-item text-danger" onClick={handleBlock}>
+                  Block
+                </button>
+              </li>
             </ul>
           </div>
         </div>
       )}
+
 
       {/* TOP CARD */}
       <div className="card shadow-lg mb-5">
@@ -246,7 +288,7 @@ export const ProfileView = (props) => {
                 <PhotoInput
                   imageurl={utils.urlConverter(photos[1]?.photo_url)}
                   photo_id={photos[1]?.photo_id}
-                  index={0}
+                  index={1}
                   editable={editable}
                 />
 
