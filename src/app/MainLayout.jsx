@@ -1,6 +1,6 @@
 import Sidebar from "../Components/Sidebar";
 import { Outlet } from "react-router-dom";
-import "../Styles/MainLayout.css";
+import "../Styles/mainlayout.css";
 import LiquidEther from "../Components/LiquidEther";
 
 import { useEffect } from "react";

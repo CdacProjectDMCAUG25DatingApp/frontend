@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { addPhotos } from "../services/addphotos";
+import { addPhotos } from "../services/addphotos.js";
 import { useNavigate } from "react-router";
 import PhotoInput from "../Components/ImageInput/PhotoInput";
 import axios from "axios";

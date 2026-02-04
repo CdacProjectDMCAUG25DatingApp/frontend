@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import "../Styles/Sidebar.css";
+import "../Styles/sidebar.css";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { utils } from "../utils";

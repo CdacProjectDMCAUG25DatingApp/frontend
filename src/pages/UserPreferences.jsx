@@ -8,7 +8,7 @@ import { setUser } from "../redux/userSlice";
 
 
 
-import MySelect from "../components/MySelect";
+import MySelect from "../Components/MySelect";
 
 function UserPreferences() {
   const navigate = useNavigate();

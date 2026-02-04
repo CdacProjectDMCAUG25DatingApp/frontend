@@ -8,7 +8,7 @@ import { loadUserDetails} from "../redux/userDetailsThunks";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import MySelect from "../components/MySelect";
+import MySelect from "../Components/MySelect";
 import { setOnboarding } from "../redux/userSlice";
 
 import ReactDatePicker from "react-datepicker";

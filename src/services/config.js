@@ -1,5 +1,5 @@
 const config = {
-    BASE_URL: 'http://localhost:4000'
+    BASE_URL: 'https://backend-zid8.onrender.com'
 }
 
 export default config
